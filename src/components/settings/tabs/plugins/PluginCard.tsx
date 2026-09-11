@@ -14,8 +14,6 @@ import { Logger } from "@utils/Logger";
 import { Plugin } from "@utils/types";
 import { React, showToast, Toasts } from "@webpack/common";
 
-import { PluginMeta } from "~plugins";
-
 import { openPluginModal } from "./PluginModal";
 
 const logger = new Logger("PluginCard");
@@ -31,11 +29,6 @@ interface PluginCardProps extends React.HTMLProps<HTMLDivElement> {
 
 export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, onMouseLeave, isNew }: PluginCardProps) {
     const settings = Settings.plugins[plugin.name];
-    const pluginMeta = PluginMeta[plugin.name];
-    const isSlipcordPlugin = pluginMeta.folderName.startsWith("src/equicordplugins/") ?? false;
-    const isVencordPlugin = pluginMeta.folderName.startsWith("src/plugins/") ?? false;
-    const isUserPlugin = pluginMeta?.userPlugin ?? false;
-    const isModifiedPlugin = plugin.isModified ?? false;
 
     const isEnabled = () => isPluginEnabled(plugin.name);
 
@@ -89,50 +82,9 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
         settings.enabled = !wasEnabled;
     }
 
-    const pluginInfo = [
-        {
-            condition: isModifiedPlugin,
-            src: "https://equicord.org/assets/icons/equicord/modified.png",
-            alt: "Modified",
-            title: "Modified Vencord Plugin"
-        },
-        {
-            condition: isSlipcordPlugin,
-            src: "https://equicord.org/assets/favicon.png",
-            alt: "Slipcord",
-            title: "Slipcord Plugin"
-        },
-        {
-            condition: isVencordPlugin,
-            src: "https://equicord.org/assets/icons/vencord/icon-light.png",
-            alt: "Vencord",
-            title: "Vencord Plugin"
-        },
-        {
-            condition: isUserPlugin,
-            src: "https://equicord.org/assets/icons/misc/userplugin.png",
-            alt: "User",
-            title: "User Plugin"
-        }
-    ];
-
-    const pluginDetails = pluginInfo.find(p => p.condition);
-
-    const sourceBadge = pluginDetails ? (
-        <img
-            src={pluginDetails.src}
-            alt={pluginDetails.alt}
-            className={cl("source")}
-        />
-    ) : null;
-
-    const tooltip = pluginDetails?.title || "Unknown Plugin";
-
     return (
         <AddonCard
             name={plugin.name}
-            sourceBadge={sourceBadge}
-            tooltip={tooltip}
             description={plugin.description}
             isNew={isNew}
             enabled={isEnabled()}
