@@ -1,16 +1,6 @@
 # [<img src="./browser/icon.png" width="40" align="left" alt="Slipcord">](https://github.com/Slipcord/Slipcord) Slipcord
 
-[![Equibop](https://img.shields.io/badge/Equibop-grey?style=flat)](https://github.com/Slipcord/Equibop)
-[![Tests](https://github.com/Slipcord/Slipcord/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Slipcord/Slipcord/actions/workflows/test.yml)
-[![Discord](https://img.shields.io/discord/1173279886065029291.svg?color=768AD4&label=Discord&logo=discord&logoColor=white)](https://equicord.org/discord)
-
 Slipcord is a fork of [Vencord](https://github.com/Vendicated/Vencord), with over 300+ plugins.
-
-You can join our [Discord server](https://equicord.org/discord) for commits, changes, chatting, or even support.
-
-### Included Plugins
-
-Our included plugins can be found [here](https://equicord.org/plugins).
 
 ## Installing / Uninstalling
 
@@ -28,7 +18,6 @@ Linux
 
 - [GUI](https://github.com/Slipcords/Slipped/releases/latest/download/Slipped-x11)
 - [CLI](https://github.com/Slipcords/Slipped/releases/latest/download/SlippedCli-linux)
-- [AUR](https://aur.archlinux.org/packages?O=0&K=equicord)
 
 ```shell
 bash -c "$(curl -sS https://raw.githubusercontent.com/Slipcords/Slipped/refs/heads/main/install.sh)"
