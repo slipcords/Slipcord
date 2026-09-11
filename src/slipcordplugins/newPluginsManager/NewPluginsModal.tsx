@@ -153,7 +153,6 @@ function NewPluginsModal({ modalProps, commits, newPlugins, newSettings, repoSlu
             size="md"
             title={
                 <div className={cl("header")}>
-                    <div className={cl("logo")}>S</div>
                     <div className={cl("header-content")}>
                         <BaseText size="lg" weight="semibold" className={cl("title")}>
                             What's new in Slipcord
