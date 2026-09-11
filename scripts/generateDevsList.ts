@@ -25,7 +25,7 @@ interface Dev {
 }
 
 const devs = {} as Record<string, Dev>;
-const equicordDevs = {} as Record<string, Dev>;
+const slipcordDevs = {} as Record<string, Dev>;
 
 function getName(node: NamedDeclaration) {
     return node.name && isIdentifier(node.name) ? node.name.text : undefined;
@@ -91,7 +91,7 @@ function parseSlipcordDevs() {
 
             if (!isObjectLiteralExpression(value)) throw new Error(`Failed to parse SlipcordDevs: ${name} is not an object literal`);
 
-            equicordDevs[name] = {
+            slipcordDevs[name] = {
                 name: (getObjectProp(value, "name") as StringLiteral).text,
                 id: (getObjectProp(value, "id") as BigIntLiteral).text.slice(0, -1)
             };
@@ -109,7 +109,7 @@ function parseSlipcordDevs() {
 
     const allDevs = {
         vencord: devs,
-        equicord: equicordDevs,
+        slipcord: slipcordDevs,
     };
 
     const data = JSON.stringify(allDevs, null, 2);

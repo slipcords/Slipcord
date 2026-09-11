@@ -130,8 +130,8 @@ export function patchTrayMenu(): void {
         const alreadyPatched = template.some(item => item.label === "Slipcord");
         if (isTrayMenu(template) && !alreadyPatched) {
             const insertIndex = findInsertIndex(template);
-            const equicordItems = createSlipcordMenuItems();
-            template.splice(insertIndex, 0, ...equicordItems);
+            const slipcordItems = createSlipcordMenuItems();
+            template.splice(insertIndex, 0, ...slipcordItems);
         }
 
         return originalBuildFromTemplate.call(this, template);

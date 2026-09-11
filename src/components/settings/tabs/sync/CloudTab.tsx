@@ -39,7 +39,7 @@ import { Alerts, SearchableSelect, Select, useState } from "@webpack/common";
 const ICON_STYLE: React.CSSProperties = { width: 20, height: 20, borderRadius: 4, verticalAlign: "middle" };
 
 function SlipcordIcon() {
-    return <img src="https://equicord.org/assets/favicon.png" alt="Slipcord" style={ICON_STYLE} />;
+    return <img src="https://raw.githubusercontent.com/slipcords/Slipper/main/build/icon.png" alt="Slipcord" style={ICON_STYLE} />;
 }
 
 function VencordIcon() {
@@ -128,7 +128,7 @@ function CloudTab() {
                     value={cloudBackendOptions.find(o => o.value === cloud.url)?.value}
                     onChange={v => changeUrl(v)}
                     closeOnSelect={true}
-                    renderOptionPrefix={o => o?.value?.includes("equicord") ? <SlipcordIcon /> : <VencordIcon />}
+                    renderOptionPrefix={o => o?.value?.includes("slipcord") ? <SlipcordIcon /> : <VencordIcon />}
                 />
             </div>
 

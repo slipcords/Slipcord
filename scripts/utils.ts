@@ -54,7 +54,7 @@ export interface PluginData {
 }
 
 export const devs = {} as Record<string, Dev>;
-export const equicordDevs = {} as Record<string, Dev>;
+export const slipcordDevs = {} as Record<string, Dev>;
 
 export function getName(node: NamedDeclaration) {
     return node.name && isIdentifier(node.name) ? node.name.text : undefined;
@@ -120,7 +120,7 @@ export function parseSlipcordDevs() {
 
             if (!isObjectLiteralExpression(value)) throw new Error(`Failed to parse SlipcordDevs: ${name} is not an object literal`);
 
-            equicordDevs[name] = {
+            slipcordDevs[name] = {
                 name: (getObjectProp(value, "name") as StringLiteral).text,
                 id: (getObjectProp(value, "id") as BigIntLiteral).text.slice(0, -1)
             };
@@ -205,7 +205,7 @@ export async function parseFile(fileName: string) {
                     if (!isArrayLiteralExpression(value)) throw fail("authors is not an array literal");
                     data.authors = value.elements.map(e => {
                         if (!isPropertyAccessExpression(e)) throw fail("authors array contains non-property access expressions");
-                        const d = devs[getName(e)!] || equicordDevs[getName(e)!];
+                        const d = devs[getName(e)!] || slipcordDevs[getName(e)!];
                         if (!d) throw fail(`couldn't look up author ${getName(e)}`);
                         return d;
                     });
@@ -250,7 +250,7 @@ export async function parseFile(fileName: string) {
             .join(posixSep)
             .replace(/\/index\.([jt]sx?)$/, "")
             .replace(/^src\/plugins\//, "")
-            .replace(/^src\/equicordplugins\//, "");
+            .replace(/^src\/slipcordplugins\//, "");
 
         return [data] as const;
     }

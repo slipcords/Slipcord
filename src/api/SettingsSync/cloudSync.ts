@@ -139,7 +139,7 @@ function handleAuthFailure() {
         title: "Cloud Settings",
         body: "Cloud sync was disabled because this account isn't connected. Reconnect in Cloud Settings.",
         color: "var(--yellow-360)",
-        onClick: () => SettingsRouter.openUserSettings("equicord_cloud_panel"),
+        onClick: () => SettingsRouter.openUserSettings("slipcord_cloud_panel"),
     });
     Settings.cloud.authenticated = false;
 }

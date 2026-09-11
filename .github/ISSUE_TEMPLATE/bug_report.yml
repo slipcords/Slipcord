@@ -12,7 +12,7 @@ body:
               Some plugins may sometimes break, but we have automatic tracking for that. So please **do not report broken plugins**, it is useless.
               However, if a plugin works fine, but has a bug in its functionality, then you can report that here.
 
-              If you are experiencing any of the following issues, go to our [Discord server](https://equicord.org/discord) for support:
+              If you are experiencing any of the following issues, go to our [GitHub issues](https://github.com/slipcords/Slipcord/issues) for support:
               - Slipcord doesn't work or crashes
               - A plugin doesn't work anymore
               - You are having issues installing Slipcord
@@ -69,7 +69,7 @@ body:
           options:
               - label: I've searched existing issues and this hasn't been reported before
               - label: I am using Discord Stable or tried on Stable and this bug happens there as well
-              - label: I installed Slipcord via an official method (download from equicord.org or from source), not via something like AUR or Nix packages
+              - label: I installed Slipcord via an official method (download from the release page or from source), not via something like AUR or Nix packages
               - label: This is not a support request
               - label: I understand that if any of the above conditions are not met, this issue will be deleted and I will be banned from creating future issues without further warning
                 required: true

@@ -69,7 +69,7 @@ const PlatformIcon = ({ platform, status, small }) => {
     const { ConsoleIcon } = settings.store;
     if (platform === "embedded") {
         switch (ConsoleIcon) {
-            case "equicord":
+            case "slipcord":
                 Icon = Icons.embedded;
                 break;
             case "suncord":
@@ -182,7 +182,7 @@ const settings = definePluginSettings({
         options: [
             {
                 label: "Slipcord",
-                value: "equicord",
+                value: "slipcord",
                 default: true
             },
             {

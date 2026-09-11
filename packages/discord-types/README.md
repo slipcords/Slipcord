@@ -7,15 +7,15 @@ While it was primarily created for Slipcord based on Vencord and its respective 
 ## Installation
 
 ```bash
-npm install -D @equicord/discord-types
-yarn add -D @equicord/discord-types
-pnpm add -D @equicord/discord-types
+npm install -D @slipcord/discord-types
+yarn add -D @slipcord/discord-types
+pnpm add -D @slipcord/discord-types
 ```
 
 ## Example Usage
 
 ```ts
-import type { UserStore } from "@equicord/discord-types";
+import type { UserStore } from "@slipcord/discord-types";
 
 const userStore: UserStore = findStore("UserStore"); // findStore is up to you to implement, this library only provides types and no runtime code
 ```
@@ -25,7 +25,7 @@ const userStore: UserStore = findStore("UserStore"); // findStore is up to you t
 This library also exports some const enums that you can use from Typescript code:
 
 ```ts
-import { ApplicationCommandType } from "@equicord/discord-types/enums";
+import { ApplicationCommandType } from "@slipcord/discord-types/enums";
 
 console.log(ApplicationCommandType.CHAT_INPUT); // 1
 ```

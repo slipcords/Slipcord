@@ -59,8 +59,8 @@
             "@webpack/types": [
                 "./src/webpack/types"
             ],
-            "@equicordplugins/*": [
-                "./src/equicordplugins/*"
+            "@slipcordplugins/*": [
+                "./src/slipcordplugins/*"
             ]
         },
         "plugins": [

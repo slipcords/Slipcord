@@ -34,7 +34,7 @@ import Plugins, { PluginMeta } from "~plugins";
 import { SlipcordDonorModal, SlipcordTranslatorModal, VencordDonorModal } from "./modals";
 
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
-const EQUICORD_CONTRIBUTOR_BADGE = "https://equicord.org/assets/favicon.png";
+const SLIPCORD_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/slipcords/Slipper/main/build/icon.png";
 const USERPLUGIN_CONTRIBUTOR_BADGE = "https://equicord.org/assets/icons/misc/userplugin.png";
 
 const ContributorBadge: ProfileBadge = {
@@ -47,9 +47,9 @@ const ContributorBadge: ProfileBadge = {
 };
 
 const SlipcordContributorBadge: ProfileBadge = {
-    id: "equicord_contributor_badge",
+    id: "slipcord_contributor_badge",
     description: "Slipcord Contributor",
-    iconSrc: EQUICORD_CONTRIBUTOR_BADGE,
+    iconSrc: SLIPCORD_CONTRIBUTOR_BADGE,
     position: BadgePosition.START,
     shouldShow: ({ userId }) => shouldShowSlipcordContributorBadge(userId),
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId)),
@@ -95,10 +95,10 @@ async function loadBadges(url: string, noCache = false) {
 
 async function loadAllBadges(noCache = false) {
     const vencordBadges = await loadBadges("https://badges.vencord.dev/badges.json", noCache);
-    const equicordBadges = await loadBadges("https://badge.equicord.org/badges.json", noCache);
+    const slipcordBadges = await loadBadges("https://badge.equicord.org/badges.json", noCache);
 
     DonorBadges = vencordBadges;
-    SlipcordDonorBadges = equicordBadges;
+    SlipcordDonorBadges = slipcordBadges;
 }
 
 let intervalId: any;
@@ -253,7 +253,7 @@ export default definePlugin({
 
     getSlipcordDonorBadges(userId: string) {
         return SlipcordDonorBadges[userId]?.map((badge, idx) => ({
-            id: `equicord_donor_badge_${idx}`,
+            id: `slipcord_donor_badge_${idx}`,
             iconSrc: badge.badge,
             description: badge.tooltip,
             position: BadgePosition.START,

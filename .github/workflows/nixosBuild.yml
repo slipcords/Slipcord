@@ -38,7 +38,7 @@ jobs:
             - name: Generate plugin lists
               run: |
                   pnpm generatePluginJson dist/plugins.json
-                  pnpm generateSlipcordPluginJson dist/equicordplugins.json
+                  pnpm generateSlipcordPluginJson dist/slipcordplugins.json
                   pnpm generateVencordPluginJson dist/vencordplugins.json
                   pnpm generateDevsList dist/devs.json
 

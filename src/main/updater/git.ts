@@ -25,7 +25,7 @@ import { promisify } from "util";
 import { serializeErrors } from "./common";
 
 const VENCORD_SRC_DIR = join(__dirname, "..");
-const EQUICORD_DIR = join(__dirname, "../../");
+const SLIPCORD_DIR = join(__dirname, "../../");
 
 const execFile = promisify(cpExecFile);
 
@@ -73,7 +73,7 @@ async function pull() {
 }
 
 async function build() {
-    const opts = { cwd: EQUICORD_DIR };
+    const opts = { cwd: SLIPCORD_DIR };
 
     const command = isFlatpak ? "flatpak-spawn" : "node";
     const args = isFlatpak ? ["--host", "node", "scripts/build/build.mjs"] : ["scripts/build/build.mjs"];

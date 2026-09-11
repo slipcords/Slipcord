@@ -146,7 +146,7 @@ export async function downloadSettingsBackup(type: BackupType = "all", { minify 
     try {
         const syncDataStore = type === "all" || type === "datastore";
         const backup = await exportSettings({ minify, type, syncDataStore });
-        const filename = `equicord-${type}-backup-${moment().format("YYYY-MM-DD")}.json`;
+        const filename = `slipcord-${type}-backup-${moment().format("YYYY-MM-DD")}.json`;
         const data = new TextEncoder().encode(backup);
 
         if (IS_DISCORD_DESKTOP) {

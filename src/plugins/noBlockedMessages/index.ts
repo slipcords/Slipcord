@@ -17,7 +17,7 @@
 */
 
 import { definePluginSettings, migratePluginSetting, Settings } from "@api/Settings";
-import { containsBlockedKeywords } from "@equicordplugins/blockKeywords";
+import { containsBlockedKeywords } from "@slipcordplugins/blockKeywords";
 import { Devs, SlipcordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";

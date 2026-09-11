@@ -27,14 +27,14 @@ import { Flex } from "@components/Flex";
 import { Link } from "@components/Link";
 import { Paragraph } from "@components/Paragraph";
 import { openSettingsTabModal, UpdaterTab } from "@components/settings";
-import { platformName } from "@equicordplugins/equicordHelper/utils";
 import customIdle from "@plugins/customIdle";
 import { gitHash, gitHashShort } from "@shared/vencordUserAgent";
-import { CONTRIB_ROLE_ID, Devs, DONOR_ROLE_ID, EQUICORD_TEAM, GUILD_ID, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, VC_CONTRIB_ROLE_ID, VC_DONOR_ROLE_ID, VC_GUILD_ID, VC_REGULAR_ROLE_ID, VENCORD_CONTRIB_ROLE_ID } from "@utils/constants";
+import { platformName } from "@slipcordplugins/slipcordHelper/utils";
+import { CONTRIB_ROLE_ID, Devs, DONOR_ROLE_ID, GUILD_ID, SLIPCORD_TEAM, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, VC_CONTRIB_ROLE_ID, VC_DONOR_ROLE_ID, VC_GUILD_ID, VC_REGULAR_ROLE_ID, VENCORD_CONTRIB_ROLE_ID } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import { Margins } from "@utils/margins";
-import { isAnyPluginDev, isSlipcordGuild, isSlipcordSupport, isKnownIssuesCategory, isSupportChannel, tryOrElse } from "@utils/misc";
+import { isAnyPluginDev, isKnownIssuesCategory, isSlipcordGuild, isSlipcordSupport, isSupportChannel, tryOrElse } from "@utils/misc";
 import { relaunch } from "@utils/native";
 import { onlyOnce } from "@utils/onlyOnce";
 import { makeCodeblock } from "@utils/text";
@@ -55,7 +55,7 @@ const TrustedRolesIds = [
     VC_CONTRIB_ROLE_ID, // Vencord Contributor
     VC_REGULAR_ROLE_ID, // Vencord Regular
     VC_DONOR_ROLE_ID, // Vencord Donor
-    EQUICORD_TEAM, // Slipcord Team
+    SLIPCORD_TEAM, // Slipcord Team
     DONOR_ROLE_ID, // Slipcord Donor
     CONTRIB_ROLE_ID, // Slipcord Contributor
     VENCORD_CONTRIB_ROLE_ID, // Vencord Contributor
@@ -303,8 +303,8 @@ function DevBuildConfirmModal(props: RenderModalProps) {
                 <Paragraph>You are using a custom build of Slipcord, which we do not provide support for!</Paragraph>
 
                 <Paragraph className={Margins.top8}>
-                    We only provide support for <Link href="https://equicord.org/download">official builds</Link>.
-                    Either <Link href="https://equicord.org/download">switch to an official build</Link> or figure your issue out yourself.
+                    We only provide support for <Link href="https://github.com/slipcords/Slipper/releases/latest">official builds</Link>.
+                    Either <Link href="https://github.com/slipcords/Slipper/releases/latest">switch to an official build</Link> or figure your issue out yourself.
                 </Paragraph>
 
                 <Text variant="text-md/bold" className={Margins.top8}>You will be banned from receiving support if you ignore this rule.</Text>
@@ -333,14 +333,14 @@ export default definePlugin({
 
     commands: [
         {
-            name: "equicord-debug",
+            name: "slipcord-debug",
             description: "Send Slipcord debug info",
             // @ts-ignore
             predicate: ctx => isAnyPluginDev(UserStore.getCurrentUser()?.id) || isSlipcordGuild(ctx?.guild?.id, true),
             execute: async () => ({ content: await generateDebugInfoMessage() })
         },
         {
-            name: "equicord-plugins",
+            name: "slipcord-plugins",
             description: "Send Slipcord plugin list",
             // @ts-ignore
             predicate: ctx => isAnyPluginDev(UserStore.getCurrentUser()?.id) || isSlipcordGuild(ctx?.guild?.id, true),
@@ -415,7 +415,7 @@ export default definePlugin({
                         <div>
                             <Paragraph>You are using an externally updated Slipcord version, which we do not provide support for!</Paragraph>
                             <Paragraph className={Margins.top8}>
-                                Please either switch to an <Link href="https://equicord.org/download">officially supported version of Slipcord</Link>, or
+                                Please either switch to an <Link href="https://github.com/slipcords/Slipper/releases/latest">officially supported version of Slipcord</Link>, or
                                 contact your package maintainer for support instead.
                             </Paragraph>
                         </div>
@@ -434,11 +434,11 @@ export default definePlugin({
     renderMessageAccessory(props) {
         const buttons = [] as JSX.Element[];
 
-        const equicordSupport = isSlipcordSupport(props.message.author.id);
+        const slipcordSupport = isSlipcordSupport(props.message.author.id);
 
         const shouldAddUpdateButton =
             !IS_UPDATER_DISABLED
-            && ((isSupportChannel(props.channel.id) && equicordSupport))
+            && ((isSupportChannel(props.channel.id) && slipcordSupport))
             && props.message.content?.toLowerCase().includes("update");
 
         if (shouldAddUpdateButton) {
@@ -463,15 +463,15 @@ export default definePlugin({
             );
         }
 
-        if (equicordSupport && isSupportChannel(props.channel.id) && PermissionStore.can(PermissionsBits.SEND_MESSAGES, props.channel)) {
-            if (props.message.content.includes("/equicord-debug") || props.message.content.includes("/equicord-plugins")) {
+        if (slipcordSupport && isSupportChannel(props.channel.id) && PermissionStore.can(PermissionsBits.SEND_MESSAGES, props.channel)) {
+            if (props.message.content.includes("/slipcord-debug") || props.message.content.includes("/slipcord-plugins")) {
                 buttons.push(
                     <Button
                         key="vc-dbg"
                         variant="secondary"
                         onClick={async () => sendMessage(props.channel.id, { content: await generateDebugInfoMessage() })}
                     >
-                        Run /equicord-debug
+                        Run /slipcord-debug
                     </Button>,
                     <Button
                         key="vc-plg-list"
@@ -491,13 +491,13 @@ export default definePlugin({
                             }
                         }}
                     >
-                        Run /equicord-plugins
+                        Run /slipcord-plugins
                     </Button>
                 );
             }
         }
 
-        if (equicordSupport || (isSupportChannel(props.channel.id) || isKnownIssuesCategory(props.channel.parent_id))) {
+        if (slipcordSupport || (isSupportChannel(props.channel.id) || isKnownIssuesCategory(props.channel.parent_id))) {
             const match = CodeBlockRe.exec(props.message.content || props.message.embeds[0]?.rawDescription || "");
             if (match) {
                 buttons.push(

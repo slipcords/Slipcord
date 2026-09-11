@@ -173,7 +173,7 @@ export default function PluginModal({ plugin, onRestartNeeded, onClose, transiti
     }
 
     const pluginMeta = PluginMeta[plugin.name];
-    const isSlipcordPlugin = pluginMeta.folderName.startsWith("src/equicordplugins/") ?? false;
+    const isSlipcordPlugin = pluginMeta.folderName.startsWith("src/slipcordplugins/") ?? false;
 
     return (
         <Modal

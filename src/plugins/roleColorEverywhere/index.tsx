@@ -18,7 +18,7 @@
 
 import { definePluginSettings, Settings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { getCustomColorString } from "@equicordplugins/customUserColors";
+import { getCustomColorString } from "@slipcordplugins/customUserColors";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { makeRange, OptionType } from "@utils/types";

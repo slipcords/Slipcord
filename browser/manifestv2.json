@@ -49,7 +49,7 @@
     ],
     "browser_specific_settings": {
         "gecko": {
-            "id": "firefox@equicord.org",
+            "id": "firefox@slipcord.org",
             "strict_min_version": "128.0",
             "data_collection_permissions": {
                 "required": [

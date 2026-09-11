@@ -3,9 +3,9 @@
 Typings for Slipcord's api, published to npm
 
 ```sh
-npm i @equicord/types
+npm i @slipcord/types
 
-yarn add @equicord/types
+yarn add @slipcord/types
 
-pnpm add @equicord/types
+pnpm add @slipcord/types
 ```

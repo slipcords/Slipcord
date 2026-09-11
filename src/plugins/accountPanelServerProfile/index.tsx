@@ -7,7 +7,7 @@
 import { isPluginEnabled } from "@api/PluginManager";
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import alwaysExpandProfiles from "@equicordplugins/alwaysExpandProfiles";
+import alwaysExpandProfiles from "@slipcordplugins/alwaysExpandProfiles";
 import { Devs } from "@utils/constants";
 import { fetchUserProfile, getCurrentChannel, openUserProfile } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";

@@ -19,7 +19,7 @@
 import { User } from "@vencord/discord-types";
 import { ChannelStore, GuildMemberStore, IconUtils } from "@webpack/common";
 
-import { EQUICORD_HELPERS, SlipcordDevsById, GUILD_ID, KNOWN_ISSUES_CHANNEL_ID, SUPPORT_CHANNEL_ID, VencordDevsById } from "./constants";
+import { GUILD_ID, KNOWN_ISSUES_CHANNEL_ID, SLIPCORD_HELPERS, SlipcordDevsById, SUPPORT_CHANNEL_ID, VencordDevsById } from "./constants";
 
 /**
  * Calls .join(" ") on the arguments
@@ -129,7 +129,7 @@ export function isSlipcordSupport(userId: string | null | undefined): boolean {
 
     const member = GuildMemberStore.getMember(GUILD_ID, userId);
     if (!member) return false;
-    return member.roles.includes(EQUICORD_HELPERS) || false;
+    return member.roles.includes(SLIPCORD_HELPERS) || false;
 }
 
 export function removeFromArray<T>(arr: T[], predicate: (e: T) => boolean) {

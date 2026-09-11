@@ -7,7 +7,7 @@ node_modules
 
 *.exe
 vencord_installer
-equicord_installer
+slipcord_installer
 
 .idea
 .DS_Store

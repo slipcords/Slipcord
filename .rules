@@ -53,7 +53,7 @@ Does NOT get merged:
     ```
     Header says `Vencord, a Discord client mod` even on new Slipcord-only files. Slipcord is a Vencord fork, upstream attribution is kept across the whole tree. Don't change it to "Slipcord".
     Older files carry the full GPL preamble. Leave existing headers alone, don't rewrite them.
-- Folder per plugin. `src/plugins/<name>/index.tsx` or `src/equicordplugins/<name>/index.tsx`. Single-file plugins still get a folder.
+- Folder per plugin. `src/plugins/<name>/index.tsx` or `src/slipcordplugins/<name>/index.tsx`. Single-file plugins still get a folder.
 - Folder suffixes the build filters on: `.desktop`, `.web`, `.dev`, `.discordDesktop`, `.vesktop`, `.equibop`.
 - `export default definePlugin({ ... })`. Never named.
 - Required fields: `name`, `description`, `authors`. Use `Devs` or `SlipcordDevs`, never inline.

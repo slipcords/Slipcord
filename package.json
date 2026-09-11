@@ -1,5 +1,5 @@
 {
-    "name": "equicord",
+    "name": "slipcord",
     "private": "true",
     "version": "1.15.5.0",
     "description": "The other cutest Discord client mod",
@@ -25,7 +25,7 @@
         "watchWeb": "pnpm buildWeb --watch",
         "generateDevsList": "tsx scripts/generateDevsList.ts",
         "generatePluginJson": "tsx scripts/generatePluginList.ts",
-        "generateSlipcordPluginJson": "tsx scripts/generatePluginList.ts --equicord",
+        "generateSlipcordPluginJson": "tsx scripts/generatePluginList.ts --slipcord",
         "generateVencordPluginJson": "tsx scripts/generatePluginList.ts --vencord",
         "generateTypes": "tspc --emitDeclarationOnly --declaration --outDir packages/vencord-types --allowJs false",
         "inject": "node scripts/runInstaller.mjs -- --install",

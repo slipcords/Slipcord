@@ -1,6 +1,6 @@
 # Slipcord
 
-Slipcord is a fork of [Equicord](https://github.com/Equicord/Equicord), with over 300+ plugins.
+Slipcord is a fork of [Slipcord](https://github.com/Slipcord/Slipcord), with over 300+ plugins.
 
 ## Installing / Uninstalling
 

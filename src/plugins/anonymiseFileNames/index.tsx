@@ -19,7 +19,7 @@
 import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, sendBotMessage } from "@api/Commands";
 import { definePluginSettings, Settings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { reverseExtensionMap } from "@equicordplugins/fixFileExtensions";
+import { reverseExtensionMap } from "@slipcordplugins/fixFileExtensions";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { CloudUpload } from "@vencord/discord-types";

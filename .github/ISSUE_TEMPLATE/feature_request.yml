@@ -8,8 +8,8 @@ body:
       attributes:
           value: |
               This form is not for any of the following:
-              - Plugin requests - Go to our [Discord server](https://equicord.org/discord) for that
-              - Feature requests for plugins - Go to our [Discord server](https://equicord.org/discord) for that
+              - Plugin requests - Go to our [GitHub issues](https://github.com/slipcords/Slipcord/issues) for that
+              - Feature requests for plugins - Go to our [GitHub issues](https://github.com/slipcords/Slipcord/issues) for that
 
     - type: textarea
       id: feature-description

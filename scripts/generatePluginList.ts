@@ -25,17 +25,17 @@ import { getEntryPoint, isPluginFile, parseDevs, parseSlipcordDevs, parseFile, P
 
     const args = process.argv.slice(2);
 
-    const equicordFlag = args.includes("--equicord");
+    const slipcordFlag = args.includes("--slipcord");
     const vencordFlag = args.includes("--vencord");
 
     let dirs: string[];
 
-    if (equicordFlag) {
-        dirs = ["src/equicordplugins/_core", "src/equicordplugins"];
+    if (slipcordFlag) {
+        dirs = ["src/slipcordplugins/_core", "src/slipcordplugins"];
     } else if (vencordFlag) {
         dirs = ["src/plugins", "src/plugins/_core"];
     } else {
-        dirs = ["src/plugins", "src/plugins/_core", "src/equicordplugins/_core", "src/equicordplugins"];
+        dirs = ["src/plugins", "src/plugins/_core", "src/slipcordplugins/_core", "src/slipcordplugins"];
     }
 
     const outputPath = args.find(a => !a.startsWith("--")) ?? null;
