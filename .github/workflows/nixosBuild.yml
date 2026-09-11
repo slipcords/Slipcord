@@ -12,7 +12,7 @@ permissions:
 
 jobs:
     Build:
-        name: Build Equicord
+        name: Build Slipcord
         runs-on: ubuntu-latest
 
         steps:
@@ -38,7 +38,7 @@ jobs:
             - name: Generate plugin lists
               run: |
                   pnpm generatePluginJson dist/plugins.json
-                  pnpm generateEquicordPluginJson dist/equicordplugins.json
+                  pnpm generateSlipcordPluginJson dist/equicordplugins.json
                   pnpm generateVencordPluginJson dist/vencordplugins.json
                   pnpm generateDevsList dist/devs.json
 
@@ -48,7 +48,7 @@ jobs:
                   mkdir release
 
                   cp browser/browser.* release
-                  cp Equicord.user.{js,js.LEGAL.txt} release
+                  cp Slipcord.user.{js,js.LEGAL.txt} release
 
                   # copy the plugin data jsons, the extension zips and the desktop/equibop asars
                   cp *.{json,zip,asar} release
@@ -68,7 +68,7 @@ jobs:
               id: date
               run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
-            - name: Upload Equicord Stable
+            - name: Upload Slipcord Stable
               if: ${{ vars.ACT == 'false' }}
               run: |
                   gh release create ${{ steps.date.outputs.date }} --latest=false

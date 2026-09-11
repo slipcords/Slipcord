@@ -7,7 +7,7 @@
 import { definePluginSettings } from "@api/Settings";
 import { Heading } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { createRoot, React } from "@webpack/common";
 import type { Root } from "react-dom/client";
@@ -452,7 +452,7 @@ export default definePlugin({
     name: "Snowfall",
     description: "Let it snow on Discord",
     tags: ["Appearance"],
-    authors: [EquicordDevs.ZcraftElite, EquicordDevs.square],
+    authors: [SlipcordDevs.ZcraftElite, SlipcordDevs.square],
 
     settingsAboutComponent: () => (
         <>
@@ -461,7 +461,7 @@ export default definePlugin({
                 This plugin adds a christmas-y snowfall effect on top of Discord's interface.
                 You can change the type of snow in the settings below.
                 <br /><br />
-                NOTE: While on most computers this plugin will not impact performance any more than your average Equicord extension,
+                NOTE: While on most computers this plugin will not impact performance any more than your average Slipcord extension,
                 it may cause some lag on lower end systems.
             </Paragraph>
         </>

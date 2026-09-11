@@ -6,7 +6,7 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { FormSwitch } from "@components/FormSwitch";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs } from "@utils/constants";
 import { getCurrentChannel } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
 import { Message, RenderModalProps } from "@vencord/discord-types";
@@ -31,7 +31,7 @@ const settings = definePluginSettings({
     watermark: {
         type: OptionType.STRING,
         description: "Custom watermark text (max 32 characters)",
-        default: "Made with Equicord"
+        default: "Made with Slipcord"
     },
     grayscale: {
         type: OptionType.BOOLEAN,
@@ -57,7 +57,7 @@ export default definePlugin({
     name: "Quoter",
     description: "Adds the ability to create an inspirational quote image from a message.",
     tags: ["Chat"],
-    authors: [Devs.Samwich, Devs.thororen, EquicordDevs.neoarz, Devs.prism],
+    authors: [Devs.Samwich, Devs.thororen, SlipcordDevs.neoarz, Devs.prism],
     settings,
 
     async start() {

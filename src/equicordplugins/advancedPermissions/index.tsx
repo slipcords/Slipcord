@@ -7,7 +7,7 @@
 import { definePluginSettings } from "@api/Settings";
 import { BaseText } from "@components/BaseText";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import { Margins } from "@utils/margins";
 import definePlugin, { OptionType } from "@utils/types";
 import { findCssClassesLazy } from "@webpack";
@@ -92,7 +92,7 @@ const settings = definePluginSettings({
 export default definePlugin({
     name: "AdvancedPermissions",
     description: "Show advanced permissions card by default.",
-    authors: [EquicordDevs.bastih18],
+    authors: [SlipcordDevs.bastih18],
     tags: ["Utility"],
     settings,
 

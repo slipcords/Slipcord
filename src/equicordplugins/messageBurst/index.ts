@@ -5,7 +5,7 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { Channel, Message } from "@vencord/discord-types";
 import { ChannelStore, MessageActions, MessageStore, UserStore } from "@webpack/common";
@@ -68,7 +68,7 @@ export default definePlugin({
     description: "Merges messages sent within a time period with your previous sent message if no one else sends a message before you.",
     dependencies: ["MessagePopoverAPI"],
     tags: ["Chat"],
-    authors: [EquicordDevs.port22exposed],
+    authors: [SlipcordDevs.port22exposed],
     settings,
     onBeforeMessageSend(channelId, message) {
         const messages = MessageStore.getMessages(channelId)._map;

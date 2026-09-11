@@ -8,7 +8,7 @@ import "./style.css";
 
 import { definePluginSettings } from "@api/Settings";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { Channel } from "@vencord/discord-types";
 import { React } from "@webpack/common";
@@ -35,7 +35,7 @@ export default definePlugin({
     name: "MoreStickers",
     description: "Adds sticker packs from other social media platforms. (e.g. LINE)",
     tags: ["Chat", "Emotes", "Media"],
-    authors: [EquicordDevs.Leko, Devs.Arjix],
+    authors: [SlipcordDevs.Leko, Devs.Arjix],
     settings,
 
     patches: [

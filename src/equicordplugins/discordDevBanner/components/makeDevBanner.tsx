@@ -10,7 +10,7 @@ import { gitHashShort } from "@shared/vencordUserAgent";
 import { React } from "@webpack/common";
 import { JSX } from "react";
 
-import { ChromiumIcon, ClientIcon, DevBannerIcon, DiscordIcon, ElectronIcon, EquicordIcon, names, settings } from ".";
+import { ChromiumIcon, ClientIcon, DevBannerIcon, DiscordIcon, ElectronIcon, SlipcordIcon, names, settings } from ".";
 
 export function makeDevBanner(state?: string): string | JSX.Element {
     const { RELEASE_CHANNEL, BUILD_NUMBER, VERSION_HASH } = window.GLOBAL_ENV;
@@ -45,7 +45,7 @@ export function makeDevBanner(state?: string): string | JSX.Element {
             case "{discordIcon}":
                 return <span key={`icon-discord-${i}`} className="vc-discord-dev-banner-icons"><DiscordIcon /></span>;
             case "{equicordIcon}":
-                return <span key={`icon-equicord-${i}`} className="vc-discord-dev-banner-icons"><EquicordIcon /></span>;
+                return <span key={`icon-equicord-${i}`} className="vc-discord-dev-banner-icons"><SlipcordIcon /></span>;
             case "{electronIcon}":
                 return <span key={`icon-electron-${i}`} className="vc-discord-dev-banner-icons"><ElectronIcon /></span>;
             case "{chromiumIcon}":

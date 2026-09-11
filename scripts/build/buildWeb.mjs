@@ -105,7 +105,7 @@ const buildConfigs = [
             IS_USERSCRIPT: "true",
             window: "unsafeWindow",
         },
-        outfile: "dist/Equicord.user.js",
+        outfile: "dist/Slipcord.user.js",
         banner: {
             js: readFileSync("browser/userscript.meta.js", "utf-8").replace("%version%", `${VERSION}.${new Date().getTime()}`)
         },
@@ -155,8 +155,8 @@ async function loadDir(dir, basePath = "") {
  */
 async function buildExtension(target, files) {
     const entries = {
-        "dist/Equicord.js": await readFile("dist/browser/extension.js"),
-        "dist/Equicord.css": await readFile("dist/browser/extension.css"),
+        "dist/Slipcord.js": await readFile("dist/browser/extension.js"),
+        "dist/Slipcord.css": await readFile("dist/browser/extension.css"),
         ...await loadDir("dist/browser/vendor/monaco", "dist/browser/"),
         ...Object.fromEntries(await Promise.all(files.map(async f => {
             let content = await readFile(join("browser", f));
@@ -184,10 +184,10 @@ async function buildExtension(target, files) {
     console.info("Unpacked Extension written to dist/browser/" + target);
 }
 
-const appendCssRuntime = readFile("dist/Equicord.user.css", "utf-8").then(content => {
+const appendCssRuntime = readFile("dist/Slipcord.user.css", "utf-8").then(content => {
     const cssRuntime = `unsafeWindow._vcUserScriptRendererCss=\`${content.replaceAll("`", "\\`")}\``;
 
-    return appendFile("dist/Equicord.user.js", cssRuntime);
+    return appendFile("dist/Slipcord.user.js", cssRuntime);
 });
 
 if (!process.argv.includes("--skip-extension")) {

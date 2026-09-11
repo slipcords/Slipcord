@@ -55,7 +55,7 @@ jobs:
               run: |
                   pnpm install --frozen-lockfile --prefer-offline
 
-            - name: Build Equicord Reporter Version
+            - name: Build Slipcord Reporter Version
               run: pnpm buildReporter
 
             - name: Run Reporter

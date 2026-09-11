@@ -9,7 +9,7 @@ import "./styles.css";
 import { get, set } from "@api/DataStore";
 import { BaseText } from "@components/BaseText";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import { useTimer } from "@utils/react";
 import definePlugin from "@utils/types";
 import { VoiceState } from "@vencord/discord-types";
@@ -138,7 +138,7 @@ export default definePlugin({
     name: "VoiceStats",
     description: "Shows how long you've spent in voice with each user in their profile",
     tags: ["Voice", "Friends"],
-    authors: [EquicordDevs.Moowi],
+    authors: [SlipcordDevs.Moowi],
     dependencies: ["ProfileSectionsAPI"],
     renderProfileSection: {
         render: VoiceStatsSection,

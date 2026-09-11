@@ -1,5 +1,5 @@
 name: Bug/Crash Report
-description: Create a bug or crash report for Equicord.
+description: Create a bug or crash report for Slipcord.
 labels: [bug]
 title: "[Bug] <title>"
 
@@ -13,10 +13,10 @@ body:
               However, if a plugin works fine, but has a bug in its functionality, then you can report that here.
 
               If you are experiencing any of the following issues, go to our [Discord server](https://equicord.org/discord) for support:
-              - Equicord doesn't work or crashes
+              - Slipcord doesn't work or crashes
               - A plugin doesn't work anymore
-              - You are having issues installing Equicord
-              - You want to ask a question about Equicord or one of its plugins
+              - You are having issues installing Slipcord
+              - You want to ask a question about Slipcord or one of its plugins
 
     - type: textarea
       id: bug-description
@@ -32,7 +32,7 @@ body:
       attributes:
           label: What is the expected behaviour?
           description: Simply detail what the expected behaviour is.
-          placeholder: I expect Equicord/Discord to open the ... page instead of ..., it prevents me from doing ...
+          placeholder: I expect Slipcord/Discord to open the ... page instead of ..., it prevents me from doing ...
       validations:
           required: true
 
@@ -69,7 +69,7 @@ body:
           options:
               - label: I've searched existing issues and this hasn't been reported before
               - label: I am using Discord Stable or tried on Stable and this bug happens there as well
-              - label: I installed Equicord via an official method (download from equicord.org or from source), not via something like AUR or Nix packages
+              - label: I installed Slipcord via an official method (download from equicord.org or from source), not via something like AUR or Nix packages
               - label: This is not a support request
               - label: I understand that if any of the above conditions are not met, this issue will be deleted and I will be banned from creating future issues without further warning
                 required: true

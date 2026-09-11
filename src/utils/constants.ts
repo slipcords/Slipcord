@@ -18,7 +18,7 @@
 
 export const REACT_GLOBAL = "Vencord.Webpack.Common.React";
 
-// Equicord
+// Slipcord
 export const SUPPORT_CHANNEL_ID = "1297590739911573585";
 export const GUILD_ID = "1173279886065029291";
 export const DONOR_ROLE_ID = "1173316879083896912";
@@ -692,7 +692,7 @@ export const Devs = /* #__PURE__*/ Object.freeze({
     }
 } satisfies Record<string, Dev>);
 
-export const EquicordDevs = Object.freeze({
+export const SlipcordDevs = Object.freeze({
     nobody: {
         name: "nobody",
         id: 0n
@@ -1445,9 +1445,9 @@ export const VencordDevsById = /* #__PURE__*/ (() =>
     ))
 )() as Record<string, Dev>;
 
-export const EquicordDevsById = /* #__PURE__*/ (() =>
+export const SlipcordDevsById = /* #__PURE__*/ (() =>
     Object.freeze(Object.fromEntries(
-        Object.entries(EquicordDevs)
+        Object.entries(SlipcordDevs)
             .filter(d => d[1].id !== 0n)
             .map(([_, v]) => [v.id, v] as const)
     ))

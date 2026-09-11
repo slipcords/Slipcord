@@ -9,7 +9,7 @@ import "./styles.css";
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { EyeIcon } from "@components/Icons";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { getCurrentGuild } from "@utils/discord";
 import { classes } from "@utils/misc";
@@ -137,7 +137,7 @@ export default definePlugin({
     name: "ShowRolesInChat",
     description: "Shows a user's highest role next to their name in chat messages. Hide/show specific roles in their context menu (right-click).",
     tags: ["Appearance", "Chat", "Roles", "Servers"],
-    authors: [EquicordDevs.lucabeyer],
+    authors: [SlipcordDevs.lucabeyer],
     settings,
     contextMenus: {
         "dev-context"(children, { id }: { id: string; }) {

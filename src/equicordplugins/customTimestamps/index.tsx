@@ -11,7 +11,7 @@ import { Divider } from "@components/Divider";
 import { Heading, HeadingPrimary } from "@components/Heading";
 import { Link } from "@components/Link";
 import { Paragraph } from "@components/Paragraph";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs } from "@utils/constants";
 import { Margins } from "@utils/margins";
 import { useForceUpdater } from "@utils/react";
 import definePlugin, { OptionType } from "@utils/types";
@@ -126,7 +126,7 @@ export default definePlugin({
     name: "CustomTimestamps",
     description: "Custom timestamps on messages and tooltips",
     tags: ["Appearance", "Customisation"],
-    authors: [Devs.Rini, EquicordDevs.nvhhr, EquicordDevs.Suffocate, Devs.Obsidian],
+    authors: [Devs.Rini, SlipcordDevs.nvhhr, SlipcordDevs.Suffocate, Devs.Obsidian],
     settings,
     settingsAboutComponent: () => (
         <div className={"vc-cmt-info-card"}>

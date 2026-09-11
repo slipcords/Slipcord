@@ -6,7 +6,7 @@
 
 import { showNotification } from "@api/Notifications";
 import { definePluginSettings } from "@api/Settings";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import {
     ChannelStore,
@@ -87,7 +87,7 @@ export default definePlugin({
     name: "PingNotifications",
     description: "Customizable notifications with improved mention formatting",
     tags: ["Chat", "Friends", "Notifications", "Servers"],
-    authors: [EquicordDevs.smuki],
+    authors: [SlipcordDevs.smuki],
     settings,
 
     flux: {

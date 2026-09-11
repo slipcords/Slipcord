@@ -8,7 +8,7 @@ import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
-import { closeAllModals,SettingsRouter, useState } from "@webpack/common";
+import { closeAllModals, SettingsRouter, useState } from "@webpack/common";
 
 import { registerAction } from "./commands";
 import { openCommandPalette } from "./components/CommandPalette";
@@ -98,7 +98,7 @@ export default definePlugin({
                 id: "openDevSettings",
                 label: "Open Dev tab",
                 callback: () => SettingsRouter.openUserSettings("equicord_patch_helper_panel"),
-                registrar: "Equicord"
+                registrar: "Slipcord"
             });
         }
     },

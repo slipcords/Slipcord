@@ -6,7 +6,7 @@
 
 import { ColorPaletteIcon } from "@components/Icons";
 import SettingsPlugin from "@plugins/_core/settings";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import { removeFromArray } from "@utils/misc";
 import definePlugin from "@utils/types";
 import { SettingsRouter } from "@webpack/common";
@@ -17,7 +17,7 @@ export default definePlugin({
     name: "ThemeLibrary",
     description: "A library of themes for Vencord.",
     tags: ["Appearance", "Customisation"],
-    authors: [EquicordDevs.Fafa],
+    authors: [SlipcordDevs.Fafa],
     settings,
     toolboxActions: {
         "Open Theme Library": () => {

@@ -227,7 +227,7 @@ export interface PluginDef {
     renderMemberListDecorator?: MemberListDecoratorFactory;
 
     /*
-    * Custom apis added by Equicord and were placed here for quicker identification rather then mixing them in
+    * Custom apis added by Slipcord and were placed here for quicker identification rather then mixing them in
     */
     renderNicknameIcon?: NicknameIconFactory;
     headerBarButton?: HeaderBarButtonData;
@@ -238,7 +238,7 @@ export interface PluginDef {
     renderProfileSection?: ProfileSectionData;
 
     /**
-     * A Vencord plugin that is modified for extra features in Equicord
+     * A Vencord plugin that is modified for extra features in Slipcord
      */
     isModified?: boolean;
 }

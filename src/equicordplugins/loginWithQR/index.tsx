@@ -9,7 +9,7 @@ import { definePluginSettings } from "@api/Settings";
 import { QrCodeIcon } from "@components/Icons";
 import { Paragraph } from "@components/Paragraph";
 import SettingsPlugin from "@plugins/_core/settings";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import { removeFromArray } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
@@ -43,7 +43,7 @@ export default definePlugin({
     name: "LoginWithQR",
     description: "Allows you to login to another device by scanning a login QR code, just like on mobile!",
     tags: ["Utility"],
-    authors: [EquicordDevs.nexpid],
+    authors: [SlipcordDevs.nexpid],
 
     settings,
 

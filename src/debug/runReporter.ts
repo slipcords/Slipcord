@@ -28,7 +28,7 @@ async function runReporter() {
                 match: /"Could not find app-mount"/,
                 replace: "(Vencord.Webpack._initReporter(),$&)"
             }
-        }, "Equicord Reporter");
+        }, "Slipcord Reporter");
 
         // initReporter is called in the patched entry point of Discord
         // @ts-expect-error
@@ -130,7 +130,7 @@ async function runReporter() {
 }
 
 // Imported in webpack for reporterData, wrap to avoid running reporter
-// Run after the Equicord object has been created.
-// We need to add extra properties to it, and it is only created after all of Equicord code has ran
+// Run after the Slipcord object has been created.
+// We need to add extra properties to it, and it is only created after all of Slipcord code has ran
 if (IS_REPORTER)
     setTimeout(runReporter, 0);

@@ -482,7 +482,7 @@ export function Palette({ onClose, initialPage }: PaletteProps) {
 
     const footerHint = recordingFor
         ? "Press a key combo, Backspace to clear, Esc to cancel"
-        : currentPage?.title ?? "Equicord";
+        : currentPage?.title ?? "Slipcord";
 
     return (
         <div
@@ -505,73 +505,73 @@ export function Palette({ onClose, initialPage }: PaletteProps) {
                 onMouseDown={e => e.stopPropagation()}
                 onClick={e => e.stopPropagation()}
             >
-            <div className={cl("header")}>
-                {currentPage
-                    ? (
-                        <button type="button" className={cl("back")} onClick={() => ctx.pop()}>
-                            <ChevronLeftIcon className={cl("back-icon")} />
-                        </button>
-                    )
-                    : <SearchIcon className={cl("search-icon")} />}
-                {showSearch
-                    ? (
-                        <input
-                            ref={inputRef}
-                            className={cl("input")}
-                            value={query}
-                            placeholder={currentPage?.spec.type === "list"
-                                ? currentPage.spec.placeholder ?? `Search ${currentPage.title.toLowerCase()}...`
-                                : "Search for commands..."}
-                            onChange={e => ctx.setQuery(e.target.value)}
-                            onMouseDown={e => e.stopPropagation()}
-                            onBlur={() => {
-                                if (actionsOpen || isEditableTarget(document.activeElement)) return;
-                                inputRef.current?.focus();
-                            }}
-                        />
-                    )
-                    : (
-                        <div className={cl("breadcrumb")}>
-                            <div className={cl("chip-wrap", "chip-wrap-sm")}>
-                                <PaletteIcon icon={currentPage?.icon} className={cl("breadcrumb-icon")} />
+                <div className={cl("header")}>
+                    {currentPage
+                        ? (
+                            <button type="button" className={cl("back")} onClick={() => ctx.pop()}>
+                                <ChevronLeftIcon className={cl("back-icon")} />
+                            </button>
+                        )
+                        : <SearchIcon className={cl("search-icon")} />}
+                    {showSearch
+                        ? (
+                            <input
+                                ref={inputRef}
+                                className={cl("input")}
+                                value={query}
+                                placeholder={currentPage?.spec.type === "list"
+                                    ? currentPage.spec.placeholder ?? `Search ${currentPage.title.toLowerCase()}...`
+                                    : "Search for commands..."}
+                                onChange={e => ctx.setQuery(e.target.value)}
+                                onMouseDown={e => e.stopPropagation()}
+                                onBlur={() => {
+                                    if (actionsOpen || isEditableTarget(document.activeElement)) return;
+                                    inputRef.current?.focus();
+                                }}
+                            />
+                        )
+                        : (
+                            <div className={cl("breadcrumb")}>
+                                <div className={cl("chip-wrap", "chip-wrap-sm")}>
+                                    <PaletteIcon icon={currentPage?.icon} className={cl("breadcrumb-icon")} />
+                                </div>
+                                <span>{currentPage?.title}</span>
                             </div>
-                            <span>{currentPage?.title}</span>
+                        )}
+                </div>
+                {expanded && (
+                    <>
+                        <div className={cl("body")}>
+                            {(pageType === "root" || pageType === "list") && (
+                                <ResultsList
+                                    sections={sections}
+                                    selectedIndex={Math.min(selectedIndex, Math.max(0, flatRows.length - 1))}
+                                    onSelect={setSelectedIndex}
+                                    onRun={row => void runAction(row.actions[0], row.commandId)}
+                                />
+                            )}
+                            {currentPage?.spec.type === "form" && (
+                                <FormPage spec={currentPage.spec} ctx={ctx} formRef={formRef} />
+                            )}
+                            {currentPage?.spec.type === "detail" && (
+                                <DetailPage spec={currentPage.spec} />
+                            )}
+                            {actionsOpen && (
+                                <ActionsPanel
+                                    actions={availablePanelActions}
+                                    selectedIndex={actionsIndex}
+                                    onSelect={setActionsIndex}
+                                    onRun={action => void runAction(action, selectedRow?.commandId)}
+                                />
+                            )}
                         </div>
-                    )}
-            </div>
-            {expanded && (
-                <>
-                    <div className={cl("body")}>
-                        {(pageType === "root" || pageType === "list") && (
-                            <ResultsList
-                                sections={sections}
-                                selectedIndex={Math.min(selectedIndex, Math.max(0, flatRows.length - 1))}
-                                onSelect={setSelectedIndex}
-                                onRun={row => void runAction(row.actions[0], row.commandId)}
-                            />
-                        )}
-                        {currentPage?.spec.type === "form" && (
-                            <FormPage spec={currentPage.spec} ctx={ctx} formRef={formRef} />
-                        )}
-                        {currentPage?.spec.type === "detail" && (
-                            <DetailPage spec={currentPage.spec} />
-                        )}
-                        {actionsOpen && (
-                            <ActionsPanel
-                                actions={availablePanelActions}
-                                selectedIndex={actionsIndex}
-                                onSelect={setActionsIndex}
-                                onRun={action => void runAction(action, selectedRow?.commandId)}
-                            />
-                        )}
-                    </div>
-                    <ActionBar
-                        hint={footerHint}
-                        primaryLabel={primaryLabel}
-                        showActionsHint={!recordingFor && availablePanelActions.length > 0}
-                    />
-                </>
-            )}
+                        <ActionBar
+                            hint={footerHint}
+                            primaryLabel={primaryLabel}
+                            showActionsHint={!recordingFor && availablePanelActions.length > 0}
+                        />
+                    </>
+                )}
             </div>
         </div>
     );

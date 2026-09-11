@@ -7,7 +7,7 @@
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
 import { Notice } from "@components/Notice";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { Channel, User, VoiceState } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
@@ -73,7 +73,7 @@ export default definePlugin({
     name: "FollowVoiceUser",
     description: "Follow a friend in voice chat.",
     tags: ["Voice"],
-    authors: [EquicordDevs.TheArmagan],
+    authors: [SlipcordDevs.TheArmagan],
     settings,
     settingsAboutComponent: () => (
         <Notice.Info>

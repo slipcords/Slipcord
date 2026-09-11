@@ -1,6 +1,6 @@
-# Equicord Types
+# Slipcord Types
 
-Typings for Equicord's api, published to npm
+Typings for Slipcord's api, published to npm
 
 ```sh
 npm i @equicord/types

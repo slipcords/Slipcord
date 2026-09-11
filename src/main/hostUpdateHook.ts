@@ -65,7 +65,7 @@ interface DiscordDesktopCore {
     __equicordStartupWrapped?: boolean;
 }
 
-const error = (...args: unknown[]) => console.error("[Equicord:HostUpdate]", ...args);
+const error = (...args: unknown[]) => console.error("[Slipcord:HostUpdate]", ...args);
 
 const hookedUpdaters = new WeakSet<DiscordHostUpdater>();
 let hooked = false;
@@ -123,7 +123,7 @@ const resolveCommittedVersion = (updater: DiscordHostUpdater): number[] | undefi
     return undefined;
 };
 
-const retainEquicord = (updater: DiscordHostUpdater, reason: string) => {
+const retainSlipcord = (updater: DiscordHostUpdater, reason: string) => {
     try {
         const committed = resolveCommittedVersion(updater);
         const { rootPath } = updater;
@@ -158,7 +158,7 @@ const attachToUpdater = (updater: DiscordHostUpdater | null | undefined) => {
         return;
     }
 
-    updater.on?.("host-updated", () => retainEquicord(updater, "host-updated"));
+    updater.on?.("host-updated", () => retainSlipcord(updater, "host-updated"));
 
     /*
      * wrap the post-update relaunch entrypoints. retain runs after the
@@ -172,7 +172,7 @@ const attachToUpdater = (updater: DiscordHostUpdater | null | undefined) => {
         const bound = sync.bind(updater);
         updater.startCurrentVersionSync = (options?: StartCurrentVersionOptions) => {
             bound(options);
-            try { retainEquicord(updater, "startCurrentVersionSync"); } catch (e) { error(e); }
+            try { retainSlipcord(updater, "startCurrentVersionSync"); } catch (e) { error(e); }
         };
     }
     const async_ = updater.startCurrentVersion;
@@ -180,7 +180,7 @@ const attachToUpdater = (updater: DiscordHostUpdater | null | undefined) => {
         const bound = async_.bind(updater);
         updater.startCurrentVersion = async (queryOptions?: object, options?: StartCurrentVersionOptions) => {
             await bound(queryOptions, options);
-            try { retainEquicord(updater, "startCurrentVersion"); } catch (e) { error(e); }
+            try { retainSlipcord(updater, "startCurrentVersion"); } catch (e) { error(e); }
         };
     }
 };

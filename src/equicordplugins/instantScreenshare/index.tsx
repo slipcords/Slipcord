@@ -7,7 +7,7 @@
 import { getUserSettingLazy } from "@api/UserSettings";
 import { HeadingSecondary } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { VoiceState } from "@vencord/discord-types";
 import { findByCodeLazy } from "@webpack";
@@ -62,8 +62,8 @@ export default definePlugin({
     name: "InstantScreenshare",
     description: "Instantly screenshare when joining a voice channel with support for desktop sources, windows, and video input devices (cameras, capture cards)",
     tags: ["Media", "Voice"],
-    authors: [Devs.HAHALOSAH, Devs.thororen, EquicordDevs.mart],
-    dependencies: ["EquicordToolbox"],
+    authors: [Devs.HAHALOSAH, Devs.thororen, SlipcordDevs.mart],
+    dependencies: ["SlipcordToolbox"],
     searchTerms: ["ScreenshareKeybind"],
     autoStartStream,
     settings,

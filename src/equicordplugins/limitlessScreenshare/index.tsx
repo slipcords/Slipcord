@@ -6,7 +6,7 @@
 
 import "./style.css";
 
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin from "@utils/types";
 import { MediaEngineStore, Menu } from "@webpack/common";
@@ -43,7 +43,7 @@ const CustomPresetList = ({ onChange, initialValue, group, id, list }: CustomPre
 export default definePlugin({
     name: "LimitlessScreenshare",
     description: "Adds a slider for screenshare resolution and fps.",
-    authors: [EquicordDevs.KawaiianPizza],
+    authors: [SlipcordDevs.KawaiianPizza],
     tags: ["Utility", "Voice"],
     settings,
     patches: [

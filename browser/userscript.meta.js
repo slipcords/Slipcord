@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name            Equicord
+// @name            Slipcord
 // @description     A Discord client mod - Web version
 // @version         %version%
-// @author          Equicord (https://github.com/Equicord)
-// @namespace       https://github.com/Equicord/Equicord
-// @supportURL      https://github.com/Equicord/Equicord
-// @icon            https://raw.githubusercontent.com/Equicord/Equicord/refs/heads/main/browser/icon.png
+// @author          Slipcord (https://github.com/Slipcord)
+// @namespace       https://github.com/Slipcord/Slipcord
+// @supportURL      https://github.com/Slipcord/Slipcord
+// @icon            https://raw.githubusercontent.com/Slipcord/Slipcord/refs/heads/main/browser/icon.png
 // @license         GPL-3.0
 // @match           *://*.discord.com/*
 // @grant           GM_xmlhttpRequest
@@ -23,4 +23,4 @@
 // to overwrite stuff on the window on sites that use CSP. Use Tampermonkey or use a chromium based browser
 // https://github.com/violentmonkey/violentmonkey/issues/997
 
-// this is a compiled and minified version of Equicord. For the source code, visit the GitHub repo
+// this is a compiled and minified version of Slipcord. For the source code, visit the GitHub repo

@@ -8,7 +8,7 @@ import "./style.css";
 
 import { migratePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 import { handlePlaybackRateUpdate, stopPlayback, useBackgroundPlayback } from "./playback";
@@ -25,7 +25,7 @@ migratePluginSettings("VoiceMessagesInBackground", "Voice Messages In-Background
 export default definePlugin({
     name: "VoiceMessagesInBackground",
     description: "Keeps voice messages playing across chats with a synchronized mini player.",
-    authors: [EquicordDevs.ELJoOker],
+    authors: [SlipcordDevs.ELJoOker],
     tags: ["Voice", "Media", "Chat"],
     dependencies: ["AudioPlayerAPI", "HeaderBarAPI"],
 

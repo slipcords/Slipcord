@@ -12,7 +12,7 @@ import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
 import { Paragraph } from "@components/Paragraph";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
 import { RenderModalProps } from "@vencord/discord-types";
@@ -171,7 +171,7 @@ export default definePlugin({
     name: "FriendshipRanks",
     description: "Adds badges showcasing how long you have been friends with a user for",
     tags: ["Friends"],
-    authors: [Devs.Samwich, EquicordDevs.lucabeyer],
+    authors: [Devs.Samwich, SlipcordDevs.lucabeyer],
     settings,
     renderMessageDecoration({ message }) {
         if (!settings.store.showFriendsInChat || !message?.author) return null;

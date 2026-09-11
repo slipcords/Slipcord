@@ -2,7 +2,7 @@
 
 This package provides TypeScript types for the Webpack modules of Discord's web app.
 
-While it was primarily created for Equicord based on Vencord and its respective packages, other client mods could also benefit from this, so it is published as a standalone package!
+While it was primarily created for Slipcord based on Vencord and its respective packages, other client mods could also benefit from this, so it is published as a standalone package!
 
 ## Installation
 

@@ -5,7 +5,7 @@
  */
 
 import { definePluginSettings, Settings } from "@api/Settings";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { MediaEngineStore } from "@webpack/common";
 
@@ -57,7 +57,7 @@ export default definePlugin({
     name: "StreamingCodecDisabler",
     description: "Disable codecs for streaming of your choice",
     tags: ["Utility", "Voice"],
-    authors: [EquicordDevs.davidkra230],
+    authors: [SlipcordDevs.davidkra230],
     settings,
 
     patches: [

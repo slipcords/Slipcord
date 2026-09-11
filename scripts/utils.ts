@@ -101,24 +101,24 @@ export function parseDevs() {
     throw new Error("Could not find Devs constant");
 }
 
-export function parseEquicordDevs() {
+export function parseSlipcordDevs() {
     const file = createSourceFile("constants.ts", readFileSync("src/utils/constants.ts", "utf8"), ScriptTarget.Latest);
 
     for (const child of file.getChildAt(0).getChildren()) {
         if (!isVariableStatement(child)) continue;
 
-        const devsDeclaration = child.declarationList.declarations.find(d => hasName(d, "EquicordDevs"));
+        const devsDeclaration = child.declarationList.declarations.find(d => hasName(d, "SlipcordDevs"));
         if (!devsDeclaration?.initializer || !isCallExpression(devsDeclaration.initializer)) continue;
 
         const value = devsDeclaration.initializer.arguments[0];
 
-        if (!isSatisfiesExpression(value) || !isObjectLiteralExpression(value.expression)) throw new Error("Failed to parse EquicordDevs: not an object literal");
+        if (!isSatisfiesExpression(value) || !isObjectLiteralExpression(value.expression)) throw new Error("Failed to parse SlipcordDevs: not an object literal");
 
         for (const prop of value.expression.properties) {
             const name = (prop.name as Identifier).text;
             const value = isPropertyAssignment(prop) ? prop.initializer : prop;
 
-            if (!isObjectLiteralExpression(value)) throw new Error(`Failed to parse EquicordDevs: ${name} is not an object literal`);
+            if (!isObjectLiteralExpression(value)) throw new Error(`Failed to parse SlipcordDevs: ${name} is not an object literal`);
 
             equicordDevs[name] = {
                 name: (getObjectProp(value, "name") as StringLiteral).text,
@@ -129,7 +129,7 @@ export function parseEquicordDevs() {
         return;
     }
 
-    throw new Error("Could not find EquicordDevs constant");
+    throw new Error("Could not find SlipcordDevs constant");
 }
 
 export async function parseFile(fileName: string) {

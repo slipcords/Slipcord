@@ -8,7 +8,7 @@ import { playAudio } from "@api/AudioPlayer";
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { popNotice, showNotice } from "@api/Notices";
 import { definePluginSettings } from "@api/Settings";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import type { Channel } from "@vencord/discord-types";
 import { ChannelType } from "@vencord/discord-types/enums";
@@ -16,7 +16,7 @@ import { ChannelActions, ChannelStore, Menu, PermissionsBits, PermissionStore, V
 
 let waitingChannelId: string | null = null;
 
-const NOTIFICATION_AUDIO_URL = "https://raw.githubusercontent.com/Equicord/Equibored/main/sounds/waitForSlot/notification.mp3";
+const NOTIFICATION_AUDIO_URL = "https://raw.githubusercontent.com/Slipcord/Equibored/main/sounds/waitForSlot/notification.mp3";
 
 const settings = definePluginSettings({
     autoJoin: {
@@ -65,7 +65,7 @@ export default definePlugin({
     name: "WaitForSlot",
     description: "Automatically join a full voice channel when a slot opens.",
     tags: ["Servers", "Utility", "Voice"],
-    authors: [EquicordDevs.omaw, Devs.prism],
+    authors: [SlipcordDevs.omaw, Devs.prism],
     settings,
     patches: [
         {

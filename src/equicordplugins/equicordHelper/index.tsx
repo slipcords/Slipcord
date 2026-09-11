@@ -11,7 +11,7 @@ import { isPluginEnabled } from "@api/PluginManager";
 import { definePluginSettings, migratePluginToSettings, Settings } from "@api/Settings";
 import { ShieldIcon, WarningIcon } from "@components/Icons";
 import customRPC from "@plugins/customRPC";
-import { Devs, EquicordDevs, GUILD_ID, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, VC_SUPPORT_CHANNEL_IDS } from "@utils/constants";
+import { Devs, SlipcordDevs, GUILD_ID, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, VC_SUPPORT_CHANNEL_IDS } from "@utils/constants";
 import { isAnyPluginDev } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
 import { StandingState } from "@vencord/discord-types/enums";
@@ -22,9 +22,9 @@ import { ComponentType } from "react";
 import { PluginButtons } from "./pluginButtons";
 import { PluginCards } from "./pluginCards";
 
-migratePluginToSettings(true, "EquicordHelper", "NoBulletPoints", "noBulletPoints");
-migratePluginToSettings(true, "EquicordHelper", "NoModalAnimation", "noModalAnimation");
-migratePluginToSettings(true, "EquicordHelper", "GuildTagSettings", "disableAdoptTagPrompt");
+migratePluginToSettings(true, "SlipcordHelper", "NoBulletPoints", "noBulletPoints");
+migratePluginToSettings(true, "SlipcordHelper", "NoModalAnimation", "noModalAnimation");
+migratePluginToSettings(true, "SlipcordHelper", "GuildTagSettings", "disableAdoptTagPrompt");
 
 let clicked = false;
 
@@ -141,21 +141,21 @@ const settings = definePluginSettings({
 });
 
 export default definePlugin({
-    name: "EquicordHelper",
+    name: "SlipcordHelper",
     description: "Used to provide support, fix discord caused crashes, and other misc features.",
     tags: ["Appearance", "Commands", "Utility"],
     dependencies: ["CommandsAPI", "HeaderBarAPI", "MessageAccessoriesAPI"],
     authors: [
         Devs.thororen,
-        EquicordDevs.nyx,
-        EquicordDevs.Naibuu,
-        EquicordDevs.keircn,
-        EquicordDevs.SerStars,
-        EquicordDevs.mart,
-        EquicordDevs.omaw,
+        SlipcordDevs.nyx,
+        SlipcordDevs.Naibuu,
+        SlipcordDevs.keircn,
+        SlipcordDevs.SerStars,
+        SlipcordDevs.mart,
+        SlipcordDevs.omaw,
         Devs.Samwich,
         Devs.AutumnVN,
-        EquicordDevs.auggeeo
+        SlipcordDevs.auggeeo
     ],
     required: true,
     settings,
@@ -386,8 +386,8 @@ export default definePlugin({
             if (VC_SUPPORT_CHANNEL_IDS.includes(channelId) && !clicked) {
                 return Alerts.show({
                     title: "Vencord Support Channel Warning",
-                    body: "Before asking for help. Check updates and if this issue is actually caused by Equicord!",
-                    confirmText: "Equicord Support",
+                    body: "Before asking for help. Check updates and if this issue is actually caused by Slipcord!",
+                    confirmText: "Slipcord Support",
                     onConfirm() {
                         NavigationRouter.transitionTo(`/channels/${GUILD_ID}/${SUPPORT_CHANNEL_ID}`);
                     },

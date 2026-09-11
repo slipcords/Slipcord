@@ -7,7 +7,7 @@
 import { isPluginEnabled, plugins } from "@api/PluginManager";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Logger } from "@utils/Logger";
-import { isEquicordGuild, isEquicordSupport } from "@utils/misc";
+import { isSlipcordGuild, isSlipcordSupport } from "@utils/misc";
 import { Message } from "@vencord/discord-types";
 import { Button, showToast, Toasts } from "@webpack/common";
 import { JSX } from "react";
@@ -23,11 +23,11 @@ export const PluginButtons = ErrorBoundary.wrap(function PluginCards({ message }
     const matchedPlugin = matchedPlugins.sort((a, b) => b.length - a.length)[0];
     const pluginData = matchedPlugin ? plugins[matchedPlugin] : null;
 
-    const isEquicord = isEquicordGuild(message.channel_id) && isEquicordSupport(message.author.id);
+    const isSlipcord = isSlipcordGuild(message.channel_id) && isSlipcordSupport(message.author.id);
     const startsWithEnabled = msg.startsWith("enable");
     const startsWithDisabled = msg.startsWith("disable");
 
-    const shouldAddPluginButtons = pluginData && isEquicord && (startsWithEnabled || startsWithDisabled);
+    const shouldAddPluginButtons = pluginData && isSlipcord && (startsWithEnabled || startsWithDisabled);
 
     if (shouldAddPluginButtons) {
         if (pluginData.required || pluginData.name.endsWith("API")) return;
@@ -52,7 +52,7 @@ export const PluginButtons = ErrorBoundary.wrap(function PluginCards({ message }
                         const success = await toggleEnabled(matchedPlugin);
                         if (success) showToast(`${label}`, Toasts.Type.SUCCESS);
                     } catch (e) {
-                        new Logger("EquicordHelper").error("Error while toggling:", e);
+                        new Logger("SlipcordHelper").error("Error while toggling:", e);
                         showToast(`Failed to ${label.toLowerCase()}`, Toasts.Type.FAILURE);
                     }
                 }}
