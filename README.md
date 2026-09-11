@@ -1,4 +1,4 @@
-# [<img src="./browser/icon.png" width="40" align="left" alt="Slipcord">](https://github.com/Slipcord/Slipcord) Slipcord
+# Slipcord
 
 Slipcord is a fork of [Vencord](https://github.com/Vendicated/Vencord), with over 300+ plugins.
 
