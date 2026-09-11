@@ -163,7 +163,7 @@ async function runUpdateCheck() {
             "Update",
             () => {
                 update()
-                    .then(() => relaunch())
+                    .then(() => showNotice("Slipcord has been updated!", "Restart", relaunch))
                     .catch(err => UpdateLogger.error("Failed to update Slipcord", err));
             }
         );
