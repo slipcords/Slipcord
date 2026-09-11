@@ -11,30 +11,59 @@ import { BaseText } from "@components/BaseText";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Link } from "@components/Link";
 import { Notice } from "@components/Notice";
+import {
+    ChangelogEntry,
+    formatTimestamp,
+    getCommitsSinceLastSeen,
+    getNewPlugins,
+    getNewSettings,
+    initializeChangelog,
+    setLastSeenHash,
+    updateKnownPlugins,
+    updateKnownSettings,
+} from "@components/settings/tabs/changelog/changelogManager";
 import { PluginDependencyList } from "@components/settings/tabs/plugins";
 import { PluginCard } from "@components/settings/tabs/plugins/PluginCard";
+import { HashLink } from "@components/settings/tabs/updater/Components";
 import { ChangeList } from "@utils/ChangeList";
 import { classNameFactory } from "@utils/css";
 import { useForceUpdater } from "@utils/react";
+import { getRepo } from "@utils/updater";
 import { RenderModalProps } from "@vencord/discord-types";
 import { closeModal, Modal, openModal, Tooltip, useMemo } from "@webpack/common";
 import { ReactNode } from "react";
 
+import gitHash from "~git-hash";
 import Plugins from "~plugins";
-
-import { getNewPlugins, getNewSettings, KnownPluginSettingsMap, writeKnownSettings } from "./knownSettings";
 
 const cl = classNameFactory("vc-new-plugins-");
 
 let hasSeen = false;
 
-interface ModalComponentProps {
-    modalProps: RenderModalProps;
-    newPlugins: Set<string>;
-    newSettings: KnownPluginSettingsMap;
+function getRepoSlug(repoOrUrl: string): string {
+    try {
+        const base = repoOrUrl.replace(/^git\+/, "");
+        if (/^https?:\/\//i.test(base)) {
+            const url = new URL(base);
+            const segments = url.pathname.replace(/\.git$/, "").split("/").filter(Boolean);
+            if (segments.length >= 2) return `${segments[0]}/${segments[1]}`;
+        } else if (/^[^\s/]+\/[^\s/]+$/.test(base)) {
+            return base;
+        }
+    } catch { }
+
+    return "slipcords/Slipcord";
 }
 
-function NewPluginsModal({ modalProps, newPlugins, newSettings }: ModalComponentProps) {
+interface ModalComponentProps {
+    modalProps: RenderModalProps;
+    commits: ChangelogEntry[];
+    newPlugins: string[];
+    newSettings: Map<string, string[]>;
+    repoSlug: string;
+}
+
+function NewPluginsModal({ modalProps, commits, newPlugins, newSettings, repoSlug }: ModalComponentProps) {
     const settings = useSettings();
     const changes = useMemo(() => new ChangeList<string>(), []);
     const forceUpdate = useForceUpdater();
@@ -56,8 +85,8 @@ function NewPluginsModal({ modalProps, newPlugins, newSettings }: ModalComponent
     const sortedPlugins = useMemo(() => {
         const mapPlugins = (array: string[]) => array.map(pn => Plugins[pn]).sort((a, b) => a.name.localeCompare(b.name));
         return [
-            ...mapPlugins([...newPlugins]),
-            ...mapPlugins([...newSettings.keys()].filter(p => !newPlugins.has(p)))
+            ...mapPlugins(newPlugins.filter(pn => Plugins[pn])),
+            ...mapPlugins([...newSettings.keys()].filter(pn => !newPlugins.includes(pn) && Plugins[pn]))
         ];
     }, []);
 
@@ -88,7 +117,7 @@ function NewPluginsModal({ modalProps, newPlugins, newSettings }: ModalComponent
                             onRestartNeeded={onRestartNeeded}
                             disabled={true}
                             plugin={p}
-                            isNew={newPlugins.has(p.name)}
+                            isNew={newPlugins.includes(p.name)}
                         />
                     )}
                 </Tooltip>
@@ -100,16 +129,17 @@ function NewPluginsModal({ modalProps, newPlugins, newSettings }: ModalComponent
                     disabled={false}
                     plugin={p}
                     key={p.name}
-                    isNew={newPlugins.has(p.name)}
+                    isNew={newPlugins.includes(p.name)}
                 />
             );
         }
     }
 
     const totalCount = pluginCards.length + requiredPluginCards.length;
+    const hasContent = commits.length > 0 || totalCount > 0;
 
     const handleContinue = async () => {
-        await writeKnownSettings();
+        await Promise.all([updateKnownPlugins(), updateKnownSettings(), setLastSeenHash(gitHash)]);
         if (changes.hasChanges) {
             location.reload();
         } else {
@@ -122,16 +152,20 @@ function NewPluginsModal({ modalProps, newPlugins, newSettings }: ModalComponent
             {...modalProps}
             size="md"
             title={
-                <div className={cl("header-content")}>
-                    <BaseText size="lg" weight="semibold" className={cl("title")}>
-                        New Plugins and Settings ({totalCount})
-                    </BaseText>
+                <div className={cl("header")}>
+                    <div className={cl("logo")}>S</div>
+                    <div className={cl("header-content")}>
+                        <BaseText size="lg" weight="semibold" className={cl("title")}>
+                            What's new in Slipcord
+                        </BaseText>
+                        <code className={cl("build")}>{gitHash.slice(0, 7)}</code>
+                    </div>
                 </div>
             }
             subtitle={
                 <>
                     <BaseText size="sm" className={cl("description")}>
-                        New plugins have been added since your last visit. Enable any you'd like or continue to dismiss.
+                        Here's what changed since your last update.
                     </BaseText>
                     <br />
                     <Notice.Info className={cl("notice")}>
@@ -154,25 +188,101 @@ function NewPluginsModal({ modalProps, newPlugins, newSettings }: ModalComponent
                 }
             ]}
         >
-            <div className={cl("grid")}>
-                {pluginCards}
-                {requiredPluginCards}
+            <div className={cl("summary")}>
+                <div className={cl("chip")}>
+                    <span className={cl("chip-count")}>{commits.length}</span>
+                    <span className={cl("chip-label")}>Changes</span>
+                </div>
+                <div className={cl("chip")}>
+                    <span className={cl("chip-count")}>{newPlugins.length}</span>
+                    <span className={cl("chip-label")}>New plugins</span>
+                </div>
+                <div className={cl("chip")}>
+                    <span className={cl("chip-count")}>{newSettings.size}</span>
+                    <span className={cl("chip-label")}>New settings</span>
+                </div>
             </div>
-        </Modal >
+
+            <div className={cl("content")}>
+                {commits.length > 0 && (
+                    <section>
+                        <div className={cl("section-title")}>Recent changes</div>
+                        <div className={cl("commits")}>
+                            {commits.map(commit => (
+                                <div className={cl("commit")} key={commit.hash}>
+                                    <code className={cl("commit-hash")}>
+                                        <HashLink repo={`https://github.com/${repoSlug}`} hash={commit.hash} />
+                                    </code>
+                                    <span className={cl("commit-msg")}>{commit.message}</span>
+                                    <span className={cl("commit-meta")}>
+                                        {commit.author}{commit.timestamp ? ` · ${formatTimestamp(commit.timestamp)}` : ""}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {totalCount > 0 && (
+                    <section>
+                        <div className={cl("section-title")}>New plugins and settings</div>
+                        <div className={cl("grid")}>
+                            {pluginCards}
+                            {requiredPluginCards}
+                        </div>
+                    </section>
+                )}
+
+                {newSettings.size > 0 && (
+                    <div className={cl("settings")}>
+                        {[...newSettings.entries()].map(([plugin, settingNames]) => (
+                            <span className={cl("setting-chip")} key={plugin}>
+                                <strong>{Plugins[plugin]?.name ?? plugin}:</strong> {settingNames.join(", ")}
+                            </span>
+                        ))}
+                    </div>
+                )}
+
+                {!hasContent && (
+                    <span className={cl("empty")}>
+                        Slipcord will let you know here whenever something new drops. You're all caught up!
+                    </span>
+                )}
+            </div>
+        </Modal>
     );
 }
 
 export async function openNewPluginsModal() {
-    const newPlugins = await getNewPlugins();
-    const newSettings = await getNewSettings();
-    if ((newPlugins.size || newSettings.size) && !hasSeen) {
+    try {
+        await initializeChangelog();
+    } catch { }
+
+    const [newPlugins, newSettings, repoRaw] = await Promise.all([
+        getNewPlugins().catch(() => []),
+        getNewSettings().catch(() => new Map<string, string[]>()),
+        (async () => {
+            try {
+                return await getRepo();
+            } catch {
+                return "";
+            }
+        })()
+    ]);
+
+    const repoSlug = getRepoSlug(repoRaw || "https://github.com/slipcords/Slipcord");
+    const commits = await getCommitsSinceLastSeen(`https://github.com/${repoSlug}`).catch(() => []);
+
+    if ((commits.length > 0 || newPlugins.length > 0 || newSettings.size > 0) && !hasSeen) {
         hasSeen = true;
         const modalKey = openModal(modalProps => (
             <ErrorBoundary noop onError={() => closeModal(modalKey)}>
                 <NewPluginsModal
                     modalProps={modalProps}
+                    commits={commits}
                     newPlugins={newPlugins}
                     newSettings={newSettings}
+                    repoSlug={repoSlug}
                 />
             </ErrorBoundary>
         ));

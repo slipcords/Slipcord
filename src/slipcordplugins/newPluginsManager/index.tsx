@@ -7,23 +7,18 @@
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
-import * as KnownSettings from "./knownSettings";
-import { KNOWN_PLUGINS_LEGACY_DATA_KEY, KNOWN_SETTINGS_DATA_KEY } from "./knownSettings";
 import { openNewPluginsModal } from "./NewPluginsModal";
 
 export default definePlugin({
     name: "NewPluginsManager",
-    description: "Utility that notifies you when new plugins are added to Slipcord",
+    description: "Notifies you about new updates to Slipcord, including new plugins, settings and changes",
     tags: ["Utility"],
     authors: [Devs.Sqaaakoi],
     enabledByDefault: true,
     flux: {
         async POST_CONNECTION_OPEN() {
-            openNewPluginsModal();
+            await openNewPluginsModal();
         }
     },
-    openNewPluginsModal,
-    KNOWN_PLUGINS_LEGACY_DATA_KEY,
-    KNOWN_SETTINGS_DATA_KEY,
-    KnownSettings
+    openNewPluginsModal
 });

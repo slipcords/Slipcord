@@ -1,50 +1,195 @@
 .vc-new-plugins-header {
-    align-items: flex-start;
-    position: relative;
-    padding: 16px 16px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vc-new-plugins-logo {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #2dd4bf 0%, #0d9488 60%, #155e75 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .vc-new-plugins-header-content {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
     flex: 1;
-}
-
-.vc-new-plugins-header-trailing {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+    min-width: 0;
 }
 
 .vc-new-plugins-title {
     color: var(--text-strong);
-    padding-right: 32px;
+    line-height: 1.1;
+}
+
+.vc-new-plugins-build {
+    align-self: flex-start;
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--background-modifier-accent);
+    border-radius: 4px;
+    padding: 1px 6px;
 }
 
 .vc-new-plugins-description {
     color: var(--text-subtle);
-    padding-right: 60px;
+}
+
+.vc-new-plugins-notice {
+    margin-top: 8px;
+}
+
+.vc-new-plugins-summary {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.vc-new-plugins-chip {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    border: 1px solid var(--background-modifier-accent);
+    border-radius: 8px;
+    background: var(--background-secondary-alt);
+}
+
+.vc-new-plugins-chip-count {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-normal);
+    line-height: 1;
+}
+
+.vc-new-plugins-chip-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.vc-new-plugins-content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.vc-new-plugins-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.vc-new-plugins-commits {
+    border: 1px solid var(--background-modifier-accent);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--background-secondary-alt);
+}
+
+.vc-new-plugins-commit {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px 12px 22px;
+}
+
+.vc-new-plugins-commit::before {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--background-modifier-accent);
+}
+
+.vc-new-plugins-commit::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 17px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.vc-new-plugins-commit:first-child::before {
+    top: 17px;
+}
+
+.vc-new-plugins-commit:last-child::before {
+    height: 17px;
+    bottom: unset;
+}
+
+.vc-new-plugins-commit-hash {
+    flex-shrink: 0;
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--text-link);
+}
+
+.vc-new-plugins-commit-msg {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-normal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vc-new-plugins-commit-meta {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
 }
 
 .vc-new-plugins-grid {
     display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
-.vc-new-plugins-footer {
-    width: 100%;
-    align-items: center;
-    flex-direction: row-reverse;
-    gap: 16px;
+.vc-new-plugins-settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
 }
 
-.vc-new-plugins-restart-list {
-    padding-left: 1.25em;
-    margin-top: 8px;
+.vc-new-plugins-setting-chip {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--background-modifier-accent);
+    border-radius: 6px;
+    padding: 3px 8px;
 }
 
-.vc-new-plugins-restart-list li {
-    list-style: disc;
+.vc-new-plugins-setting-chip strong {
+    color: var(--text-normal);
+    font-weight: 600;
+}
+
+.vc-new-plugins-empty {
+    font-size: 13px;
+    color: var(--text-muted);
 }

@@ -137,7 +137,12 @@ export function _getBadges(args: BadgeUserArgs) {
         );
     }
 
-    return badges;
+    const seenIds = new Set<string>();
+    return badges.filter(badge => {
+        if (badge.id && seenIds.has(badge.id)) return false;
+        if (badge.id) seenIds.add(badge.id);
+        return true;
+    });
 }
 
 export interface BadgeUserArgs {
