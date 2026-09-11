@@ -78,8 +78,6 @@ function ReloadRequiredCard({ required, enabledPlugins, openWarningModal, resetC
             ) : (
                 <>
                     <HeadingTertiary>Plugin Management</HeadingTertiary>
-                    <Paragraph>Press the cog wheel or info icon to get more info on a plugin</Paragraph>
-                    <Paragraph>Plugins with a cog wheel have settings you can modify!</Paragraph>
                 </>
             )}
             {enabledPlugins.length > 0 && !required && (

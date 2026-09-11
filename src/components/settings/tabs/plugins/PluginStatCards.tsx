@@ -7,7 +7,6 @@
 import "./styles.css";
 
 import { BaseText } from "@components/BaseText";
-import { Tooltip } from "@webpack/common";
 
 export function StockPluginsCard({ totalStockPlugins, enabledStockPlugins }) {
     return (
@@ -34,22 +33,7 @@ export function UserPluginsCard({ totalUserPlugins, enabledUserPlugins }) {
                 <div className="vc-plugin-stats-card-container ">
                     <div className="vc-plugin-stats-card-section">
                         <BaseText size="md" weight="semibold">Total Userplugins</BaseText>
-                        <Tooltip
-                            text={
-                                <img
-                                    src="https://discord.com/assets/ab6835d2922224154ddf.svg"
-                                    style={{ width: "40px", height: "40px" }}
-                                />
-                            }
-                        >
-                            {tooltipProps => (
-                                <span style={{ display: "inline", position: "relative" }}>
-                                    <BaseText size="xl" weight="bold" {...tooltipProps}>
-                                        {totalUserPlugins}
-                                    </BaseText>
-                                </span>
-                            )}
-                        </Tooltip>
+                        <BaseText size="xl" weight="bold">{totalUserPlugins}</BaseText>
                     </div>
                 </div>
             </div>

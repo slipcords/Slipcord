@@ -5,9 +5,8 @@
  */
 
 import { showNotice } from "@api/Notices";
-import { hasAnyVisibleSettings, isPluginEnabled, pluginRequiresRestart, startDependenciesRecursive, startPlugin, stopPlugin } from "@api/PluginManager";
+import { isPluginEnabled, pluginRequiresRestart, startDependenciesRecursive, startPlugin, stopPlugin } from "@api/PluginManager";
 import { Settings } from "@api/Settings";
-import { CogWheel, InfoIcon } from "@components/Icons";
 import { AddonCard } from "@components/settings/AddonCard";
 import { classNameFactory } from "@utils/css";
 import { Logger } from "@utils/Logger";
@@ -95,14 +94,10 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
             infoButton={
                 <button
                     role="switch"
+                    aria-label={`Open settings for ${plugin.name}`}
                     onClick={() => openPluginModal(plugin, onRestartNeeded)}
                     className={cl("info-button")}
-                >
-                    {hasAnyVisibleSettings(plugin)
-                        ? <CogWheel className={cl("info-icon")} />
-                        : <InfoIcon className={cl("info-icon")} />
-                    }
-                </button>
+                />
             } />
     );
 }
