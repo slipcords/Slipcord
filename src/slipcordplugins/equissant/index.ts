@@ -38,7 +38,7 @@ export default definePlugin({
     dependencies: ["AudioPlayerAPI"],
     settings,
     start() {
-        croissant = createAudioPlayer("https://github.com/Slipcord/Equibored/raw/main/sounds/equissant/croissant.mp3", { persistent: true });
+        croissant = createAudioPlayer("https://github.com/slipcords/Slipping/raw/main/sounds/equissant/croissant.mp3", { persistent: true });
         document.addEventListener("click", play);
     },
     stop() {

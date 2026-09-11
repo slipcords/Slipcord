@@ -16,7 +16,7 @@ import { ChannelActions, ChannelStore, Menu, PermissionsBits, PermissionStore, V
 
 let waitingChannelId: string | null = null;
 
-const NOTIFICATION_AUDIO_URL = "https://raw.githubusercontent.com/Slipcord/Equibored/main/sounds/waitForSlot/notification.mp3";
+const NOTIFICATION_AUDIO_URL = "https://raw.githubusercontent.com/slipcords/Slipping/main/sounds/waitForSlot/notification.mp3";
 
 const settings = definePluginSettings({
     autoJoin: {
