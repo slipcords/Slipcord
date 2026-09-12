@@ -109,11 +109,11 @@ const enum SearchStatus {
 }
 
 export const ExcludedReasons: Record<PluginTarget, string> = {
-    desktop: "Discord Desktop app or Vesktop/Equibop",
+    desktop: "Discord Desktop app or Vesktop",
     discordDesktop: "Discord Desktop app",
-    vesktop: "Vesktop/Equibop apps",
-    equibop: "Vesktop/Equibop apps",
-    web: "Vesktop/Equibop apps & Discord web",
+    vesktop: "Vesktop apps",
+    equibop: "Vesktop apps",
+    web: "Vesktop apps & Discord web",
     dev: "Developer version of Slipcord",
     browser: "Web Browser version of Slipcord"
 };

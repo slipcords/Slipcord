@@ -23,7 +23,7 @@ on:
 env:
     FORCE_COLOR: true
     GITHUB_TOKEN: ${{ secrets.ETOKEN }}
-    REPO: Slipcord/Equibuilds
+    REPO: slipcords/Slipping
     USERNAME: GitHub-Actions
 
 permissions:
@@ -94,7 +94,7 @@ jobs:
                   bun run generateVencordPluginJson dist/vencordplugins.json
                   bun run generateDevsList dist/devs.json
 
-            - name: Upload to Equibuilds repo
+            - name: Upload to Slipping repo
               if: ${{ vars.ACT == 'false' }}
               run: |
                   BRANCH="${{ github.event.inputs.branch || github.ref_name }}"
@@ -103,7 +103,7 @@ jobs:
                   git config --global user.name "GitHub-Actions"
                   git config --global user.email actions@github.com
 
-                  mkdir equibuilds && cd equibuilds
+                  mkdir slipping && cd slipping
                   git init -b "$BRANCH"
                   git remote add origin https://$USERNAME:$GITHUB_TOKEN@github.com/$REPO.git
 
@@ -120,7 +120,6 @@ jobs:
                   mkdir -p userscript
                   mv Slipcord.user.* userscript/
                   mv desktop.asar desktop/
-                  mv equibop.asar equibop/
                   mv extension-*.zip browser/
 
                   git add -A

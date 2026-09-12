@@ -7,7 +7,7 @@ on:
 env:
     FORCE_COLOR: true
     GITHUB_TOKEN: ${{ secrets.ETOKEN }}
-    REPO: Slipcord/Equibored
+    REPO: slipcords/Slipping
     USERNAME: GitHub-Actions
 
 permissions:
@@ -53,15 +53,11 @@ jobs:
                   cp browser/browser.* release
                   cp Slipcord.user.{js,js.LEGAL.txt} release
 
-                  # copy the plugin data jsons, the extension zips and the desktop/equibop asars
+                  # copy the plugin data jsons, the extension zips and the desktop asar
                   cp *.{json,zip,asar} release
 
                   # legacy un-asared files
                   cp desktop/* release
-                  for file in equibop/*; do
-                    filename=$(basename "$file")
-                    cp "$file" "release/equibop${filename^}"
-                  done
 
                   find release -size 0 -delete
                   rm release/package.json
@@ -72,7 +68,7 @@ jobs:
               run: |
                   gh release upload latest --clobber dist/release/*
 
-            - name: Upload Plugin JSONs to Equibored repo
+            - name: Upload Plugin JSONs to Slipping repo
               if: github.repository == 'Slipcord/Slipcord' && vars.ACT == 'false'
               run: |
                   git config --global user.name "GitHub-Actions"

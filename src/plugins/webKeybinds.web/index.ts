@@ -38,7 +38,7 @@ const settings = definePluginSettings({
 
 export default definePlugin({
     name: "WebKeybinds",
-    description: "Re-adds keybinds missing in the web version of Discord. Only works fully on Vesktop/Equibop/Legcord, not inside your browser",
+    description: "Re-adds keybinds missing in the web version of Discord. Only works fully on app clients like Vesktop and Legcord, not inside your browser",
     tags: ["Shortcuts"],
     authors: [Devs.Ven, Devs.Davri],
     enabledByDefault: true,

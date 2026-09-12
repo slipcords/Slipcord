@@ -50,15 +50,11 @@ jobs:
                   cp browser/browser.* release
                   cp Slipcord.user.{js,js.LEGAL.txt} release
 
-                  # copy the plugin data jsons, the extension zips and the desktop/equibop asars
+                  # copy the plugin data jsons, the extension zips and the desktop asar
                   cp *.{json,zip,asar} release
 
                   # legacy un-asared files
                   cp desktop/* release
-                  for file in equibop/*; do
-                    filename=$(basename "$file")
-                    cp "$file" "release/equibop${filename^}"
-                  done
 
                   find release -size 0 -delete
                   rm release/package.json

@@ -19,4 +19,4 @@ minimumReleaseAge: 7
 minimumReleaseAgeExclude:
     - "@song-spotlight/api"
     - "@vencord/*"
-    - "@equicord/*"
+    - "@slipcord/*"
