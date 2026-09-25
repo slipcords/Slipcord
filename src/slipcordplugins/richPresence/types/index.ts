@@ -11,6 +11,7 @@ export enum ServiceTab {
     Jellyfin = "jellyfin",
     GensokyoRadio = "gensokyoRadio",
     Navidrome = "navidrome",
+    OfficialApp = "officialApp",
 }
 
 export const enum NameFormat {

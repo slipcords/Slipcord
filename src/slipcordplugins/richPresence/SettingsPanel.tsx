@@ -12,6 +12,7 @@ import { Select, Slider, TabBar, TextInput, useState } from "@webpack/common";
 
 import { settings, SettingsStore } from "./settings";
 import { NameFormat, ServiceTab } from "./types";
+import { OFFICIAL_APPS } from "./types/officialApp";
 
 type SettingsKey = keyof SettingsStore;
 
@@ -211,6 +212,19 @@ function NavidromeSettings() {
     );
 }
 
+function OfficialAppSettings() {
+    return (
+        <>
+            <SettingsSection id="officialapp-settings" name="" description="Show what you are watching, playing or listening to as an official app, with a live progress bar. Fill in the title below, then enable it." />
+            <SelectSetting name="App" description="Which app to show the presence as." settingsKey="oa_app" options={Object.entries(OFFICIAL_APPS).map(([value, app]) => ({ label: app.label, value }))} />
+            <TextSetting name="Title" description="Title of the show or game." settingsKey="oa_title" placeholder="Frieren: Beyond Journey's End" />
+            <TextSetting name="Subtitle" description="Episode or activity name." settingsKey="oa_subtitle" placeholder="Episode 12" />
+            <TextSetting name="Length In Minutes" description="Episode or session length in minutes. Leave empty for a stopwatch." settingsKey="oa_duration" placeholder="24" />
+            <SwitchSetting name="Show App Art" description="Show the app art next to the title." settingsKey="oa_showArt" />
+        </>
+    );
+}
+
 const TAB_COMPONENTS: Record<ServiceTab, React.ComponentType> = {
     [ServiceTab.AudioBookShelf]: AudioBookShelfSettings,
     [ServiceTab.Tosu]: TosuSettings,
@@ -218,6 +232,7 @@ const TAB_COMPONENTS: Record<ServiceTab, React.ComponentType> = {
     [ServiceTab.Jellyfin]: JellyfinSettings,
     [ServiceTab.GensokyoRadio]: GensokyoRadioSettings,
     [ServiceTab.Navidrome]: NavidromeSettings,
+    [ServiceTab.OfficialApp]: OfficialAppSettings,
 };
 
 const TAB_LABELS: Record<ServiceTab, string> = {
@@ -227,6 +242,7 @@ const TAB_LABELS: Record<ServiceTab, string> = {
     [ServiceTab.Jellyfin]: "Jellyfin",
     [ServiceTab.GensokyoRadio]: "Gensokyo Radio",
     [ServiceTab.Navidrome]: "Navidrome",
+    [ServiceTab.OfficialApp]: "Official Apps",
 };
 
 const ENABLE_KEYS: Record<ServiceTab, SettingsKey> = {
@@ -236,6 +252,7 @@ const ENABLE_KEYS: Record<ServiceTab, SettingsKey> = {
     [ServiceTab.Jellyfin]: "jf_enabled",
     [ServiceTab.GensokyoRadio]: "gr_enabled",
     [ServiceTab.Navidrome]: "nd_enabled",
+    [ServiceTab.OfficialApp]: "oa_enabled",
 };
 
 const TABS = Object.values(ServiceTab);
