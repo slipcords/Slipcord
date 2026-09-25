@@ -68,6 +68,13 @@ jobs:
               run: |
                   gh release upload latest --clobber dist/release/*
 
+            - name: Stamp release with build hash
+              if: ${{ vars.ACT == 'false' }}
+              env:
+                  GH_TOKEN: ${{ secrets.ETOKEN }}
+              run: |
+                  gh release edit latest --title "Slipcord $(jq -r .version < package.json) ${{ github.sha }}"
+
             - name: Upload Plugin JSONs to Slipping repo
               if: github.repository == 'Slipcord/Slipcord' && vars.ACT == 'false'
               run: |
