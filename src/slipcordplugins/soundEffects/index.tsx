@@ -8,6 +8,7 @@ import { AudioPlayerInterface, createAudioPlayer, playAudio } from "@api/AudioPl
 import { addMessagePreSendListener, removeMessagePreSendListener } from "@api/MessageEvents";
 import { definePluginSettings } from "@api/Settings";
 import { Button } from "@components/Button";
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 
 import { ignoredKeys, packs } from "../keyboardSounds/packs";
@@ -151,7 +152,7 @@ export default definePlugin({
     name: "SoundEffects",
     description: "Adds sound effects for typing, clicking and sending messages, with pre-selectable sound packs",
     tags: ["Fun"],
-    authors: [{ name: "oghn", id: 368517278209409045n }],
+    authors: [SlipcordDevs.oghn],
     dependencies: ["AudioPlayerAPI"],
     settings,
     settingsAboutComponent: () => (

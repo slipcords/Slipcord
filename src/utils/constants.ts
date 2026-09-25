@@ -701,6 +701,10 @@ export const SlipcordDevs = Object.freeze({
         name: "thororen",
         id: 848339671629299742n
     },
+    oghn: {
+        name: "oghn",
+        id: 368517278209409045n
+    },
     dotdas: {
         name: "dotdas",
         id: 353229259482857475n
