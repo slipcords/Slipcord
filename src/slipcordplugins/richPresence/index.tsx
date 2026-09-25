@@ -90,6 +90,7 @@ export default definePlugin({
         SlipcordDevs.Prince527,
         SlipcordDevs.creations,
         SlipcordDevs.Star123451,
+        Devs.tired55,
     ],
     reporterTestable: ReporterTestable.None,
 
