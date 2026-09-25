@@ -10,7 +10,7 @@ import { ActivityFlags, ActivityType } from "@vencord/discord-types/enums";
 import { findByPropsLazy } from "@webpack";
 import { ApplicationAssetUtils, FluxDispatcher } from "@webpack/common";
 
-import { settings } from "../settings";
+import { settings } from "..";
 import { NameFormat } from "../types";
 import { SfmResponse, SfmTrackData } from "../types/statsfm";
 

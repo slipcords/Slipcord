@@ -33,17 +33,27 @@ import definePlugin, { OptionType } from "@utils/types";
 import { Activity } from "@vencord/discord-types";
 import { ActivityType } from "@vencord/discord-types/enums";
 import { findByCodeLazy, findComponentByCodeLazy } from "@webpack";
-import { ApplicationAssetUtils, Button, FluxDispatcher, React, UserStore } from "@webpack/common";
+import { Button, FluxDispatcher, React, UserStore } from "@webpack/common";
 
-import { RPCSettings } from "./RpcSettings";
+import { resolveImage } from "./assets";
+import * as abs from "./services/audiobookshelf";
+import * as gensokyoRadio from "./services/gensokyoRadio";
+import * as jellyfin from "./services/jellyfin";
+import * as navidrome from "./services/navidrome";
+import * as officialApp from "./services/officialApp";
+import { serviceSettings, setOnServiceChange } from "./services/settings";
+import * as statsfm from "./services/statsfm";
+import * as tosu from "./services/tosu";
+import { ServiceSettings } from "./ServiceSettings";
+import { ServiceTab } from "./types";
 
 const useProfileThemeStyle = findByCodeLazy("profileThemeStyle:", "--profile-gradient-primary-color");
 const ActivityView = findComponentByCodeLazy(".party?(0", "USER_PROFILE_ACTIVITY");
 
 const ShowCurrentGame = getUserSettingLazy<boolean>("status", "showCurrentGame")!;
 
-async function getApplicationAsset(key: string): Promise<string> {
-    return (await ApplicationAssetUtils.fetchAssetIds(settings.store.appID!, [key]))[0];
+async function getApplicationAsset(key: string): Promise<string | undefined> {
+    return resolveImage(settings.store.appID, key);
 }
 
 export const enum TimestampMode {
@@ -82,9 +92,58 @@ export interface RpcConfig {
 export const settings = definePluginSettings({
     config: {
         type: OptionType.COMPONENT,
-        component: RPCSettings
+        component: ServiceSettings
     },
+    ...serviceSettings,
 }).withPrivateSettings<RpcConfig>();
+
+const services: Record<string, { start(): void; stop(): void; forceUpdate?(): void; }> = {
+    [ServiceTab.AudioBookShelf]: abs,
+    [ServiceTab.Tosu]: tosu,
+    [ServiceTab.StatsFm]: statsfm,
+    [ServiceTab.Jellyfin]: jellyfin,
+    [ServiceTab.GensokyoRadio]: gensokyoRadio,
+    [ServiceTab.Navidrome]: navidrome,
+    [ServiceTab.OfficialApp]: officialApp,
+};
+
+const enableKeys: Record<string, keyof SettingsStore> = {
+    [ServiceTab.AudioBookShelf]: "abs_enabled",
+    [ServiceTab.Tosu]: "tosu_enabled",
+    [ServiceTab.StatsFm]: "sfm_enabled",
+    [ServiceTab.Jellyfin]: "jf_enabled",
+    [ServiceTab.GensokyoRadio]: "gr_enabled",
+    [ServiceTab.Navidrome]: "nd_enabled",
+    [ServiceTab.OfficialApp]: "oa_enabled",
+};
+
+const activeServices = new Set<string>();
+
+function syncServices() {
+    for (const [id, service] of Object.entries(services)) {
+        const shouldRun = !!settings.store[enableKeys[id]];
+        const isRunning = activeServices.has(id);
+
+        if (shouldRun && !isRunning) {
+            service.start();
+            activeServices.add(id);
+        } else if (!shouldRun && isRunning) {
+            service.stop();
+            activeServices.delete(id);
+        } else if (shouldRun && isRunning && service.forceUpdate) {
+            service.forceUpdate();
+        }
+    }
+}
+
+function stopAllServices() {
+    for (const id of activeServices) {
+        services[id].stop();
+    }
+    activeServices.clear();
+}
+
+export type SettingsStore = typeof settings["store"];
 
 async function createActivity(): Promise<Activity | undefined> {
     const {
@@ -255,7 +314,7 @@ function stopTimestampLoop() {
 
 export default definePlugin({
     name: "CustomRPC",
-    description: "Add a fully customisable Rich Presence (Game status) to your Discord profile",
+    description: "Add a fully customisable Rich Presence (Game status) to your Discord profile, or let a service like AudioBookShelf, osu!, stats.fm, Jellyfin, Navidrome, Gensokyo Radio or an official app drive it for you",
     tags: ["Activity", "Customisation"],
     authors: [Devs.captain, Devs.AutumnVN, Devs.nin0dev],
     dependencies: ["UserSettingsAPI"],
@@ -266,10 +325,14 @@ export default definePlugin({
     start() {
         startTimestampLoop();
         setRpc();
+        syncServices();
+        setOnServiceChange(syncServices);
     },
     stop() {
         setRpc(true);
         stopTimestampLoop();
+        stopAllServices();
+        setOnServiceChange(null);
     },
 
     // Discord hides buttons on your own Rich Presence for some reason. This patch disables that behaviour
@@ -314,10 +377,11 @@ export default definePlugin({
                         get the application ID.
                     </Paragraph>
                     <Paragraph>
-                        Upload images in the Rich Presence tab to get the image keys.
+                        Upload images in the Rich Presence tab to get the image keys, or paste a direct
+                        image link instead - a Discord attachment link, Imgur or Tenor all work.
                     </Paragraph>
                     <Paragraph>
-                        If you want to use an image link, download your image and reupload the image to <Link href="https://imgur.com">Imgur</Link> and get the image link by right-clicking the image and selecting "Copy image address".
+                        Prefer the service tabs for things you actually play on: AudioBookShelf, osu!, stats.fm, Jellyfin, Navidrome, Gensokyo Radio and official apps all drive this same presence.
                     </Paragraph>
                     <Paragraph>
                         You can't see your own buttons on your profile, but everyone else can see it fine.

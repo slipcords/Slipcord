@@ -11,7 +11,7 @@ import { ActivityFlags, ActivityStatusDisplayType } from "@vencord/discord-types
 import { ApplicationAssetUtils, FluxDispatcher } from "@webpack/common";
 import md5 from "md5";
 
-import { settings } from "../settings";
+import { settings } from "..";
 
 function md5Hex(str: string): string {
     return md5(str);

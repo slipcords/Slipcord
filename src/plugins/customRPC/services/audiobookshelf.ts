@@ -8,7 +8,7 @@ import { Logger } from "@utils/Logger";
 import { Activity } from "@vencord/discord-types";
 import { ApplicationAssetUtils, FluxDispatcher, showToast } from "@webpack/common";
 
-import { settings } from "../settings";
+import { settings } from "..";
 import { AbsMediaData, AbsSession } from "../types/audiobookshelf";
 
 const APPLICATION_ID = "1381423044907503636";

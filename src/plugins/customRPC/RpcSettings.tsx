@@ -88,7 +88,6 @@ function isUrlValid(value: string) {
 }
 
 function isImageKeyValid(value: string) {
-    if (/https?:\/\/(cdn|media)\.discordapp\.(com|net)\//.test(value)) return "Don't use a Discord link. Use an Imgur image link instead.";
     if (/https?:\/\/(?!i\.)?imgur\.com\//.test(value)) return "Imgur link must be a direct link to the image (e.g. https://i.imgur.com/...). Right click the image and click 'Copy image address'";
     if (/https?:\/\/(?!media\.)?tenor\.com\//.test(value)) return "Tenor link must be a direct link to the image (e.g. https://media.tenor.com/...). Right click the GIF and click 'Copy image address'";
     return true;
@@ -118,7 +117,7 @@ function SingleSetting<T>({ settingsKey, label, disabled, isValid, transform }: 
         setError(resolveError(valid));
 
         if (valid === true) {
-            settings.store[settingsKey] = newValue;
+            (settings.store as unknown as Record<string, unknown>)[settingsKey] = newValue;
             updateRPC();
         }
     }
@@ -148,7 +147,7 @@ function SelectSetting<T>({ settingsKey, label, options, disabled }: SelectOptio
                 maxVisibleItems={5}
                 closeOnSelect={true}
                 select={v => {
-                    settings.store[settingsKey] = v;
+                    (settings.store as unknown as Record<string, unknown>)[settingsKey] = v;
                     updateRPC();
                 }}
                 isSelected={v => v === settings.store[settingsKey]}

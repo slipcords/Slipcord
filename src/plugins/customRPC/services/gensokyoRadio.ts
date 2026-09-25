@@ -10,9 +10,9 @@ import { Activity } from "@vencord/discord-types";
 import { ActivityFlags, ActivityType } from "@vencord/discord-types/enums";
 import { ApplicationAssetUtils, FluxDispatcher } from "@webpack/common";
 
-import { settings } from "../settings";
+import { settings } from "..";
 
-const Native = VencordNative.pluginHelpers.RichPresence as PluginNative<typeof import("../native")>;
+const Native = VencordNative.pluginHelpers.CustomRPC as PluginNative<typeof import("../native")>;
 const logger = new Logger("RichPresence:GensokyoRadio");
 
 const APPLICATION_ID = "1253772057926303804";

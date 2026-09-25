@@ -6,17 +6,15 @@
 
 import { SettingsSection } from "@components/settings/tabs/plugins/components/Common";
 import { Switch } from "@components/Switch";
-import { Margins } from "@utils/margins";
-import { classes } from "@utils/misc";
-import { Select, Slider, TabBar, TextInput, useState } from "@webpack/common";
+import { Select, Slider, TextInput, useState } from "@webpack/common";
 
-import { settings, SettingsStore } from "./settings";
-import { NameFormat, ServiceTab } from "./types";
+import { settings, SettingsStore } from ".";
+import { NameFormat } from "./types";
 import { OFFICIAL_APPS } from "./types/officialApp";
 
 type SettingsKey = keyof SettingsStore;
 
-function SwitchSetting({ name, description, settingsKey }: { name: string; description: string; settingsKey: SettingsKey; }) {
+export function SwitchSetting({ name, description, settingsKey }: { name: string; description: string; settingsKey: SettingsKey; }) {
     const [value, setValue] = useState(settings.store[settingsKey] ?? false);
     return (
         <SettingsSection tag="label" inlineSetting id={name} name={name} description={description}>
@@ -28,7 +26,7 @@ function SwitchSetting({ name, description, settingsKey }: { name: string; descr
     );
 }
 
-function TextSetting({ name, description, settingsKey, placeholder }: { name: string; description: string; settingsKey: SettingsKey; placeholder?: string; }) {
+export function TextSetting({ name, description, settingsKey, placeholder }: { name: string; description: string; settingsKey: SettingsKey; placeholder?: string; }) {
     const [value, setValue] = useState(settings.store[settingsKey] ?? "");
     return (
         <SettingsSection id={name} name={name} description={description}>
@@ -42,7 +40,7 @@ function TextSetting({ name, description, settingsKey, placeholder }: { name: st
     );
 }
 
-function SelectSetting({ name, description, settingsKey, options }: { name: string; description: string; settingsKey: SettingsKey; options: { label: string; value: string | number; }[]; }) {
+export function SelectSetting({ name, description, settingsKey, options }: { name: string; description: string; settingsKey: SettingsKey; options: { label: string; value: string | number; }[]; }) {
     const [value, setValue] = useState(settings.store[settingsKey] ?? options[0]?.value);
     return (
         <SettingsSection id={name} name={name} description={description}>
@@ -58,7 +56,7 @@ function SelectSetting({ name, description, settingsKey, options }: { name: stri
     );
 }
 
-function AudioBookShelfSettings() {
+export function AudioBookShelfSettings() {
     return (
         <>
             <SettingsSection id="audiobookshelf-settings" name="" description="Display your currently playing audiobooks as Discord Rich Presence. Requires your AudioBookShelf server URL, username, and password." />
@@ -69,7 +67,7 @@ function AudioBookShelfSettings() {
     );
 }
 
-function TosuSettings() {
+export function TosuSettings() {
     return (
         <SettingsSection id="tosu-settings" name="" description="Connects to tosu via WebSocket on port 24050. No configuration needed, just make sure tosu is running alongside osu!." />
     );
@@ -84,7 +82,7 @@ const nameFormatOptions = [
     { label: "Use album name", value: NameFormat.AlbumName },
 ];
 
-function StatsFmSettings() {
+export function StatsFmSettings() {
     return (
         <>
             <SettingsSection id="statsfm-settings" name="" description="Show what you're currently listening to via stats.fm. Requires your listening history to be public." />
@@ -96,7 +94,7 @@ function StatsFmSettings() {
                 { label: "Use generic placeholder", value: "placeholder" },
             ]} />
             <SwitchSetting name="Show Listening Status" description="Show listening status." settingsKey="sfm_useListeningStatus" />
-            <SwitchSetting name="Show Stats.fm Logo" description="Show Stats.fm logo next to album art." settingsKey="sfm_showLogo" />
+            <SwitchSetting name="Show Stats.fm Logo" description="Show stats.fm logo next to album art." settingsKey="sfm_showLogo" />
             <SwitchSetting name="Show Profile Link" description="Show link to stats.fm profile." settingsKey="sfm_shareUsername" />
             <SwitchSetting name="Show Song Link" description="Show link to song on stats.fm." settingsKey="sfm_shareSong" />
             <SwitchSetting name="Hide With Spotify" description="Hide stats.fm presence if Spotify is running." settingsKey="sfm_hideWithSpotify" />
@@ -106,7 +104,7 @@ function StatsFmSettings() {
     );
 }
 
-function JellyfinSettings() {
+export function JellyfinSettings() {
     return (
         <>
             <SettingsSection id="jellyfin-settings" name="" description="Show what you're playing on Jellyfin. To get your API key: open your Jellyfin web UI, press F12 to open Developer Tools, go to the Network tab, look for requests to your server, find the Authorization header (Ctrl+F to search), and You need the part from Token='this'. Your user ID can be found in your profile page URL." />
@@ -142,7 +140,7 @@ function JellyfinSettings() {
     );
 }
 
-function GensokyoRadioSettings() {
+export function GensokyoRadioSettings() {
     const [value, setValue] = useState(settings.store.gr_refreshInterval ?? 15);
     return (
         <>
@@ -162,7 +160,7 @@ function GensokyoRadioSettings() {
 
 const ND_DYNAMIC_KEYS: SettingsKey[] = ["nd_activityType", "nd_albumArtMode"];
 
-function NavidromeSettings() {
+export function NavidromeSettings() {
     const [refreshInterval, setRefreshInterval] = useState(settings.store.nd_refreshInterval ?? 10);
     const { nd_activityType, nd_albumArtMode } = settings.use(ND_DYNAMIC_KEYS);
     return (
@@ -212,7 +210,7 @@ function NavidromeSettings() {
     );
 }
 
-function OfficialAppSettings() {
+export function OfficialAppSettings() {
     return (
         <>
             <SettingsSection id="officialapp-settings" name="" description="Show what you are watching, playing or listening to as an official app, with a live progress bar. Fill in the title below, then enable it." />
@@ -221,62 +219,7 @@ function OfficialAppSettings() {
             <TextSetting name="Subtitle" description="Episode or activity name." settingsKey="oa_subtitle" placeholder="Episode 12" />
             <TextSetting name="Length In Minutes" description="Episode or session length in minutes. Leave empty for a stopwatch." settingsKey="oa_duration" placeholder="24" />
             <SwitchSetting name="Show App Art" description="Show the app art next to the title." settingsKey="oa_showArt" />
+            <TextSetting name="Custom Image" description="Your own image, as a direct link. Overrides the app art." settingsKey="oa_imageUrl" placeholder="https://i.imgur.com/yourart.png" />
         </>
-    );
-}
-
-const TAB_COMPONENTS: Record<ServiceTab, React.ComponentType> = {
-    [ServiceTab.AudioBookShelf]: AudioBookShelfSettings,
-    [ServiceTab.Tosu]: TosuSettings,
-    [ServiceTab.StatsFm]: StatsFmSettings,
-    [ServiceTab.Jellyfin]: JellyfinSettings,
-    [ServiceTab.GensokyoRadio]: GensokyoRadioSettings,
-    [ServiceTab.Navidrome]: NavidromeSettings,
-    [ServiceTab.OfficialApp]: OfficialAppSettings,
-};
-
-const TAB_LABELS: Record<ServiceTab, string> = {
-    [ServiceTab.AudioBookShelf]: "AudioBookShelf",
-    [ServiceTab.Tosu]: "osu!",
-    [ServiceTab.StatsFm]: "stats.fm",
-    [ServiceTab.Jellyfin]: "Jellyfin",
-    [ServiceTab.GensokyoRadio]: "Gensokyo Radio",
-    [ServiceTab.Navidrome]: "Navidrome",
-    [ServiceTab.OfficialApp]: "Official Apps",
-};
-
-const ENABLE_KEYS: Record<ServiceTab, SettingsKey> = {
-    [ServiceTab.AudioBookShelf]: "abs_enabled",
-    [ServiceTab.Tosu]: "tosu_enabled",
-    [ServiceTab.StatsFm]: "sfm_enabled",
-    [ServiceTab.Jellyfin]: "jf_enabled",
-    [ServiceTab.GensokyoRadio]: "gr_enabled",
-    [ServiceTab.Navidrome]: "nd_enabled",
-    [ServiceTab.OfficialApp]: "oa_enabled",
-};
-
-const TABS = Object.values(ServiceTab);
-
-export function SettingsPanel() {
-    const [currentTab, setCurrentTab] = useState(ServiceTab.AudioBookShelf);
-    const TabComponent = TAB_COMPONENTS[currentTab];
-
-    return (
-        <div className={classes("vc-plugins-settings", Margins.top16)}>
-            <TabBar
-                type="top"
-                look="brand"
-                selectedItem={currentTab}
-                onItemSelect={setCurrentTab}
-            >
-                {TABS.map(tab => (
-                    <TabBar.Item key={tab} id={tab}>
-                        {TAB_LABELS[tab]}
-                    </TabBar.Item>
-                ))}
-            </TabBar>
-            <SwitchSetting key={currentTab} name="Enabled" description={`Enable ${TAB_LABELS[currentTab]} presence.`} settingsKey={ENABLE_KEYS[currentTab]} />
-            <TabComponent />
-        </div>
     );
 }

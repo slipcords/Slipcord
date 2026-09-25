@@ -9,7 +9,8 @@ import { Activity } from "@vencord/discord-types";
 import { ActivityFlags, ActivityStatusDisplayType } from "@vencord/discord-types/enums";
 import { ApplicationAssetUtils, FluxDispatcher } from "@webpack/common";
 
-import { settings } from "../settings";
+import { settings } from "..";
+import { resolveImage } from "../assets";
 import { OFFICIAL_APPS, OfficialApp, OfficialAppId } from "../types/officialApp";
 
 const SOCKET_ID = "RichPresence_OfficialApp";
@@ -20,6 +21,8 @@ function setActivity(activity: Activity | null) {
 }
 
 async function getArt(app: OfficialApp): Promise<string | undefined> {
+    const custom = settings.store.oa_imageUrl.trim();
+    if (custom) return resolveImage(app.applicationId, custom);
     if (app.asset.startsWith("mp:")) return app.asset;
     try {
         return (await ApplicationAssetUtils.fetchAssetIds(app.applicationId, [app.asset]))[0];

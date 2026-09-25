@@ -9,7 +9,7 @@ import { formatDurationMs } from "@utils/text";
 import { Activity } from "@vencord/discord-types";
 import { ApplicationAssetUtils, FluxDispatcher, showToast } from "@webpack/common";
 
-import { settings } from "../settings";
+import { settings } from "..";
 import { JfMediaData, JfSession } from "../types/jellyfin";
 
 const APPLICATION_ID = "1381368130164625469";
