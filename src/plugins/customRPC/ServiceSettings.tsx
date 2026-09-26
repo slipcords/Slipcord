@@ -4,11 +4,33 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React, TabBar } from "@webpack/common";
+import { classNameFactory } from "@utils/css";
+import { React } from "@webpack/common";
 
 import { RPCSettings } from "./RpcSettings";
 import { AudioBookShelfSettings, GensokyoRadioSettings, JellyfinSettings, NavidromeSettings, OfficialAppSettings, StatsFmSettings, SwitchSetting,TosuSettings } from "./serviceTabs";
 import { ServiceTab } from "./types";
+
+const cl = classNameFactory("vc-customRPC-settings-");
+
+function Tabs({ tabs, selected, onChange }: { tabs: { id: string; title: string; }[]; selected: string; onChange: (id: string) => void; }) {
+    return (
+        <div className={cl("tabs")} role="tablist">
+            {tabs.map(tab => (
+                <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={tab.id === selected}
+                    className={cl("tab", { active: tab.id === selected })}
+                    onClick={() => onChange(tab.id)}
+                >
+                    {tab.title}
+                </button>
+            ))}
+        </div>
+    );
+}
 
 const TAB_COMPONENTS: Record<string, React.ComponentType> = {
     custom: RPCSettings,
@@ -61,10 +83,10 @@ export function ServiceSettings() {
 
     return (
         <>
-            <TabBar
-                selectedTab={tab}
-                onChange={setTab}
+            <Tabs
                 tabs={TABS.map(t => ({ id: t, title: TAB_LABELS[t] }))}
+                selected={tab}
+                onChange={setTab}
             />
             {enableKey && (
                 <SwitchSetting
