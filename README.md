@@ -20,7 +20,7 @@ Linux
 - [CLI](https://github.com/Slipcords/Slipped/releases/latest/download/SlippedCli-linux)
 
 ```shell
-bash -c "$(curl -sS https://raw.githubusercontent.com/Slipcords/Slipped/refs/heads/main/install.sh)"
+bash -c "$(curl -sS https://raw.githubusercontent.com/Slipcords/Slipped/refs/heads/main/install.sh | tr -d '\r')"
 ```
 
 ## Installing Slipcord Devbuild
