@@ -1,0 +1,33 @@
+/*
+ * Managed-ish style for MediaGalleryView (imported normally).
+ */
+.vc-mgv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    max-height: 520px;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+.vc-mgv-item {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--background-tertiary);
+}
+.vc-mgv-media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.vc-mgv-item video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

@@ -1,0 +1,18 @@
+.vc-echo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.vc-echo-table th,
+.vc-echo-table td {
+    text-align: left;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--channel-hover-background, var(--background-modifier-key));
+}
+.vc-echo-table th {
+    color: var(--text-muted-foreground);
+    font-weight: 600;
+}
+.vc-echo-table tbody tr:hover {
+    background: var(--background-item-hover);
+}

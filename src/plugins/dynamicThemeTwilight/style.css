@@ -1,0 +1,9 @@
+/*
+ * Managed style for DynamicThemeTwilight.
+ * The actual filter string is computed in JS and stored in --vc-twilight-filter.
+ */
+.app-1Yzh6,
+#app {
+    filter: var(--vc-twilight-filter, none);
+    transition: filter 3s ease-out;
+}

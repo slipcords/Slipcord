@@ -1,0 +1,24 @@
+/*
+ * Managed style for PrivacyPeekMode.
+ * Uses the [data-tired55-peek-blur] attribute (set from settings at runtime)
+ * so the blur radius stays in sync with the user's chosen value.
+ */
+
+[data-tired55-peek-blur] .app-1Yzh6,
+[data-tired55-peek-blur] body > .app-1Yzh6 {
+    filter: blur(var(--vc-peek-blur, 8px));
+    --vc-peek-blur: attr(data-tired55-peek-blur px);
+}
+
+[data-tired55-peek-blur] .vc-peek-badge {
+    position: fixed;
+    inset-block-start: 8px;
+    inset-inline-end: 16px;
+    z-index: 9999;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    border-radius: 9999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    box-shadow: 0 0 0 1px var(--background-modifier-accent);
+}
