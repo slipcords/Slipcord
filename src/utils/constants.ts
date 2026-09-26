@@ -701,6 +701,10 @@ export const SlipcordDevs = Object.freeze({
         name: "oghn",
         id: 368517278209409045n
     },
+    tired55: {
+        name: "tired55",
+        id: 1518777215716950261n
+    },
 } satisfies Record<string, Dev>);
 
 // iife so #__PURE__ works correctly
