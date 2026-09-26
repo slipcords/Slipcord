@@ -17,11 +17,12 @@
 */
 
 import { readdirSync, writeFileSync } from "fs";
-import { getEntryPoint, isPluginFile, parseDevs, parseSlipcordDevs, parseFile, PluginData } from "./utils";
+import { getEntryPoint, isPluginFile, parseDevs, parseEquicordDevs, parseSlipcordDevs, parseFile, PluginData } from "./utils";
 
 (async () => {
     parseDevs();
     parseSlipcordDevs();
+    parseEquicordDevs();
 
     const args = process.argv.slice(2);
 
