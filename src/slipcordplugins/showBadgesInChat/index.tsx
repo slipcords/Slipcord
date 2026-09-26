@@ -37,10 +37,10 @@ const discordBadges: readonly [number, string, string][] = Object.freeze([
 function CheckBadge({ badge, author }: { badge: string; author: User; }): JSX.Element | null {
 
     switch (badge) {
-        case "SlipcordDonor":
+        case "EquicordDonor":
             return (
-                <span style={{ order: settings.store.SlipcordDonorPosition }}>
-                    {badges.getSlipcordDonorBadges(author.id)?.map(badge => (
+                <span style={{ order: settings.store.EquicordDonorPosition }}>
+                    {badges.getEquicordDonorBadges(author.id)?.map(badge => (
                         <RoleIconComponent
                             key={author.id}
                             className={roleIcon}
@@ -128,7 +128,7 @@ function ChatBadges({ author }: { author: User; }) {
 
     return (
         <span className="vc-sbic-badge-row" style={{ margin: "2px" }}>
-            {settings.store.showSlipcordDonor && <CheckBadge badge={"SlipcordDonor"} author={author} />}
+            {settings.store.showEquicordDonor && <CheckBadge badge={"EquicordDonor"} author={author} />}
             {settings.store.showSlipcordContributor && <CheckBadge badge={"SlipcordContributer"} author={author} />}
             {settings.store.showVencordDonor && <CheckBadge badge={"VencordDonor"} author={author} />}
             {settings.store.showVencordContributor && <CheckBadge badge={"VencordContributer"} author={author} />}

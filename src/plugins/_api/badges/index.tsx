@@ -31,7 +31,7 @@ import { ContextMenuApi, Menu, Toasts, UserStore } from "@webpack/common";
 
 import Plugins, { PluginMeta } from "~plugins";
 
-import { SlipcordDonorModal, SlipcordTranslatorModal, VencordDonorModal } from "./modals";
+import { EquicordDonorModal, EquicordTranslatorModal, VencordDonorModal } from "./modals";
 
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
 const SLIPCORD_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/slipcords/Slipper/main/build/icon.png";
@@ -84,7 +84,7 @@ const UserPluginContributorBadge: ProfileBadge = {
 };
 
 let DonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
-let SlipcordDonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
+let EquicordDonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
 
 async function loadBadges(url: string, noCache = false) {
     const init = {} as RequestInit;
@@ -95,10 +95,10 @@ async function loadBadges(url: string, noCache = false) {
 
 async function loadAllBadges(noCache = false) {
     const vencordBadges = await loadBadges("https://badges.vencord.dev/badges.json", noCache);
-    const slipcordBadges = await loadBadges("https://badge.equicord.org/badges.json", noCache);
+    const equicordBadges = await loadBadges("https://badge.equicord.org/badges.json", noCache);
 
     DonorBadges = vencordBadges;
-    SlipcordDonorBadges = slipcordBadges;
+    EquicordDonorBadges = equicordBadges;
 }
 
 let intervalId: any;
@@ -174,8 +174,8 @@ export default definePlugin({
         return DonorBadges;
     },
 
-    get SlipcordDonorBadges() {
-        return SlipcordDonorBadges;
+    get EquicordDonorBadges() {
+        return EquicordDonorBadges;
     },
 
     toolboxActions: {
@@ -251,9 +251,9 @@ export default definePlugin({
         } satisfies ProfileBadge));
     },
 
-    getSlipcordDonorBadges(userId: string) {
-        return SlipcordDonorBadges[userId]?.map((badge, idx) => ({
-            id: `slipcord_donor_badge_${idx}`,
+    getEquicordDonorBadges(userId: string) {
+        return EquicordDonorBadges[userId]?.map((badge, idx) => ({
+            id: `equicord_donor_badge_${idx}`,
             iconSrc: badge.badge,
             description: badge.tooltip,
             position: BadgePosition.START,
@@ -267,7 +267,7 @@ export default definePlugin({
                 ContextMenuApi.openContextMenu(event, () => <BadgeContextMenu badge={badge} />);
             },
             onClick() {
-                return badge.tooltip === "Slipcord Translator" ? SlipcordTranslatorModal() : SlipcordDonorModal();
+                return badge.tooltip === "Equicord Translator" ? EquicordTranslatorModal() : EquicordDonorModal();
             },
         } satisfies ProfileBadge));
     }

@@ -71,7 +71,7 @@ export function VencordDonorModal() {
     ));
 }
 
-export function SlipcordDonorModal() {
+export function EquicordDonorModal() {
     openModal(props => (
         <ErrorBoundary noop onError={() => {
             props.onClose();
@@ -90,7 +90,7 @@ export function SlipcordDonorModal() {
                     >
                         <Flex justifyContent="center" alignItems="center" gap="0.5em">
                             <Heart />
-                            Slipcord Donor
+                            Equicord Donor
                         </Flex>
                     </Heading>
                 }
@@ -112,16 +112,16 @@ export function SlipcordDonorModal() {
                     </Flex>
                     <div style={{ padding: "1em" }}>
                         <Paragraph>
-                            This Badge is a special perk for Slipcord (Not Vencord) Donors
+                            This Badge is a special perk for Equicord Donors
                         </Paragraph>
                         <Paragraph className={Margins.top20}>
-                            Please consider supporting the development of Slipcord by becoming a donor. It would mean a lot! :3
+                            Please consider supporting the development of Equicord by becoming a donor. It would mean a lot!!
                         </Paragraph>
                     </div>
                 </div>
                 <div>
                     <Flex justifyContent="center" style={{ width: "100%" }}>
-                        <DonateButton slipcord={true} />
+                        <DonateButton equicord={true} />
                     </Flex>
                 </div>
             </Modal>
@@ -129,7 +129,7 @@ export function SlipcordDonorModal() {
     ));
 }
 
-export function SlipcordTranslatorModal() {
+export function EquicordTranslatorModal() {
     openModal(props => (
         <ErrorBoundary noop onError={() => {
             props.onClose();
@@ -146,7 +146,7 @@ export function SlipcordTranslatorModal() {
                         }}
                     >
                         <Flex justifyContent="center" alignItems="center" gap="0.5em">
-                            Slipcord Translator
+                            Equicord Translator
                         </Flex>
                     </Heading>
                 }
@@ -162,7 +162,7 @@ export function SlipcordTranslatorModal() {
                     </Flex>
                     <div className="vc-translate-modal-paragraph">
                         <Paragraph>
-                            Awarded to contributors who expand Slipcord’s language support by translating content for the community.
+                            Awarded to contributors who expand Equicord's language support by translating content for the community.
                         </Paragraph>
                     </div>
                 </div>

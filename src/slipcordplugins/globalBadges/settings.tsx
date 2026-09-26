@@ -27,7 +27,9 @@ const badgeOptions = [
     { label: "BetterDiscord", value: "showBetterDiscord" },
     { label: "Vendroid Enhanced", value: "showVendroidEnhanced" },
     { label: "Revenge", value: "showRevenge" },
-    { label: "ReCord", value: "showReCord" }
+    { label: "ReCord", value: "showReCord" },
+    { label: "Equicord", value: "showEquicord" },
+    { label: "Slipcord", value: "showSlipcord" }
 ] as const;
 
 const badgeManaOptions = badgeOptions.map(opt => ({ ...opt, id: opt.value }));
@@ -192,6 +194,20 @@ export const settings = definePluginSettings({
     showReCord: {
         type: OptionType.BOOLEAN,
         description: "Show ReCord Badges",
+        default: true,
+        restartNeeded: false,
+        hidden: true
+    },
+    showEquicord: {
+        type: OptionType.BOOLEAN,
+        description: "Show Equicord Badges",
+        default: true,
+        restartNeeded: false,
+        hidden: true
+    },
+    showSlipcord: {
+        type: OptionType.BOOLEAN,
+        description: "Show Slipcord Badges",
         default: true,
         restartNeeded: false,
         hidden: true

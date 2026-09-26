@@ -19,7 +19,7 @@ export function DonateButtonComponent({ donated = false }) {
     return (
         <Flex>
             <DonateButton
-                slipcord={true}
+                equicord={true}
                 className={!donated ? "vc-donate-support-button" : ""}
                 style={{ marginTop: "1em" }} />
             <InviteButton

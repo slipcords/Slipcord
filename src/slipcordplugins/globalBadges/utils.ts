@@ -31,10 +31,11 @@ export const serviceMap: Record<string, string> = {
     revenge: "Revenge",
     record: "ReCord",
     vencord: "Vencord",
-    equicord: "Slipcord"
+    equicord: "Equicord",
+    slipcord: "Slipcord"
 };
 
-const blockedMods = ["vencord", "equicord"];
+const blockedMods = ["vencord", "equicord", "slipcord"];
 
 export async function loadBadges() {
     const url = settings.store.apiUrl.endsWith("/") ? settings.store.apiUrl + "users" : settings.store.apiUrl + "/users";
@@ -62,7 +63,9 @@ export async function loadBadges() {
                 betterdiscord: settings.store.showBetterDiscord,
                 vendroidenhanced: settings.store.showVendroidEnhanced,
                 revenge: settings.store.showRevenge,
-                record: settings.store.showReCord
+                record: settings.store.showReCord,
+                equicord: settings.store.showEquicord,
+                slipcord: settings.store.showSlipcord
             };
 
             if (mod in conditionalMods && !conditionalMods[mod]) return false;
