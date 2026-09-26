@@ -75,6 +75,7 @@ export interface RpcConfig {
     timestampMode?: TimestampMode;
     startTime?: number;
     endTime?: number;
+    timestampLoop?: boolean;
     imageBig?: string;
     imageBigURL?: string;
     imageBigTooltip?: string;
@@ -169,7 +170,8 @@ async function createActivity(): Promise<Activity | undefined> {
         buttonTwoURL,
         partyMaxSize,
         partySize,
-        timestampMode
+        timestampMode,
+        timestampLoop
     } = settings.store;
 
     if (!appName) return;
@@ -199,7 +201,7 @@ async function createActivity(): Promise<Activity | undefined> {
         case TimestampMode.CUSTOM:
             if (startTime || endTime) {
                 activity.timestamps = {};
-                if (startTime && endTime && endTime > startTime) {
+                if (startTime && endTime && endTime > startTime && timestampLoop) {
                     const anchor = getLoopAnchor();
                     activity.timestamps.start = anchor;
                     activity.timestamps.end = anchor + (endTime - startTime);
@@ -286,9 +288,9 @@ function getLoopAnchor() {
     return loopAnchor;
 }
 
-function startTimestampLoop() {
-    const { timestampMode, startTime, endTime } = settings.store;
-    if (timestampMode !== TimestampMode.CUSTOM || !startTime || !endTime) return;
+export function startTimestampLoop() {
+    const { timestampMode, timestampLoop, startTime, endTime } = settings.store;
+    if (timestampMode !== TimestampMode.CUSTOM || !timestampLoop || !startTime || !endTime) return;
     const duration = endTime - startTime;
     if (duration <= 0) return;
 

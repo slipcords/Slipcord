@@ -83,6 +83,10 @@ export function ServiceSettings() {
 
     return (
         <>
+            <div className={cl("notice")}>
+                Changed a setting and nothing happened? Restart Discord. Some of these options, and
+                anything a service pushes, is only picked up when the app starts.
+            </div>
             <Tabs
                 tabs={TABS.map(t => ({ id: t, title: TAB_LABELS[t] }))}
                 selected={tab}

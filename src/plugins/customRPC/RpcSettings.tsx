@@ -11,13 +11,14 @@ import { isPluginEnabled } from "@api/PluginManager";
 import { Divider } from "@components/Divider";
 import { Heading } from "@components/Heading";
 import { resolveError } from "@components/settings/tabs/plugins/components/Common";
+import { Switch } from "@components/Switch";
 import { debounce } from "@shared/debounce";
 import { classNameFactory } from "@utils/css";
 import { useAwaiter } from "@utils/react";
 import { ActivityType } from "@vencord/discord-types/enums";
 import { Button, Select, showToast, Text, TextInput, Toasts, useState } from "@webpack/common";
 
-import CustomRPCPlugin, { RpcConfig, setRpc, settings, TimestampMode } from ".";
+import CustomRPCPlugin, { RpcConfig, setRpc, settings, startTimestampLoop, TimestampMode } from ".";
 
 const cl = classNameFactory("vc-customRPC-settings-");
 const PRESETS_KEY = "CustomRPC_presets";
@@ -59,6 +60,7 @@ function isAppIdValid(value: string) {
 
 const updateRPC = debounce(() => {
     setRpc(true);
+    startTimestampLoop();
     if (isPluginEnabled(CustomRPCPlugin.name)) setRpc();
 });
 
@@ -91,6 +93,86 @@ function isImageKeyValid(value: string) {
     if (/https?:\/\/(?!i\.)?imgur\.com\//.test(value)) return "Imgur link must be a direct link to the image (e.g. https://i.imgur.com/...). Right click the image and click 'Copy image address'";
     if (/https?:\/\/(?!media\.)?tenor\.com\//.test(value)) return "Tenor link must be a direct link to the image (e.g. https://media.tenor.com/...). Right click the GIF and click 'Copy image address'";
     return true;
+}
+
+function toDateTimeInput(ms: number) {
+    if (!ms || !Number.isFinite(ms)) return "";
+
+    const date = new Date(ms);
+    const pad = (n: number) => String(n).padStart(2, "0");
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function fromDateTimeInput(value: string) {
+    if (!value) return 0;
+    return new Date(value).getTime();
+}
+
+function TimestampSetting({ settingsKey, label, disabled }: { settingsKey: SettingsKey; label: string; disabled?: boolean; }) {
+    const [state, setState] = useState(() => toDateTimeInput(Number(settings.store[settingsKey] ?? 0)));
+    const [error, setError] = useState<string | null>(null);
+
+    function commit(ms: number) {
+        setState(toDateTimeInput(ms));
+        setError(null);
+        (settings.store as unknown as Record<string, number>)[settingsKey] = ms;
+        updateRPC();
+    }
+
+    function handleChange(value: string) {
+        if (!value) {
+            commit(0);
+            return;
+        }
+
+        const ms = fromDateTimeInput(value);
+        if (!Number.isFinite(ms) || ms < 0) {
+            setError("Must be a valid date and time.");
+            return;
+        }
+
+        setState(value);
+        setError(null);
+        (settings.store as unknown as Record<string, number>)[settingsKey] = ms;
+        updateRPC();
+    }
+
+    return (
+        <div className={cl("single", { disabled })}>
+            <Heading tag="h5">{label}</Heading>
+            <div className={cl("timestamp")}>
+                <input
+                    type="datetime-local"
+                    value={state}
+                    disabled={disabled}
+                    onChange={e => handleChange(e.target.value)}
+                />
+                <Button disabled={disabled} onClick={() => commit(Date.now())}>Now</Button>
+                <Button disabled={disabled || !Number(settings.store[settingsKey] ?? 0)} onClick={() => commit(0)}>Clear</Button>
+            </div>
+            {error && <Text className={cl("error")} variant="text-sm/normal">{error}</Text>}
+        </div>
+    );
+}
+
+function ToggleSetting({ settingsKey, label, disabled }: { settingsKey: SettingsKey; label: string; disabled?: boolean; }) {
+    const [value, setValue] = useState(Boolean(settings.store[settingsKey]));
+
+    return (
+        <div className={cl("single", { disabled })}>
+            <Heading tag="h5">{label}</Heading>
+            <Switch
+                checked={value}
+                disabled={disabled}
+                onChange={v => {
+                    setValue(v);
+                    (settings.store as unknown as Record<string, boolean>)[settingsKey] = v;
+                    updateRPC();
+                }}
+            />
+        </div>
+    );
 }
 
 function PairSetting<T>(props: { data: [TextOption<T>, TextOption<T>]; }) {
@@ -360,26 +442,26 @@ function RPCFields() {
                 ]}
             />
 
-            <PairSetting data={[
-                {
-                    settingsKey: "startTime",
-                    label: "Start Timestamp (in milliseconds)",
-                    transform: parseNumber,
-                    isValid: isNumberValid,
-                    disabled: timestampMode !== TimestampMode.CUSTOM,
-                },
-                {
-                    settingsKey: "endTime",
-                    label: "End Timestamp (in milliseconds)",
-                    transform: parseNumber,
-                    isValid: isNumberValid,
-                    disabled: timestampMode !== TimestampMode.CUSTOM,
-                },
-            ]} />
+            <TimestampSetting
+                settingsKey="startTime"
+                label="Start"
+                disabled={timestampMode !== TimestampMode.CUSTOM}
+            />
+
+            <TimestampSetting
+                settingsKey="endTime"
+                label="End"
+                disabled={timestampMode !== TimestampMode.CUSTOM}
+            />
+
+            <ToggleSetting
+                settingsKey="timestampLoop"
+                label="Repeat the start and end times over and over"
+                disabled={timestampMode !== TimestampMode.CUSTOM || !settings.store.startTime || !settings.store.endTime}
+            />
         </>
     );
 }
-
 export function RPCSettings() {
     const [formVersion, setFormVersion] = useState(0);
 
