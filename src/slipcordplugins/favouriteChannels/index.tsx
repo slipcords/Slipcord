@@ -8,7 +8,7 @@ import "./style.css";
 
 import { addServerListElement, removeServerListElement, ServerListRenderPosition } from "@api/ServerList";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { EquicordDevs } from "@utils/constants";
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { Channel } from "@vencord/discord-types";
 import { ChannelStore, UserStore } from "@webpack/common";
@@ -37,7 +37,7 @@ export default definePlugin({
     name: "FavouriteChannels",
     description: "Adds a Favourites button to the server list where you can keep channels, threads and DMs in your own categories.",
     tags: ["Organisation", "Servers", "Shortcuts"],
-    authors: [EquicordDevs.justjxke],
+    authors: [SlipcordDevs.justjxke],
     dependencies: ["ServerListAPI", "UserSettingsAPI"],
     settings,
 
