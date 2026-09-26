@@ -55,20 +55,40 @@ async function calculateGitChanges() {
 }
 
 async function fetchUpdates() {
-    const data = await githubGet("/releases/latest");
+    // Check for new release
+    try {
+        const releaseData = await githubGet("/releases/latest");
 
-    const hash = data.name.slice(data.name.lastIndexOf(" ") + 1);
-    if (hash === gitHash)
-        return false;
+        const hash = releaseData.name.slice(releaseData.name.lastIndexOf(" ") + 1);
+        if (hash !== gitHash) {
+            const asset = releaseData.assets.find(a => a.name === ASAR_FILE);
+            if (asset) {
+                PendingUpdate = asset.browser_download_url;
+                return true;
+            }
+        }
+    } catch {
+        // Release check failed, continue to commit check
+    }
 
-    const asset = data.assets.find(a => a.name === ASAR_FILE);
-    PendingUpdate = asset.browser_download_url;
+    // Fallback: check if there are commits ahead
+    try {
+        const compareData = await githubGet(`/compare/${gitHash}...HEAD`);
+        if (compareData.commits.length > 0) {
+            // Commits ahead but no release - mark as outdated but no PendingUpdate
+            return true;
+        }
+    } catch {
+        // Compare failed
+    }
 
-    return true;
+    return false;
 }
 
 async function applyUpdates() {
-    if (!PendingUpdate) return true;
+    if (!PendingUpdate) {
+        throw new Error("No release available. Commits are ahead but no new release has been published yet.");
+    }
 
     const data = await fetchBuffer(PendingUpdate);
     writeFileSync(__dirname, data, { flush: true });
