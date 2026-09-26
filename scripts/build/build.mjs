@@ -136,7 +136,7 @@ const buildConfigs = ([
             ...defines,
             IS_DISCORD_DESKTOP: "true",
             IS_VESKTOP: "false",
-            IS_EQUIBOP: "false"
+            IS_SLIPPER: "false"
         }
     },
     {
@@ -156,7 +156,7 @@ const buildConfigs = ([
             ...defines,
             IS_DISCORD_DESKTOP: "true",
             IS_VESKTOP: "false",
-            IS_EQUIBOP: "false"
+            IS_SLIPPER: "false"
         }
     },
     {
@@ -169,7 +169,7 @@ const buildConfigs = ([
             ...defines,
             IS_DISCORD_DESKTOP: "true",
             IS_VESKTOP: "false",
-            IS_EQUIBOP: "false"
+            IS_SLIPPER: "false"
         }
     },
 

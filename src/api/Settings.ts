@@ -142,7 +142,7 @@ const DefaultSettings: Settings = {
 
     cloud: {
         authenticated: false,
-        url: "https://cloud.equicord.org/",
+        url: "https://cloud.slipcord.org/",
         settingsSync: false,
         settingsSyncVersion: 0
     },

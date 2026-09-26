@@ -31,7 +31,7 @@ const settings = definePluginSettings({
     overrideCommonKeybinds: {
         type: OptionType.BOOLEAN,
         description: "Allows discord to override the most common tab navigation keybinds (ctrl+t, ctrl+shift+t, ctrl+tab, ctrl+shift+tab, ctrl+n). Only works in a few select browsers that allow website keybinds to take priority over native ones.",
-        default: IS_VESKTOP || IS_EQUIBOP,
+        default: IS_VESKTOP || IS_SLIPPER,
         restartNeeded: true,
     }
 });

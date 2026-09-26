@@ -98,18 +98,18 @@ export function detectClient(): clientData {
         version: VesktopNative.app.getVersion(),
     };
 
-    if (IS_EQUIBOP) {
-        const equibopGitHash = tryOrElse(() => VesktopNative.app.getGitHash?.(), null);
+    if (IS_SLIPPER) {
+        const slipperGitHash = tryOrElse(() => VesktopNative.app.getGitHash?.(), null);
         const spoofInfo = tryOrElse(() => VesktopNative.app.getPlatformSpoofInfo?.(), null);
         const isDevBuild = tryOrElse(() => VesktopNative.app.isDevBuild?.(), false);
-        const shortHash = equibopGitHash?.slice(0, 7);
+        const shortHash = slipperGitHash?.slice(0, 7);
         return {
-            name: "Equibop",
+            name: "Slipper",
             version: VesktopNative.app.getVersion(),
             spoofed: spoofInfo?.spoofed ? `${platformName()} (spoofed from ${spoofInfo.originalPlatform})` : null,
             dev: isDevBuild,
             shortHash: shortHash,
-            hash: equibopGitHash,
+            hash: slipperGitHash,
         };
     }
 
@@ -137,9 +137,9 @@ async function generateDebugInfoMessage() {
     let clientString = `${clientInfo.name}`;
     clientString += `${clientInfo.version ? ` v${clientInfo.version}` : ""}`;
     clientString += `${clientInfo.info ? ` • ${clientInfo.info}` : ""}`;
-    clientString += `${clientInfo.shortHash ? ` • [${clientInfo.shortHash}](<https://github.com/Slipcord/Equibop/commit/${clientInfo.hash}>)` : ""}`;
+    clientString += `${clientInfo.shortHash ? ` • [${clientInfo.shortHash}](<https://github.com/Slipcord/Slipper/commit/${clientInfo.hash}>)` : ""}`;
 
-    const spoofInfo = IS_EQUIBOP ? tryOrElse(() => VesktopNative.app.getPlatformSpoofInfo?.(), null) : null;
+    const spoofInfo = IS_SLIPPER ? tryOrElse(() => VesktopNative.app.getPlatformSpoofInfo?.(), null) : null;
     const platformDisplay = spoofInfo?.spoofed
         ? `${platformName()} (spoofed from ${spoofInfo.originalPlatform})`
         : platformName();
@@ -147,7 +147,7 @@ async function generateDebugInfoMessage() {
     const info = {
         Slipcord:
             `v${VERSION} • [${gitHashShort}](<https://github.com/Slipcord/Slipcord/commit/${gitHash}>)` +
-            `${IS_EQUIBOP ? "" : SettingsPlugin.getVersionInfo()} - ${Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(BUILD_TIMESTAMP)}`,
+            `${IS_SLIPPER ? "" : SettingsPlugin.getVersionInfo()} - ${Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(BUILD_TIMESTAMP)}`,
         Client: `${RELEASE_CHANNEL} ~ ${clientString}`,
         Platform: platformDisplay
     };
@@ -172,7 +172,7 @@ async function generateDebugInfoMessage() {
         "Activity Sharing Disabled": tryOrElse(() => !ShowCurrentGame.getSetting(), false),
         "Link Embeds Disabled": tryOrElse(() => !ShowEmbeds.getSetting(), false),
         "Slipcord DevBuild": !IS_STANDALONE,
-        "Equibop DevBuild": IS_EQUIBOP && tryOrElse(() => VesktopNative.app.isDevBuild?.(), false),
+        "Slipper DevBuild": IS_SLIPPER && tryOrElse(() => VesktopNative.app.isDevBuild?.(), false),
         "Platform Spoofed": spoofInfo?.spoofed ?? false,
         "Has UserPlugins": Object.values(PluginMeta).some(m => m.userPlugin),
         ">2 Weeks Outdated": BUILD_TIMESTAMP < Date.now() - 12096e5,

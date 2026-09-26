@@ -286,7 +286,7 @@ const exportEmojis = async () => {
     const emojis = await getAllowedList();
     const json = JSON.stringify({ emojis }, null, 4);
 
-    if (IS_WEB || IS_EQUIBOP || IS_VESKTOP) {
+    if (IS_WEB || IS_SLIPPER || IS_VESKTOP) {
         saveFile(new File([json], fileName, { type: "application/json" }));
     } else {
         DiscordNative.fileManager.saveWithDialog(new TextEncoder().encode(json), fileName);
@@ -298,7 +298,7 @@ const exportEmojis = async () => {
 const uploadEmojis = async () => {
     let data: string;
 
-    if (IS_WEB || IS_EQUIBOP || IS_VESKTOP) {
+    if (IS_WEB || IS_SLIPPER || IS_VESKTOP) {
         const file = await chooseFile("application/json");
         if (!file) return;
         data = await file.text();

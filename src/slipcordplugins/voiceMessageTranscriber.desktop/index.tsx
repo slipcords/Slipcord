@@ -250,7 +250,7 @@ function TranscriptionModal(props: { modalProps: RenderModalProps, src: string, 
                 setError(null);
 
                 let blob: Blob;
-                if (IS_DISCORD_DESKTOP || IS_EQUIBOP) {
+                if (IS_DISCORD_DESKTOP || IS_SLIPPER) {
                     const data = await Native.fetchAudio(src);
                     blob = new Blob([new Uint8Array(data)]);
                 } else {
@@ -424,7 +424,7 @@ function VoiceMessageTranscriber({ src }: { src: string; }) {
 
         try {
             let blob: Blob;
-            if (IS_DISCORD_DESKTOP || IS_EQUIBOP) {
+            if (IS_DISCORD_DESKTOP || IS_SLIPPER) {
                 const data = await Native.fetchAudio(src);
                 blob = new Blob([new Uint8Array(data)]);
             } else {

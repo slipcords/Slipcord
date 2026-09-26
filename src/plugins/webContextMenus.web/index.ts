@@ -39,7 +39,7 @@ async function fetchImage(url: string) {
 let requiredByPlatform = false;
 let hideSetting = false;
 
-if (IS_VESKTOP || IS_EQUIBOP) {
+if (IS_VESKTOP || IS_SLIPPER) {
     requiredByPlatform = true;
     hideSetting = true;
 } else if ("legcord" in window || "goofcord" in window) {
@@ -281,7 +281,7 @@ export default definePlugin({
             });
         }
 
-        if (IS_VESKTOP && VesktopNative.clipboard || IS_EQUIBOP && VesktopNative.clipboard) {
+        if (IS_VESKTOP && VesktopNative.clipboard || IS_SLIPPER && VesktopNative.clipboard) {
             VesktopNative.clipboard.copyImage(await imageData.arrayBuffer(), url);
             return;
         } else {

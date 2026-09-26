@@ -112,7 +112,7 @@ export const ExcludedReasons: Record<PluginTarget, string> = {
     desktop: "Discord Desktop app or Vesktop",
     discordDesktop: "Discord Desktop app",
     vesktop: "Vesktop apps",
-    equibop: "Vesktop apps",
+    slipper: "Vesktop apps",
     web: "Vesktop apps & Discord web",
     dev: "Developer version of Slipcord",
     browser: "Web Browser version of Slipcord"

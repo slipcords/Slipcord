@@ -28,8 +28,8 @@ const badgeOptions = [
     { label: "Vendroid Enhanced", value: "showVendroidEnhanced" },
     { label: "Revenge", value: "showRevenge" },
     { label: "ReCord", value: "showReCord" },
-    { label: "Equicord", value: "showEquicord" },
-    { label: "Slipcord", value: "showSlipcord" }
+    { label: "Slipcord", value: "showSlipcord" },
+    { label: "Equicord", value: "showEquicord" }
 ] as const;
 
 const badgeManaOptions = badgeOptions.map(opt => ({ ...opt, id: opt.value }));
@@ -75,7 +75,7 @@ export const settings = definePluginSettings({
     apiUrl: {
         type: OptionType.STRING,
         description: "API to use",
-        default: "https://badges.equicord.org/",
+        default: "https://badges.slipcord.org/",
         restartNeeded: false,
         isValid: (value => {
             if (!value) return false;
@@ -198,16 +198,16 @@ export const settings = definePluginSettings({
         restartNeeded: false,
         hidden: true
     },
-    showEquicord: {
+    showSlipcord: {
         type: OptionType.BOOLEAN,
-        description: "Show Equicord Badges",
+        description: "Show Slipcord Badges",
         default: true,
         restartNeeded: false,
         hidden: true
     },
-    showSlipcord: {
+    showEquicord: {
         type: OptionType.BOOLEAN,
-        description: "Show Slipcord Badges",
+        description: "Show Equicord Badges",
         default: true,
         restartNeeded: false,
         hidden: true

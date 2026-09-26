@@ -40,27 +40,27 @@ interface CommonProps {
     repoPending: boolean;
 }
 
-function EquibopSection() {
-    if (!IS_EQUIBOP) return null;
+function SlipperSection() {
+    if (!IS_SLIPPER) return null;
 
-    const [isEquibopOutdated] = useAwaiter<boolean>(VesktopNative.app.isOutdated, { fallbackValue: false });
+    const [isSlipperOutdated] = useAwaiter<boolean>(VesktopNative.app.isOutdated, { fallbackValue: false });
 
     return (
         <Flex className={Margins.bottom20} flexDirection="column" gap="1em">
             <Card variant="brand">
-                <HeadingSecondary>Equibop & Slipcord</HeadingSecondary>
-                <Paragraph>Equibop and Slipcord are two separate things. This updater is for Slipcord.</Paragraph>
+                <HeadingSecondary>Slipper & Slipcord</HeadingSecondary>
+                <Paragraph>Slipper and Slipcord are two separate things. This updater is for Slipcord.</Paragraph>
                 <Paragraph className={Margins.top8}>
-                    You receive separate popups for Equibop updates. You can also manually update by installing the <Link href="https://equibop.org/install">latest version</Link>.
+                    You receive separate popups for Slipper updates. You can also manually update by installing the <Link href="https://slipper.org/install">latest version</Link>.
                 </Paragraph>
             </Card>
 
-            {isEquibopOutdated && (
+            {isSlipperOutdated && (
                 <Card variant="warning">
-                    <HeadingSecondary>Equibop Outdated</HeadingSecondary>
+                    <HeadingSecondary>Slipper Outdated</HeadingSecondary>
                     <Flex flexDirection="column" gap="0.5em">
-                        <Paragraph>Your version of Equibop is outdated!</Paragraph>
-                        <Button variant="link" onClick={() => VesktopNative.app.openUpdater()}>Open Equibop Updater</Button>
+                        <Paragraph>Your version of Slipper is outdated!</Paragraph>
+                        <Button variant="link" onClick={() => VesktopNative.app.openUpdater()}>Open Slipper Updater</Button>
                     </Flex>
                 </Card>
             )}
@@ -85,7 +85,7 @@ function Updater() {
 
     return (
         <SettingsTab>
-            <EquibopSection />
+            <SlipperSection />
             <Heading className={Margins.top16}>Update Preferences</Heading>
             <Paragraph className={Margins.bottom20}>
                 Control how Slipcord keeps itself up to date. You can choose to update automatically in the background or be notified when new updates are available.

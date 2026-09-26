@@ -8,8 +8,7 @@ import { AudioPlayerInterface, createAudioPlayer, playAudio } from "@api/AudioPl
 import { addMessagePreSendListener, removeMessagePreSendListener } from "@api/MessageEvents";
 import { definePluginSettings } from "@api/Settings";
 import { Button } from "@components/Button";
-import { SlipcordDevs } from "@utils/constants";
-import definePlugin, { OptionType } from "@utils/types";
+import { SlipcordDevs } from "@utils/constants";import definePlugin, { OptionType } from "@utils/types";
 
 import { ignoredKeys, packs } from "../keyboardSounds/packs";
 

@@ -19,7 +19,7 @@
 export function relaunch() {
     if (IS_DISCORD_DESKTOP)
         window.DiscordNative.app.relaunch();
-    else if (IS_VESKTOP || IS_EQUIBOP)
+    else if (IS_VESKTOP || IS_SLIPPER)
         window.VesktopNative.app.relaunch();
     else
         location.reload();

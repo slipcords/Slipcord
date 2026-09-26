@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import moment from "moment";
 import type * as t from "@vencord/discord-types";
 import { _resolveReady, filters, findByCodeLazy, findByPropsLazy, findLazy, mapMangledModuleLazy, waitFor } from "@webpack";
 import type * as TSPattern from "ts-pattern";
@@ -44,7 +45,7 @@ export const Constants: t.Constants = mapMangledModuleLazy('ME:"/users/@me"', {
 });
 
 export const RestAPI: t.RestAPI = findLazy(m => typeof m === "object" && m.del && m.put);
-export const moment: typeof import("moment") = findByPropsLazy("parseTwoDigitYear");
+export { moment };
 
 export const useDrag = findByCodeLazy("useDrag::spec.begin was deprecated");
 // you cant make a better finder i love that they remove display names sm

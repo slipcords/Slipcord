@@ -35,9 +35,9 @@ const DESKTOP_ONLY = (f: string) => () => {
 };
 
 const switchBranch = (branch: string) => () => {
-    if (!IS_VESKTOP && !IS_EQUIBOP) throw new Error("This function only works on vesktop and equibop.");
+    if (!IS_VESKTOP && !IS_SLIPPER) throw new Error("This function only works on vesktop and slipper.");
 
-    const target = IS_VESKTOP ? Vesktop : Equibop;
+    const target = IS_VESKTOP ? Vesktop : Slipper;
     if (target.Settings.store.discordBranch === branch) throw new Error(`Already on ${branch}.`);
     target.Settings.store.discordBranch = branch;
     VesktopNative.app.relaunch();
@@ -190,10 +190,10 @@ function makeShortcuts() {
             });
         },
         switchBranch,
-        ...IS_EQUIBOP ? {
-            equibopStable: switchBranch("stable"),
-            equibopCanary: switchBranch("canary"),
-            equibopPtb: switchBranch("ptb"),
+        ...IS_SLIPPER ? {
+            slipperStable: switchBranch("stable"),
+            slipperCanary: switchBranch("canary"),
+            slipperPtb: switchBranch("ptb"),
         } : {},
     };
 }

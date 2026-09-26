@@ -304,7 +304,7 @@ export default definePlugin({
         if (IS_DEV) version = "Dev Build";
         if (IS_WEB) version = "Web";
         if (IS_VESKTOP) version = `Vesktop v${VesktopNative.app.getVersion()}`;
-        if (IS_EQUIBOP) version = `Equibop v${VesktopNative.app.getVersion()}`;
+        if (IS_SLIPPER) version = `Slipper v${VesktopNative.app.getVersion()}`;
         if (IS_STANDALONE) version = "Standalone";
 
         return support && version ? ` (${version})` : version;

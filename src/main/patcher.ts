@@ -34,7 +34,7 @@ const asarPath = join(dirname(injectorPath), "..", "_app.asar");
 
 const discordPkg = require(join(asarPath, "package.json"));
 require.main!.filename = join(asarPath, discordPkg.main);
-if (IS_VESKTOP || IS_EQUIBOP) require.main!.filename = join(dirname(injectorPath), "..", "..", "package.json");
+if (IS_VESKTOP || IS_SLIPPER) require.main!.filename = join(dirname(injectorPath), "..", "..", "package.json");
 
 // @ts-expect-error Untyped method? Dies from cringe
 app.setAppPath(asarPath);
@@ -46,9 +46,9 @@ if (!IS_VANILLA) {
 
     /*
      * re-apply the patch when discord ships a new host version. skipped
-     * on vesktop and equibop because they manage their own updates.
+     * on vesktop and slipper because they manage their own updates.
      */
-    if (!IS_VESKTOP && !IS_EQUIBOP) {
+    if (!IS_VESKTOP && !IS_SLIPPER) {
         try {
             require("./hostUpdateHook").installHostUpdateHook();
         } catch (err) {

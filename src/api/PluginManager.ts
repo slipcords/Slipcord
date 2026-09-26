@@ -90,7 +90,7 @@ export function hasAnyVisibleSettings({ settings }: Plugin) {
 export function addPatch(newPatch: Omit<Patch, "plugin">, pluginName: string, pluginPath = `Vencord.Plugins.plugins[${JSON.stringify(pluginName)}]`) {
     // TODO: this causes crashes
     if (pluginName === "Vesktop" && newPatch.find === ".STREAMING_AUTO_STREAMER_MODE,") return;
-    if (pluginName === "Equibop" && newPatch.find === ".STREAMING_AUTO_STREAMER_MODE,") return;
+    if (pluginName === "Slipper" && newPatch.find === ".STREAMING_AUTO_STREAMER_MODE,") return;
 
     const patch = newPatch as Patch;
     patch.plugin = pluginName;
