@@ -18,7 +18,7 @@ import { useAwaiter } from "@utils/react";
 import { ActivityType } from "@vencord/discord-types/enums";
 import { Button, Select, showToast, Text, TextInput, Toasts, useState } from "@webpack/common";
 
-import CustomRPCPlugin, { RpcConfig, setRpc, settings, startTimestampLoop, TimestampMode } from ".";
+import CustomRPCPlugin, { RpcConfig, setRpc, settings, startTimestampLoop, syncTimestampAnchor, TimestampMode } from ".";
 
 const cl = classNameFactory("vc-customRPC-settings-");
 const PRESETS_KEY = "CustomRPC_presets";
@@ -60,6 +60,7 @@ function isAppIdValid(value: string) {
 
 const updateRPC = debounce(() => {
     setRpc(true);
+    syncTimestampAnchor();
     startTimestampLoop();
     if (isPluginEnabled(CustomRPCPlugin.name)) setRpc();
 });
@@ -444,14 +445,12 @@ function RPCFields() {
 
             <TimestampSetting
                 settingsKey="startTime"
-                label="Start"
-                disabled={timestampMode !== TimestampMode.CUSTOM}
+                label="Start (used when Timestamp Mode is Custom)"
             />
 
             <TimestampSetting
                 settingsKey="endTime"
-                label="End"
-                disabled={timestampMode !== TimestampMode.CUSTOM}
+                label="End (used when Timestamp Mode is Custom)"
             />
 
             <ToggleSetting

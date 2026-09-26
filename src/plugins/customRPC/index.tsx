@@ -190,7 +190,7 @@ async function createActivity(): Promise<Activity | undefined> {
     switch (timestampMode) {
         case TimestampMode.NOW:
             activity.timestamps = {
-                start: Date.now()
+                start: getOpenedAt()
             };
             break;
         case TimestampMode.TIME:
@@ -284,8 +284,25 @@ export async function setRpc(disable?: boolean) {
 let loopInterval: ReturnType<typeof setInterval> | undefined;
 let loopAnchor = 0;
 
+/** "Since Discord open" has to stay put, so the anchor is captured once instead of on every rebuild. */
+let openedAt = Date.now();
+let lastTimestampMode: TimestampMode | undefined;
+
 function getLoopAnchor() {
     return loopAnchor;
+}
+
+function getOpenedAt() {
+    return openedAt;
+}
+
+/** Re-anchors whenever the mode changes, so switching to "Since Discord open" means since you switched. */
+export function syncTimestampAnchor() {
+    const mode = settings.store.timestampMode;
+    if (mode === lastTimestampMode) return;
+
+    lastTimestampMode = mode;
+    openedAt = Date.now();
 }
 
 export function startTimestampLoop() {
@@ -325,6 +342,7 @@ export default definePlugin({
     settings,
 
     start() {
+        syncTimestampAnchor();
         startTimestampLoop();
         setRpc();
         syncServices();
