@@ -7,7 +7,7 @@
 import { isPluginEnabled } from "@api/PluginManager";
 import { definePluginSettings, Settings } from "@api/Settings";
 import fakeNitro from "@plugins/fakeNitro";
-import { SlipcordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import { localStorage } from "@utils/localStorage";
 import definePlugin, { OptionType } from "@utils/types";
 
@@ -90,7 +90,7 @@ export default definePlugin({
     name: "SlipperStreamFixes",
     description: "Tries to fix stream quality on Slipper by patching Discord's encoder and quality restrictions.",
     tags: ["Voice"],
-    authors: [SlipcordDevs.creations],
+    authors: [EquicordDevs.creations],
     settings,
 
     patches: [

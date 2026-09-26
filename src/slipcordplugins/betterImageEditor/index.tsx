@@ -8,7 +8,7 @@ import "./style.css";
 
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { SlipcordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import { classes, pluralise } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
@@ -562,7 +562,7 @@ let area: Size | null = null;
 export default definePlugin({
     name: "BetterImageEditor",
     description: "Keeps a shelf of your pictures in the avatar and banner editor, and remembers how you cropped each one.",
-    authors: [SlipcordDevs.heart_menace],
+    authors: [EquicordDevs.heart_menace],
     settings,
 
     flux: {
