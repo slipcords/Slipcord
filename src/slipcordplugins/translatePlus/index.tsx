@@ -19,7 +19,7 @@
 import "./style.css";
 
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { ChannelStore, Menu } from "@webpack/common";
 
@@ -49,7 +49,7 @@ export default definePlugin({
     description: "Vencord's translate plugin but with support for artistic languages!",
     dependencies: ["MessageAccessoriesAPI", "MessagePopoverAPI"],
     tags: ["Chat", "Utility"],
-    authors: [Devs.Ven, SlipcordDevs.Prince527],
+    authors: [Devs.Ven, EquicordDevs.Prince527],
     settings,
     contextMenus: {
         "message": messageCtxPatch

@@ -6,7 +6,7 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { BaseText } from "@components/BaseText";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
 import { ReactNode } from "react";
 
@@ -113,7 +113,7 @@ export default definePlugin({
     name: "WigglyText",
     description: "Adds a new markdown formatting that makes text wiggly.",
     tags: ["Appearance", "Customisation", "Fun"],
-    authors: [SlipcordDevs.nexpid],
+    authors: [EquicordDevs.nexpid],
     settings,
     settingsAboutComponent: () => (
         <BaseText>

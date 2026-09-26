@@ -5,7 +5,7 @@
  */
 
 import type { NavContextMenuPatchCallback } from "@api/ContextMenu";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { RelationshipType } from "@vencord/discord-types/enums";
 import { findByPropsLazy } from "@webpack";
@@ -37,7 +37,7 @@ const userContextPatch: NavContextMenuPatchCallback = (children, { user }) => {
 export default definePlugin({
     name: "CancelFriendRequest",
     description: "Adds a way to cancel outgoing friend requests from profiles.",
-    authors: [SlipcordDevs.omaw],
+    authors: [EquicordDevs.omaw],
     tags: ["Utility"],
 
     contextMenus: {

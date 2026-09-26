@@ -20,7 +20,7 @@ import { definePluginSettings } from "@api/Settings";
 import { CodeBlock } from "@components/CodeBlock";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Heading } from "@components/Heading";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { copyWithToast } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
 import { ChannelStore, Modal, openModal } from "@webpack/common";
@@ -100,7 +100,7 @@ export default definePlugin({
     description: "Decode base64 content of any message and copy the decoded content.",
     dependencies: ["MessagePopoverAPI"],
     tags: ["Appearance", "Customisation", "Chat"],
-    authors: [SlipcordDevs.ThePirateStoner],
+    authors: [EquicordDevs.ThePirateStoner],
     settings,
     messagePopoverButton: {
         icon: DecodeIcon,

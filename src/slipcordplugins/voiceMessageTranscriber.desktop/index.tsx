@@ -16,7 +16,7 @@ import { Heading } from "@components/Heading";
 import { ClockIcon, CopyIcon } from "@components/Icons";
 import { Span } from "@components/Span";
 import { copyToClipboard } from "@utils/clipboard";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
 import { RenderModalProps } from "@vencord/discord-types";
@@ -619,7 +619,7 @@ const VoiceMessageTranscriberWrapped = ErrorBoundary.wrap(VoiceMessageTranscribe
 
 export default definePlugin({
     name: "VoiceMessageTranscriber",
-    authors: [Devs.TheSun, SlipcordDevs.tt],
+    authors: [Devs.TheSun, EquicordDevs.tt],
     description: "On-device transcriptions for voice messages powered by Whisper v3",
     tags: ["Chat", "Media", "Utility", "Voice"],
     patches: [

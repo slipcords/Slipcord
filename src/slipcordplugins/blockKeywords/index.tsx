@@ -11,7 +11,7 @@ import { Card } from "@components/Card";
 import { HeadingTertiary } from "@components/Heading";
 import { ErrorBoundary } from "@components/index";
 import { Margins } from "@components/margins";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
@@ -132,7 +132,7 @@ export default definePlugin({
     name: "BlockKeywords",
     description: "Blocks messages containing specific user-defined keywords, as if the user sending them was blocked.",
     tags: ["Appearance", "Customisation", "Privacy"],
-    authors: [SlipcordDevs.catcraft, SlipcordDevs.secp192k1],
+    authors: [EquicordDevs.catcraft, EquicordDevs.secp192k1],
     patches: [
         {
             find: "_channelMessages={}",

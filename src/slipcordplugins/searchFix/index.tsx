@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 function settingsComponent() {
@@ -41,7 +41,7 @@ export default definePlugin({
     description: 'Fixes the annoying "We dropped the magnifying glass!" error.',
     tags: ["Utility"],
     settingsAboutComponent: () => settingsComponent(),
-    authors: [SlipcordDevs.Jaxx],
+    authors: [EquicordDevs.Jaxx],
     patches: [
         {
             find: '"SearchQueryStore";',

@@ -6,7 +6,7 @@
 
 import "./styles.css";
 
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { getIntlMessage, openUserProfile } from "@utils/discord";
 import definePlugin from "@utils/types";
 import { Button, React, RelationshipStore, TextInput, UserStore } from "@webpack/common";
@@ -18,7 +18,7 @@ export default definePlugin({
     name: "BetterBlockedUsers",
     description: "Allows you to search in blocked users list and makes names selectable in settings.",
     tags: ["Appearance", "Shortcuts"],
-    authors: [SlipcordDevs.TheArmagan],
+    authors: [EquicordDevs.TheArmagan],
     patches: [
         {
             find: '"],{numberOfBlockedUsers:',

@@ -34,7 +34,7 @@ export default definePlugin({
     name: "Equissant",
     description: "Crossant every specified amount of clicks :trolley:",
     tags: ["Fun"],
-    authors: [SlipcordDevs.SomeAspy, Devs.thororen],
+    authors: [Devs.SomeAspy, Devs.thororen],
     dependencies: ["AudioPlayerAPI"],
     settings,
     start() {

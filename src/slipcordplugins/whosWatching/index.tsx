@@ -11,7 +11,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
 import { Heading, HeadingSecondary } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { getIntlMessage, openUserProfile } from "@utils/discord";
 import { Margins } from "@utils/margins";
@@ -83,7 +83,7 @@ export default definePlugin({
     name: "WhosWatching",
     description: "Hover over the screenshare icon to view what users are watching your stream",
     tags: ["Activity"],
-    authors: [SlipcordDevs.Fres, Devs.thororen],
+    authors: [EquicordDevs.Fres, Devs.thororen],
     settings,
     patches: [
         {

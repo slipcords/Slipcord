@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 export default definePlugin({
     name: "ShowResourceChannels",
     description: "shows the channels hidden behind the server resources in the channel list",
     tags: ["Servers"],
-    authors: [SlipcordDevs.VillainsRule],
+    authors: [EquicordDevs.VillainsRule],
     patches: [
         {
             find: ".GUILD_DIRECTORY:null",

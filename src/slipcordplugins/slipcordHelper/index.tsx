@@ -11,7 +11,7 @@ import { isPluginEnabled } from "@api/PluginManager";
 import { definePluginSettings, migratePluginToSettings, Settings } from "@api/Settings";
 import { ShieldIcon, WarningIcon } from "@components/Icons";
 import customRPC from "@plugins/customRPC";
-import { Devs, GUILD_ID, SlipcordDevs, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, VC_SUPPORT_CHANNEL_IDS } from "@utils/constants";
+import { Devs, GUILD_ID, SlipcordDevs, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, VC_SUPPORT_CHANNEL_IDS, EquicordDevs } from "@utils/constants";
 import { isAnyPluginDev } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
 import { StandingState } from "@vencord/discord-types/enums";
@@ -147,15 +147,15 @@ export default definePlugin({
     dependencies: ["CommandsAPI", "HeaderBarAPI", "MessageAccessoriesAPI"],
     authors: [
         Devs.thororen,
-        SlipcordDevs.nyx,
-        SlipcordDevs.Naibuu,
-        SlipcordDevs.keircn,
-        SlipcordDevs.SerStars,
-        SlipcordDevs.mart,
-        SlipcordDevs.omaw,
+        Devs.nyx,
+        EquicordDevs.Naibuu,
+        EquicordDevs.keircn,
+        Devs.SerStars,
+        EquicordDevs.mart,
+        EquicordDevs.omaw,
         Devs.Samwich,
         Devs.AutumnVN,
-        SlipcordDevs.auggeeo
+        EquicordDevs.auggeeo
     ],
     required: true,
     settings,

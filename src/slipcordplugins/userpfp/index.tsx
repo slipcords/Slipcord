@@ -14,7 +14,7 @@ import { Heart } from "@components/Heart";
 import { PencilIcon } from "@components/Icons";
 import { Margins } from "@components/margins";
 import { Notice } from "@components/Notice";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { openInviteModal } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
@@ -66,7 +66,7 @@ export default definePlugin({
     name: "UserPFP",
     description: "Allows you to use an animated avatar without Nitro",
     tags: ["Appearance", "Customisation", "Servers"],
-    authors: [SlipcordDevs.nexpid, Devs.thororen, SlipcordDevs.soapphia, SlipcordDevs.sketchmyname],
+    authors: [EquicordDevs.nexpid, Devs.thororen, EquicordDevs.soapphia, EquicordDevs.sketchmyname],
     settings,
     data,
     settingsAboutComponent: () => (

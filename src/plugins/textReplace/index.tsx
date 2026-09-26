@@ -26,7 +26,7 @@ import { HeadingSecondary } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
 import { Span } from "@components/Span";
 import { TooltipContainer } from "@components/TooltipContainer";
-import { Devs, SlipcordDevs, SUPPORT_CHANNEL_IDS } from "@utils/constants";
+import { Devs, SlipcordDevs, SUPPORT_CHANNEL_IDS, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
@@ -425,7 +425,7 @@ export default definePlugin({
     description: "Replace text in your messages. You can find pre-made rules in the #textreplace-rules channel in Vencord's Server",
     dependencies: ["MessagePopoverAPI"],
     tags: ["Chat", "Customisation", "Utility"],
-    authors: [Devs.AutumnVN, Devs.TheKodeToad, SlipcordDevs.Etorix, SlipcordDevs.Ape],
+    authors: [Devs.AutumnVN, Devs.TheKodeToad, EquicordDevs.Etorix, EquicordDevs.Ape],
     isModified: true,
     settings,
     modifyIncomingMessage,

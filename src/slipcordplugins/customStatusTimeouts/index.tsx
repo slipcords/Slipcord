@@ -5,7 +5,7 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { SlipcordDevs } from "@utils/constants";
+import {SlipcordDevs, EquicordDevs, Devs} from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 
 const Millis = {
@@ -55,7 +55,7 @@ export default definePlugin({
     name: "CustomStatusTimeouts",
     description: "Adds configurable timeout presets to the status (presence) menu.",
     tags: ["Activity", "Utility"],
-    authors: [SlipcordDevs.Kiri, SlipcordDevs.thororen],
+    authors: [EquicordDevs.Kiri, Devs.thororen],
     settings,
     patches: [
         {

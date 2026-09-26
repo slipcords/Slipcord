@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 export default definePlugin({
     name: "TidalEmbeds",
     description: "Embeds TIDAL songs to make them playable in Discord.",
     tags: ["Appearance", "Chat", "Media"],
-    authors: [SlipcordDevs.vmohammad],
+    authors: [EquicordDevs.vmohammad],
     dependencies: ["MessageUpdaterAPI", "MessageAccessoriesAPI"],
     patches: [
         {

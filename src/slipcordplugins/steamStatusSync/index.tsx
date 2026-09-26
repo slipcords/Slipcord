@@ -5,7 +5,7 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { SlipcordDevs } from "@utils/constants";
+import {SlipcordDevs, Devs} from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 
 enum SteamStatus {
@@ -86,7 +86,7 @@ export default definePlugin({
     name: "SteamStatusSync",
     description: "Sync your status to Steam! (Online, Away, Invisible, or Offline.)",
     tags: ["Activity", "Appearance", "Customisation"],
-    authors: [SlipcordDevs.niko],
+    authors: [Devs.niko],
 
     settings,
 

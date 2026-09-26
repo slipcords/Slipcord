@@ -6,7 +6,7 @@
 
 import { AudioPlayerInterface, createAudioPlayer } from "@api/AudioPlayer";
 import { definePluginSettings } from "@api/Settings";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 
 import { ignoredKeys, packs } from "./packs";
@@ -127,7 +127,7 @@ export default definePlugin({
     name: "KeyboardSounds",
     description: "Adds OperaGX or osu! sound effects when typing on your keyboard.",
     tags: ["Fun"],
-    authors: [Devs.HypedDomi, SlipcordDevs.Etorix],
+    authors: [Devs.HypedDomi, EquicordDevs.Etorix],
     dependencies: ["AudioPlayerAPI"],
     settings,
     start() {

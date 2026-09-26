@@ -5,7 +5,7 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { MessageJSON } from "@vencord/discord-types";
 import { MessageStore, UserStore } from "@webpack/common";
@@ -33,7 +33,7 @@ export default definePlugin({
     name: "ReplyPingControl",
     description: "Control whether to always or never get pinged on message replies, with whitelist and blacklist features",
     tags: ["Chat", "Notifications"],
-    authors: [Devs.ant0n, SlipcordDevs.MrDiamond, SlipcordDevs.keircn],
+    authors: [Devs.ant0n, EquicordDevs.MrDiamond, EquicordDevs.keircn],
     settings,
 
     patches: [{

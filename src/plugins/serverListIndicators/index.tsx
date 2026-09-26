@@ -22,7 +22,7 @@ import { addServerListElement, removeServerListElement, ServerListRenderPosition
 import { definePluginSettings } from "@api/Settings";
 import { BaseText } from "@components/BaseText";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
 import { GuildStore, PresenceStore, RelationshipStore, Tooltip, UserGuildJoinRequestStore, useStateFromStores } from "@webpack/common";
@@ -139,7 +139,7 @@ export default definePlugin({
     name: "ServerListIndicators",
     description: "Add online friend count or server count in the server list",
     tags: ["Servers", "Appearance"],
-    authors: [Devs.Rini, SlipcordDevs.Panniku],
+    authors: [Devs.Rini, EquicordDevs.Panniku],
     dependencies: ["ServerListAPI"],
     settings,
 

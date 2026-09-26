@@ -17,7 +17,7 @@
 */
 
 import ErrorBoundary from "@components/ErrorBoundary";
-import { SlipcordDevs } from "@utils/constants";
+import {SlipcordDevs, Devs} from "@utils/constants";
 import definePlugin from "@utils/types";
 import { findComponentByCodeLazy } from "@webpack";
 
@@ -26,7 +26,7 @@ export default definePlugin({
     name: "PinIcon",
     description: "Adds a pin icon to pinned messages",
     tags: ["Appearance", "Chat"],
-    authors: [SlipcordDevs.iamme],
+    authors: [Devs.iamme],
     patches: [
         {
             find: "isUnsupported})",

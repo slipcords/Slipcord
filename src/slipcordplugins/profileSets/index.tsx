@@ -9,7 +9,7 @@ import "./styles.css";
 import { definePluginSettings } from "@api/Settings";
 import { UserIcon } from "@components/Icons";
 import SettingsPlugin from "@plugins/_core/settings";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { removeFromArray } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
@@ -32,7 +32,7 @@ export default definePlugin({
     name: "ProfileSets",
     description: "Allows you to save and load different profile presets.",
     tags: ["Appearance", "Customisation", "Utility"],
-    authors: [SlipcordDevs.omaw, SlipcordDevs.justjxke],
+    authors: [EquicordDevs.omaw, EquicordDevs.justjxke],
     settings,
     toolboxActions: {
         "Open Profile Sets": () => {

@@ -6,7 +6,7 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { Notice } from "@components/Notice";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { User } from "@vencord/discord-types";
 import { ChannelStore, UserStore } from "@webpack/common";
@@ -37,7 +37,7 @@ function getCachedUsers(): User[] {
 
 export default definePlugin({
     name: "UniversalMention",
-    authors: [SlipcordDevs.justjxke],
+    authors: [EquicordDevs.justjxke],
     description: "Mention any user, regardless of channel access.",
     tags: ["Chat", "Servers", "Utility"],
     settings,

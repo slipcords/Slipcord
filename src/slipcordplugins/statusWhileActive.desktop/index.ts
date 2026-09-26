@@ -6,7 +6,7 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { getUserSettingLazy } from "@api/UserSettings";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { VoiceState } from "@vencord/discord-types";
 import { UserStore, VoiceStateStore } from "@webpack/common";
@@ -57,7 +57,7 @@ export default definePlugin({
     name: "StatusWhileActive",
     description: "Automatically updates your online status when in a voice channel.",
     tags: ["Activity", "Customisation", "Voice"],
-    authors: [SlipcordDevs.smuki],
+    authors: [EquicordDevs.smuki],
     settings,
     flux: {
         VOICE_STATE_UPDATES({ voiceStates }: { voiceStates: VoiceState[]; }) {

@@ -19,7 +19,7 @@
 import "./style.css";
 
 import { definePluginSettings } from "@api/Settings";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 
 import { VoiceChannelIndicator } from "./components";
@@ -50,7 +50,7 @@ export default definePlugin({
     description: "Shows an indicator when a user is in a Voice Channel",
     tags: ["Voice", "Appearance", "Friends"],
     dependencies: ["MemberListDecoratorsAPI", "MessageDecorationsAPI", "NicknameIconsAPI"],
-    authors: [Devs.Nuckyz, Devs.LordElias, SlipcordDevs.omaw],
+    authors: [Devs.Nuckyz, Devs.LordElias, EquicordDevs.omaw],
     settings,
     renderNicknameIcon({ userId }) {
         if (!settings.store.showInUserProfileModal) return null;

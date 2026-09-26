@@ -7,7 +7,7 @@
 import { isPluginEnabled } from "@api/PluginManager";
 import { definePluginSettings } from "@api/Settings";
 import NoReplyMentionPlugin from "@plugins/noReplyMention";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { copyWithToast, insertTextIntoChatInputBox } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
@@ -579,7 +579,7 @@ export default definePlugin({
     name: "MessageClickActions",
     description: "Customize click actions on messages.",
     tags: ["Chat", "Shortcuts"],
-    authors: [Devs.Ven, SlipcordDevs.keircn, SlipcordDevs.ZcraftElite, SlipcordDevs.omaw],
+    authors: [Devs.Ven, EquicordDevs.keircn, EquicordDevs.ZcraftElite, EquicordDevs.omaw],
     isModified: true,
 
     settings,

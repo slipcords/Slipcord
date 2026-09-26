@@ -6,7 +6,7 @@
 
 import { Notifications } from "@api/index";
 import { definePluginSettings } from "@api/Settings";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { getCurrentChannel } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
 import { MessageJSON } from "@vencord/discord-types";
@@ -35,7 +35,7 @@ const settings = definePluginSettings({
 });
 
 export default definePlugin({
-    authors: [SlipcordDevs.cassie, SlipcordDevs.mochienya],
+    authors: [EquicordDevs.cassie, EquicordDevs.mochienya],
     name: "MessageNotifier",
     description: "Get toasts for when chosen users send a message",
     tags: ["Chat", "Notifications"],

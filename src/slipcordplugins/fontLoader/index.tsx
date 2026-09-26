@@ -11,7 +11,7 @@ import { Card } from "@components/Card";
 import { HeadingSecondary, HeadingTertiary } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
 import { debounce } from "@shared/debounce";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { Margins } from "@utils/margins";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
@@ -200,7 +200,7 @@ export default definePlugin({
     name: "FontLoader",
     description: "Loads any font from Google Fonts",
     tags: ["Appearance", "Customisation"],
-    authors: [SlipcordDevs.vmohammad],
+    authors: [EquicordDevs.vmohammad],
     settings,
 
     async start() {

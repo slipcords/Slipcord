@@ -7,7 +7,7 @@
 import { ChannelToolbarButton } from "@api/HeaderBar";
 import { addSurfacePropsProvider, notifySurfaceClassesChanged, type SurfaceId, type SurfaceProvidedProps } from "@api/SurfaceClasses";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { classes } from "@utils/misc";
 import definePlugin from "@utils/types";
@@ -444,7 +444,7 @@ export default definePlugin({
     description: "Native collapsible channel, member, chat button, and user area surfaces.",
     tags: ["Appearance", "Customisation", "Chat", "Servers"],
     dependencies: ["HeaderBarAPI", "ChatInputButtonAPI", "SurfaceClassesAPI"],
-    authors: [SlipcordDevs.benjii],
+    authors: [EquicordDevs.benjii],
     searchTerms: ["ui", "sidebar", "collapsible"],
     managedStyle,
     settings,

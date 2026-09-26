@@ -11,7 +11,7 @@ import {
     definePluginSettings,
     Settings,
 } from "@api/Settings";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
 
 const presendObject: MessageSendListener = (channelId, msg) => {
@@ -66,7 +66,7 @@ export default definePlugin({
     description: "Tweaks your messages to make them look nicer and have better grammar. See settings",
     dependencies: ["MessageEventsAPI"],
     tags: ["Chat"],
-    authors: [Devs.Samwich, SlipcordDevs.WKoA],
+    authors: [Devs.Samwich, EquicordDevs.WKoA],
     onBeforeMessageSend: presendObject,
     settings,
 });

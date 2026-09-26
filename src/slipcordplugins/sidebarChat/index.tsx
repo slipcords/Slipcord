@@ -7,7 +7,7 @@
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { HeaderBarButton } from "@api/HeaderBar";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { getCurrentChannel } from "@utils/discord";
 import definePlugin from "@utils/types";
@@ -301,7 +301,7 @@ const ChannelContextPatch: NavContextMenuPatchCallback = (children, args: { chan
 
 export default definePlugin({
     name: "SidebarChat",
-    authors: [Devs.Joona, SlipcordDevs.justjxke],
+    authors: [Devs.Joona, EquicordDevs.justjxke],
     description: "Open a channel or DM as a sidebar or a popout.",
     tags: ["Appearance", "Chat", "Servers"],
     dependencies: ["HeaderBarAPI"],

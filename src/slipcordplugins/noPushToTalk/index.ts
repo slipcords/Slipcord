@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 export default definePlugin({
     name: "NoPushToTalk",
     description: "Bypasses the push-to-talk requirement for voice activity in channels that enforce it.",
     tags: ["Servers", "Voice"],
-    authors: [SlipcordDevs.omaw],
+    authors: [EquicordDevs.omaw],
     patches: [
         {
             find: "PermissionVADStore",

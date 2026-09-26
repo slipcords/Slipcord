@@ -8,7 +8,7 @@ import "./styles.css";
 
 import { addServerListElement, removeServerListElement, ServerListRenderPosition } from "@api/ServerList";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { FluxDispatcher, Tooltip } from "@webpack/common";
 
@@ -26,7 +26,7 @@ function SearchIcon() {
 
 export default definePlugin({
     name: "ServerSearch",
-    authors: [SlipcordDevs.camila314],
+    authors: [EquicordDevs.camila314],
     description: "Navigate your servers better with a quick search button",
     tags: ["Shortcuts", "Servers"],
 

@@ -7,7 +7,7 @@
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
 import { InfoIcon } from "@components/Icons";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { Guild } from "@vencord/discord-types";
 import { Menu } from "@webpack/common";
@@ -53,7 +53,7 @@ export default definePlugin({
     name: "ServerInfo",
     description: "Allows you to view info about a server",
     tags: ["Servers", "Utility"],
-    authors: [Devs.Ven, Devs.Nuckyz, SlipcordDevs.Z1xus],
+    authors: [Devs.Ven, Devs.Nuckyz, EquicordDevs.Z1xus],
     dependencies: ["DynamicImageModalAPI"],
     searchTerms: ["guild", "info", "ServerProfile"],
     isModified: true,

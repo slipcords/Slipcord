@@ -6,7 +6,7 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { Button } from "@components/Button";
-import { SlipcordDevs } from "@utils/constants";
+import {SlipcordDevs, EquicordDevs, Devs} from "@utils/constants";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
 import { Channel, Message } from "@vencord/discord-types";
 import { findByPropsLazy, findStore } from "@webpack";
@@ -122,7 +122,7 @@ export default definePlugin({
     name: "ToastNotifications",
     description: "Show a pop-up toast notification, configurable for DMs, group, friends, or guild channels.",
     tags: ["Appearance", "Customisation", "Notifications"],
-    authors: [SlipcordDevs.Skully, SlipcordDevs.Ethan, SlipcordDevs.Buzzy],
+    authors: [EquicordDevs.Skully, Devs.Ethan, EquicordDevs.Buzzy],
     settings,
     flux: {
         MESSAGE_CREATE({ message }: { message: Message; }) {

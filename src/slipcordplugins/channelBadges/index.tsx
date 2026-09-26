@@ -33,7 +33,7 @@ export default definePlugin({
     name: "ChannelBadges",
     description: "Adds badges to channels based on their type",
     tags: ["Appearance", "Customisation", "Servers"],
-    authors: [SlipcordDevs.creations, Devs.thororen],
+    authors: [Devs.creations, Devs.thororen],
     settings,
     patches: [
         // TY TypingIndicator

@@ -8,7 +8,7 @@ import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
 import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, sendBotMessage } from "@api/Commands";
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { Menu, React } from "@webpack/common";
 
@@ -102,7 +102,7 @@ export default definePlugin({
     description: "Automated fingerprint/end text",
     dependencies: ["CommandsAPI", "ChatInputButtonAPI", "MessagePopoverAPI"],
     tags: ["Appearance", "Chat"],
-    authors: [Devs.Ven, Devs.Rini, Devs.ImBanana, SlipcordDevs.KrystalSkull],
+    authors: [Devs.Ven, Devs.Rini, Devs.ImBanana, EquicordDevs.KrystalSkull],
     onBeforeMessageSend(channelId, msg) {
         if (!settings.store.isEnabled) {
             msg.content = msg.content;

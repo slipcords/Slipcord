@@ -19,7 +19,7 @@
 import "./styles.css";
 
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 import { settings, toggleHoverControls } from "./settings";
@@ -34,7 +34,7 @@ import { stopTidalStore } from "./tidal/TidalStore";
 export default definePlugin({
     name: "MusicControls",
     description: "Music Controls and Lyrics for multiple services ",
-    authors: [Devs.Ven, Devs.afn, Devs.KraXen72, Devs.Av32000, Devs.nin0dev, Devs.thororen, SlipcordDevs.vmohammad, Devs.Joona],
+    authors: [Devs.Ven, Devs.afn, Devs.KraXen72, Devs.Av32000, Devs.nin0dev, Devs.thororen, EquicordDevs.vmohammad, Devs.Joona],
     settings,
     tags: ["Media", "Activity"],
     searchTerms: [

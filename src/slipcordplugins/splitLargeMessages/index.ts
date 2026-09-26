@@ -6,7 +6,7 @@
 
 import type { MessageSendListener } from "@api/MessageEvents";
 import { definePluginSettings } from "@api/Settings";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { copyWithToast, getCurrentChannel, insertTextIntoChatInputBox, sendMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import { sleep } from "@utils/misc";
@@ -149,7 +149,7 @@ export default definePlugin({
     description: "Splits oversized messages into Discord-sized chunks before sending.",
     dependencies: ["MessageEventsAPI"],
     tags: ["Chat", "Utility"],
-    authors: [SlipcordDevs.Reycko, SlipcordDevs.justjxke],
+    authors: [EquicordDevs.Reycko, EquicordDevs.justjxke],
     settings,
     onBeforeMessageSend: listener,
 

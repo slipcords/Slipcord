@@ -7,7 +7,7 @@
 import "./styles.css";
 
 import { definePluginSettings } from "@api/Settings";
-import { SlipcordDevs } from "@utils/constants";
+import {SlipcordDevs, Devs} from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
 import { ColorUtils, React, showToast, Toasts } from "@webpack/common";
@@ -275,7 +275,7 @@ export default definePlugin({
     name: "BetterAudioPlayer",
     description: "Adds a spectrograph and oscilloscope visualizer to audio attachment players.",
     tags: ["Appearance", "Media", "Voice"],
-    authors: [SlipcordDevs.creations],
+    authors: [Devs.creations],
     settings,
 
     patches: [

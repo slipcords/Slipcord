@@ -19,7 +19,7 @@
 import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, OptionalMessageOption, RequiredMessageOption, sendBotMessage } from "@api/Commands";
 import { addMessagePreEditListener, addMessagePreSendListener, MessageObject, removeMessagePreEditListener, removeMessagePreSendListener } from "@api/MessageEvents";
 import { migratePluginSettings } from "@api/Settings";
-import { Devs, GUILD_IDS,SlipcordDevs } from "@utils/constants";
+import { Devs, GUILD_IDS,SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import definePlugin from "@utils/types";
 import { DraftType, UploadHandler, UploadManager, UserAffinitiesStore, UserStore } from "@webpack/common";
@@ -57,16 +57,16 @@ export default definePlugin({
         Devs.Arjix,
         Devs.amy,
         Devs.Samu,
-        SlipcordDevs.zyqunix,
-        SlipcordDevs.ShadyGoat,
+        EquicordDevs.zyqunix,
+        EquicordDevs.ShadyGoat,
         Devs.thororen,
         Devs.Korbo,
         Devs.nyx,
         Devs.amy,
         Devs.Samwich,
-        SlipcordDevs.Fafa,
+        EquicordDevs.Fafa,
         Devs.JacobTm,
-        SlipcordDevs.voidbbg
+        EquicordDevs.voidbbg
     ],
     settings,
     commands: [

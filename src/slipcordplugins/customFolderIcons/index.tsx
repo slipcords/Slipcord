@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { SlipcordDevs } from "@utils/constants";
+import {SlipcordDevs, Devs} from "@utils/constants";
 import definePlugin from "@utils/types";
 
 import { makeContextItem } from "./components";
@@ -15,7 +15,7 @@ export default definePlugin({
     name: "CustomFolderIcons",
     description: "Customize folder icons with any png",
     tags: ["Appearance", "Customisation", "Organisation"],
-    authors: [SlipcordDevs.sadan],
+    authors: [Devs.sadan],
     settings,
     patches: [
         {

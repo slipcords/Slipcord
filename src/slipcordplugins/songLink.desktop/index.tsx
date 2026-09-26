@@ -6,7 +6,7 @@
 
 import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, sendBotMessage } from "@api/Commands";
 import { definePluginSettings } from "@api/Settings";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
 import { useEffect, useState } from "@webpack/common";
@@ -127,7 +127,7 @@ export default definePlugin({
     description: "Adds streaming service buttons below song links",
     dependencies: ["MessageAccessoriesAPI"],
     tags: ["Media", "Utility"],
-    authors: [Devs.nin0dev, SlipcordDevs.NassCT],
+    authors: [Devs.nin0dev, EquicordDevs.NassCT],
     settings,
     Providers,
     cache: ({} as Record<string, SongLinkResult>),

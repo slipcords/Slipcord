@@ -5,7 +5,7 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { ChannelRouter, ChannelStore, UserGuildSettingsStore } from "@webpack/common";
 
@@ -21,7 +21,7 @@ export default definePlugin({
     name: "AutoJumpToMessage",
     description: "Automatically opens the channel from new messages.",
     tags: ["Chat", "Utility"],
-    authors: [SlipcordDevs.k304],
+    authors: [EquicordDevs.k304],
     settings,
     flux: {
         RPC_NOTIFICATION_CREATE({ channelId }) {

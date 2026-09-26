@@ -5,7 +5,7 @@
  */
 
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { Channel } from "@vencord/discord-types";
 import { Menu, NavigationRouter, RestAPI, Toasts, UserStore } from "@webpack/common";
@@ -145,7 +145,7 @@ export default definePlugin({
     name: "LastActive",
     description: "A plugin to jump to last active message from yourself or another user in a channel/server.",
     tags: ["Chat", "Utility"],
-    authors: [SlipcordDevs.Crxa],
+    authors: [EquicordDevs.Crxa],
     contextMenus: {
         "channel-context": ChannelContextMenuPatch,
         "user-context": UserContextMenuPatch,

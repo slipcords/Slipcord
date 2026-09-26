@@ -9,7 +9,7 @@ import "./styles.css";
 import { BadgePosition, ProfileBadge } from "@api/Badges";
 import { Button } from "@components/Button";
 import { BadgeContextMenu } from "@plugins/_api/badges";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { openInviteModal } from "@utils/discord";
 import definePlugin from "@utils/types";
 import { ContextMenuApi, React, Toasts } from "@webpack/common";
@@ -23,7 +23,7 @@ export default definePlugin({
     name: "GlobalBadges",
     description: "Adds global badges from other client mods",
     tags: ["Appearance"],
-    authors: [Devs.HypedDomi, SlipcordDevs.Wolfie, Devs.thororen],
+    authors: [Devs.HypedDomi, EquicordDevs.Wolfie, Devs.thororen],
     settings,
     settingsAboutComponent: () => (
         <>

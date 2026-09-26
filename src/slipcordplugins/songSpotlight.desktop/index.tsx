@@ -7,7 +7,7 @@
 import "./style.css";
 
 import ErrorBoundary from "@components/ErrorBoundary";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 import { useAuthorizationStore } from "./lib/stores/AuthorizationStore";
@@ -21,7 +21,7 @@ export default definePlugin({
     description: "Show off songs on your profile",
     dependencies: ["ProfileCollectionsAPI"],
     tags: ["Appearance", "Media"],
-    authors: [SlipcordDevs.nexpid],
+    authors: [EquicordDevs.nexpid],
     settings,
     patches: [
         // Full profile modal sections (lazy loaded)

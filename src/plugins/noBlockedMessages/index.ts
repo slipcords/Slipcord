@@ -18,7 +18,7 @@
 
 import { definePluginSettings, migratePluginSetting, Settings } from "@api/Settings";
 import { containsBlockedKeywords } from "@slipcordplugins/blockKeywords";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
 import { Message, User } from "@vencord/discord-types";
@@ -86,7 +86,7 @@ const settings = definePluginSettings({
 export default definePlugin({
     name: "NoBlockedMessages",
     description: "Hide all blocked/ignored messages from chat completely.",
-    authors: [Devs.rushii, Devs.Samu, Devs.jamesbt365, Devs.Elvyra, SlipcordDevs.Etorix],
+    authors: [Devs.rushii, Devs.Samu, Devs.jamesbt365, Devs.Elvyra, EquicordDevs.Etorix],
     tags: ["Accessibility", "Chat"],
     isModified: true,
     settings,

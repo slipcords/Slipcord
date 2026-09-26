@@ -5,7 +5,7 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
 import { ChannelStore, DraftType, SelectedChannelStore, UploadHandler } from "@webpack/common";
@@ -210,7 +210,7 @@ export default definePlugin({
     name: "AutoZipper",
     description: "Automatically zips specified file types and folders before uploading to Discord",
     tags: ["Chat", "Organisation"],
-    authors: [SlipcordDevs.SSnowly],
+    authors: [EquicordDevs.SSnowly],
     settings,
 
     start() {

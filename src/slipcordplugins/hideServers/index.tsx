@@ -15,7 +15,7 @@ import {
     removeServerListElement,
     ServerListRenderPosition,
 } from "@api/ServerList";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { Guild } from "@vencord/discord-types";
 import { Menu, React, SortedGuildStore, useStateFromStores } from "@webpack/common";
@@ -74,7 +74,7 @@ export default definePlugin({
     name: "HideServers",
     description: "Allows you to hide servers from the guild list and quick switcher by right clicking them",
     tags: ["Servers", "Utility"],
-    authors: [SlipcordDevs.bep],
+    authors: [EquicordDevs.bep],
     searchTerms: ["guild", "server", "hide", "folder"],
 
     dependencies: ["ServerListAPI"],

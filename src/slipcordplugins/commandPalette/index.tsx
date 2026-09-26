@@ -6,7 +6,7 @@
 
 import "./style.css";
 
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 import { clearRegistry, getCommandById } from "./api/registry";
@@ -72,7 +72,7 @@ function handleGlobalKey(e: KeyboardEvent): boolean {
 export default definePlugin({
     name: "CommandPalette",
     description: "Raycast style command palette for running actions anywhere in Discord",
-    authors: [SlipcordDevs.justjxke],
+    authors: [EquicordDevs.justjxke],
     tags: ["Customisation", "Commands", "Shortcuts"],
     dependencies: ["UserSettingsAPI"],
     settings,

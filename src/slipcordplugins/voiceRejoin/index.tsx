@@ -6,7 +6,7 @@
 
 import * as DataStore from "@api/DataStore";
 import { definePluginSettings } from "@api/Settings";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
 import { VoiceState } from "@vencord/discord-types";
@@ -52,7 +52,7 @@ export default definePlugin({
     name: "VoiceRejoin",
     description: "Rejoins DM/Server call automatically when restarting Discord.",
     tags: ["Servers", "Utility", "Voice"],
-    authors: [SlipcordDevs.omaw, SlipcordDevs.keircn],
+    authors: [EquicordDevs.omaw, EquicordDevs.keircn],
     settings,
 
     flux: {

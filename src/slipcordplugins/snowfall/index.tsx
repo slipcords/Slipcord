@@ -7,7 +7,7 @@
 import { definePluginSettings } from "@api/Settings";
 import { Heading } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { createRoot, React } from "@webpack/common";
 import type { Root } from "react-dom/client";
@@ -452,7 +452,7 @@ export default definePlugin({
     name: "Snowfall",
     description: "Let it snow on Discord",
     tags: ["Appearance"],
-    authors: [SlipcordDevs.ZcraftElite, SlipcordDevs.square],
+    authors: [EquicordDevs.ZcraftElite, EquicordDevs.square],
 
     settingsAboutComponent: () => (
         <>

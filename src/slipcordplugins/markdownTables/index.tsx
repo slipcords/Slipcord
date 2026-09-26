@@ -7,7 +7,7 @@
 import { definePluginSettings } from "@api/Settings";
 import { CodeBlock } from "@components/CodeBlock";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
 import { waitFor } from "@webpack";
@@ -362,7 +362,7 @@ export default definePlugin({
     name: "MarkdownTables",
     description: "Render GitHub-style markdown tables in Discord messages.",
     tags: ["Chat", "Appearance"],
-    authors: [SlipcordDevs.yafyx],
+    authors: [EquicordDevs.yafyx],
     managedStyle,
     settings,
     patches: [

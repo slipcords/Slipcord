@@ -8,7 +8,7 @@ import "./styles.css";
 
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
 import { User } from "@vencord/discord-types";
@@ -40,7 +40,7 @@ export default definePlugin({
     description: "Displays a user's public GitHub repositories in their profile",
     dependencies: ["ProfileCollectionsAPI"],
     tags: ["Appearance"],
-    authors: [SlipcordDevs.talhakf, SlipcordDevs.Panniku, SlipcordDevs.benjii],
+    authors: [EquicordDevs.talhakf, EquicordDevs.Panniku, EquicordDevs.benjii],
     settings,
 
     patches: [

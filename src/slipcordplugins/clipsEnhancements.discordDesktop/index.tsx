@@ -6,7 +6,7 @@
 
 import { definePluginSettings, migratePluginSettings } from "@api/Settings";
 import { Button } from "@components/Button";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
 import { Activity } from "@vencord/discord-types";
@@ -49,7 +49,7 @@ export default definePlugin({
     name: "ClipsEnhancements",
     description: "Add more Clip FPS and duration options, custom clip length, RPC tagging and more",
     tags: ["Activity", "Media", "Utility"],
-    authors: [Devs.niko, Devs.Joona, SlipcordDevs.keircn],
+    authors: [Devs.niko, Devs.Joona, EquicordDevs.keircn],
     settings,
     patches: [
         {

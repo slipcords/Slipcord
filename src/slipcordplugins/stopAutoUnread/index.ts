@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { SlipcordDevs } from "@utils/constants";
+import { SlipcordDevs, EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 export default definePlugin({
     name: "StopAutoUnread",
     description: 'Stops Discord from automatically bumping a channels notification setting to "All Messages"',
     tags: ["Notifications"],
-    authors: [SlipcordDevs.SobakinTech],
+    authors: [EquicordDevs.SobakinTech],
     patches: [
         {
             find: "}maybeAutoUpgradeChannel(",

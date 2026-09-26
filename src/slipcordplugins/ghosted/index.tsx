@@ -10,7 +10,7 @@ import { findGroupChildrenByChildId } from "@api/ContextMenu";
 import { addServerListElement, removeServerListElement, ServerListRenderPosition } from "@api/ServerList";
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Devs, SlipcordDevs } from "@utils/constants";
+import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
 import { Channel } from "@vencord/discord-types";
@@ -145,7 +145,7 @@ export default definePlugin({
     name: "Ghosted",
     description: "A cute ghost will appear if you don't answer their DMs",
     tags: ["Chat", "Utility"],
-    authors: [SlipcordDevs.vei, Devs.sadan, SlipcordDevs.justjxke, SlipcordDevs.iamme],
+    authors: [EquicordDevs.vei, Devs.sadan, EquicordDevs.justjxke, Devs.iamme],
     settings,
     dependencies: ["AudioPlayerAPI", "ServerListAPI"],
     contextMenus: {
