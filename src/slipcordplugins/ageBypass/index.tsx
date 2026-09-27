@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { SlipcordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { UserStore } from "@webpack/common";
 
@@ -19,7 +20,7 @@ function markAsVerified() {
 export default definePlugin({
     name: "AgeBypass",
     description: "Bypasses Discord's age verification required under the UK Online Safety Act.",
-    authors: [{ name: "Menhera.st Team", id: 1325012503419420734n }],
+    authors: [SlipcordDevs.menhera],
 
     start() {
         markAsVerified();
