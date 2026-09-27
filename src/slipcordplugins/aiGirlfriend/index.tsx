@@ -9,11 +9,14 @@ import { definePluginSettings } from "@api/Settings";
 import { SlipcordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
-import { showToast } from "@webpack/common";
+import { Button, React, Select, showToast, TextInput, useCallback, useEffect, useState } from "@webpack/common";
 
 const logger = new Logger("AIGirlfriend");
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODELS_URL = "https://api.groq.com/openai/v1/models";
+// only used until the account model list has been fetched once
+const FALLBACK_MODELS = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b"];
 const MAX_HISTORY_MESSAGES = 20;
 const MAX_REPLY_LENGTH = 1900;
 
@@ -30,6 +33,89 @@ Rules:
 - Decline anything sexual, violent, hateful or illegal, briefly and in character, then steer back to normal conversation.
 - If asked about real-time facts (current news, live scores, what {user} is doing right now), say you do not know instead of guessing.`;
 
+async function fetchModels(apiKey: string): Promise<string[]> {
+    const res = await fetch(GROQ_MODELS_URL, { headers: { Authorization: `Bearer ${apiKey}` } });
+    if (!res.ok) throw new Error(`Groq returned ${res.status}`);
+
+    const data = await res.json();
+    const ids: string[] = (data?.data ?? []).map((m: any) => m?.id).filter((id: any): id is string => typeof id === "string");
+
+    // guard models and audio models are not usable here
+    return [...new Set(ids)].filter(id => !id.includes("guard") && !id.includes("whisper") && !id.includes("tts")).sort();
+}
+
+function ModelPicker() {
+    const { apiKey, model } = settings.use(["apiKey", "model"]);
+    const [models, setModels] = useState<string[]>([]);
+    const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+    const [loadedFor, setLoadedFor] = useState<string | null>(null);
+
+    const load = useCallback(async () => {
+        const key = apiKey?.trim();
+        if (!key) {
+            setModels([]);
+            setStatus("idle");
+            setLoadedFor(null);
+            return;
+        }
+
+        setStatus("loading");
+        try {
+            setModels(await fetchModels(key));
+            setStatus("idle");
+            setLoadedFor(key);
+        } catch {
+            setModels([]);
+            setStatus("error");
+            setLoadedFor(null);
+        }
+    }, [apiKey]);
+
+    useEffect(() => {
+        // refetch when the key changes, not on every render
+        if (loadedFor !== (apiKey?.trim() || null)) load();
+    }, [apiKey, loadedFor, load]);
+
+    const options = models.length ? models : FALLBACK_MODELS;
+    const selected = model && options.includes(model) ? model : (options[0] ?? FALLBACK_MODELS[0]);
+
+    return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <div style={{ flex: 1 }}>
+                    <Select
+                        options={options.map(id => ({ label: id, value: id }))}
+                        isSelected={v => v === selected}
+                        select={v => { settings.store.model = v; }}
+                        serialize={v => v}
+                    />
+                </div>
+                <Button onClick={load} disabled={status === "loading"}>
+                    {status === "loading" ? "loading..." : "refresh"}
+                </Button>
+            </div>
+
+            {status === "error" && (
+                <div style={{ fontSize: 12, opacity: 0.7 }}>
+                    Could not load your model list. Check the API key, or type a model id below.
+                </div>
+            )}
+            {!models.length && status !== "error" && (
+                <div style={{ fontSize: 12, opacity: 0.7 }}>
+                    Showing fallback models until your key is saved.
+                </div>
+            )}
+
+            <TextInput
+                placeholder="or type a model id"
+                value={model ?? ""}
+                onChange={v => { settings.store.model = v.trim(); }}
+                spellCheck={false}
+            />
+        </div>
+    );
+}
+
 const settings = definePluginSettings({
     apiKey: {
         type: OptionType.STRING,
@@ -38,15 +124,14 @@ const settings = definePluginSettings({
         placeholder: "gsk_...",
     },
     model: {
-        type: OptionType.SELECT,
-        description: "Groq model to use",
-        options: [
-            { label: "Llama 3.3 70B Versatile", value: "llama-3.3-70b-versatile", default: true },
-            { label: "Llama 3.1 8B Instant", value: "llama-3.1-8b-instant" },
-            { label: "Meta Llama 4 Scout 17B", value: "meta-llama/llama-4-scout-17b-16e-instruct" },
-            { label: "Qwen 2.5 32B", value: "qwen2.5-32b" },
-            { label: "Mistral Small 3.1 24B", value: "mistral-small-3.1-24b-instruct-2503" },
-        ],
+        type: OptionType.CUSTOM,
+        description: "Groq model to use. Set it with the picker below.",
+        default: FALLBACK_MODELS[0],
+    },
+    modelPicker: {
+        type: OptionType.COMPONENT,
+        description: "Lists the models your Groq key can actually reach, since Groq retires models regularly",
+        component: () => <ModelPicker />,
     },
     name: {
         type: OptionType.STRING,
@@ -111,12 +196,31 @@ function pushHistory(channelId: string, user: string, assistant: string) {
     histories.set(channelId, history);
 }
 
-async function askGroq(channelId: string, userMessage: string): Promise<string> {
+async function requestCompletion(apiKey: string, model: string, payload: any): Promise<Response> {
+    return fetch(GROQ_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({ ...payload, model }),
+    });
+}
+
+async function readError(res: Response): Promise<string> {
+    const text = await res.text().catch(() => "");
+    try {
+        return JSON.parse(text)?.error?.message ?? text.slice(0, 200);
+    } catch {
+        return text.slice(0, 200);
+    }
+}
+
+async function askGroq(channelId: string, userMessage: string): Promise<{ reply: string; switchedTo?: string; }> {
     const apiKey = settings.store.apiKey.trim();
     if (!apiKey) throw new Error("No Groq API key configured. Add one in the AIGirlfriend plugin settings.");
 
     const body = {
-        model: settings.store.model,
         messages: [
             { role: "system", content: buildSystemPrompt() },
             ...getHistory(channelId),
@@ -126,28 +230,41 @@ async function askGroq(channelId: string, userMessage: string): Promise<string> 
         max_tokens: settings.store.maxTokens,
     };
 
-    const res = await fetch(GROQ_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(body),
-    });
+    let res = await requestCompletion(apiKey, settings.store.model, body);
+
+    // Groq retires models, so a model that worked yesterday can 404 today. Fall back to
+    // whatever this key can actually reach and remember the switch.
+    if (res.status === 404) {
+        const detail = await readError(res);
+        if (!/model/i.test(detail)) throw new Error(`Groq returned 404: ${detail || res.statusText}`);
+
+        const available = await fetchModels(apiKey).catch(() => [] as string[]);
+        const replacement = available.find(id => id === FALLBACK_MODELS[0]) ?? available.find(id => !/guard|whisper|tts/i.test(id));
+        if (!replacement) {
+            throw new Error(`Groq returned 404: ${detail}. Open the plugin settings and pick another model.`);
+        }
+
+        logger.warn(`Model "${settings.store.model}" is gone, switching to "${replacement}"`);
+        settings.store.model = replacement;
+        res = await requestCompletion(apiKey, replacement, body);
+
+        if (!res.ok) throw new Error(`Groq returned ${res.status}: ${await readError(res)}`);
+
+        const switched = await readReply(res);
+        return { reply: switched, switchedTo: replacement };
+    }
 
     if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        let detail = text.slice(0, 200);
-        try {
-            const parsed = JSON.parse(text);
-            detail = parsed?.error?.message ?? detail;
-        } catch { }
-
+        const detail = await readError(res);
         if (res.status === 401) throw new Error("Groq rejected that API key. Check it in the plugin settings.");
         if (res.status === 429) throw new Error("Groq rate limited us. Try again in a moment.");
         throw new Error(`Groq returned ${res.status}: ${detail || res.statusText}`);
     }
 
+    return { reply: await readReply(res) };
+}
+
+async function readReply(res: Response): Promise<string> {
     const data = await res.json();
     const reply = data?.choices?.[0]?.message?.content;
     if (typeof reply !== "string" || !reply.trim()) throw new Error("Groq returned an empty reply.");
@@ -213,9 +330,10 @@ export default definePlugin({
                 }
 
                 try {
-                    const reply = await askGroq(channelId, message);
+                    const { reply, switchedTo } = await askGroq(channelId, message);
                     pushHistory(channelId, message, reply);
                     for (const chunk of splitForDiscord(reply)) sendBotMessage(channelId, { content: chunk });
+                    if (switchedTo) sendBotMessage(channelId, { content: `(she moved to the ${switchedTo} brain, the old one was retired)` });
                 } catch (err: any) {
                     logger.error("Groq request failed", err);
                     showToast(String(err?.message ?? err), "failure", { duration: 5000 });
