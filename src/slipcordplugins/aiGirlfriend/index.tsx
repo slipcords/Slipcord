@@ -174,7 +174,7 @@ export default definePlugin({
     description: "A /girlfriend command backed by Groq, with a configurable system prompt and per-channel memory.",
     tags: ["Chat", "Fun"],
     authors: [SlipcordDevs.tired55],
-    dependencies: ["CommandManagerAPI"],
+    dependencies: ["CommandsAPI"],
     settings,
 
     commands: [

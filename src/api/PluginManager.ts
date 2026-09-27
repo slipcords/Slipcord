@@ -150,6 +150,11 @@ export function startDependenciesRecursive(p: Plugin) {
     const failures: string[] = [];
 
     p.dependencies?.forEach(d => {
+        if (!settings[d]) {
+            logger.warn(`Dependency "${d}" of ${p.name} does not exist, ignoring.`);
+            return;
+        }
+
         if (!settings[d].enabled) {
             const dep = Plugins[d];
             startDependenciesRecursive(dep);
