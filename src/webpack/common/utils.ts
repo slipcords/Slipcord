@@ -16,23 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import moment from "moment";
 import type * as t from "@vencord/discord-types";
 import { _resolveReady, filters, findByCodeLazy, findByPropsLazy, findLazy, mapMangledModuleLazy, waitFor } from "@webpack";
+import moment from "moment";
 import type * as TSPattern from "ts-pattern";
 
 export let FluxDispatcher: t.FluxDispatcher;
 waitFor(["dispatch", "subscribe"], m => {
     FluxDispatcher = m;
-    // Importing this directly causes all webpack commons to be imported, which can easily cause circular dependencies.
-    // For this reason, use a non import access here.
-    Vencord.Api.PluginManager.subscribeAllPluginsFluxEvents(m);
 
     const cb = () => {
         m.unsubscribe("CONNECTION_OPEN", cb);
         _resolveReady();
     };
     m.subscribe("CONNECTION_OPEN", cb);
+
+    // Importing this directly causes all webpack commons to be imported, which can easily cause circular dependencies.
+    // For this reason, use a non import access here.
+    // Defer to next microtask: waitFor may fire synchronously during initial module evaluation
+    // when Vencord.Api is not yet available (Vencord IIFE has not finished initializing).
+    queueMicrotask(() => Vencord.Api.PluginManager.subscribeAllPluginsFluxEvents(m));
 });
 
 export let ComponentDispatch: any;

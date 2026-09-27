@@ -191,5 +191,7 @@ waitForStore("ThemeStore", m => {
     ThemeStore = m;
     // Importing this directly causes all webpack commons to be imported, which can easily cause circular dependencies.
     // For this reason, use a non import access here.
-    Vencord.Api.Themes.initQuickCssThemeStore(m);
+    // Defer to next microtask: waitFor may fire synchronously during initial module evaluation
+    // when Vencord.Api is not yet available (Vencord IIFE has not finished initializing).
+    queueMicrotask(() => Vencord.Api.Themes.initQuickCssThemeStore(m));
 });
