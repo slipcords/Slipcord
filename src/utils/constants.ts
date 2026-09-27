@@ -717,6 +717,26 @@ export const SlipcordDevs = Object.freeze({
         name: "Superior",
         id: 1003477997728313405n
     },
+    nightcord: {
+        name: "Nightcord",
+        id: 0n
+    },
+    Bash: {
+        name: "Bash",
+        id: 1327483363518582784n
+    },
+    coll: {
+        name: "coll",
+        id: 0n
+    },
+    viciouscal: {
+        name: "viciouscal",
+        id: 0n
+    },
+    Snayz: {
+        name: ">Snayz",
+        id: 1361345963175968779n
+    },
 } satisfies Record<string, Dev>);
 
 // iife so #__PURE__ works correctly

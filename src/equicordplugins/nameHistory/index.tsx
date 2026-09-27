@@ -48,20 +48,31 @@ export const fmt = new Intl.DateTimeFormat(undefined, {
     timeStyle: "short"
 });
 
+function dedupeHistory(history: NameEntry[]): NameEntry[] {
+    const seen = new Set<string>();
+    const result: NameEntry[] = [];
+    for (const entry of history) {
+        if (seen.has(entry.name)) continue;
+        seen.add(entry.name);
+        result.push(entry);
+    }
+    return result;
+}
+
 function normalizeData(raw: Record<string, unknown>): Record<string, UserRecord> {
     const res: Record<string, UserRecord> = {};
     for (const [id, val] of Object.entries(raw)) {
         if (Array.isArray(val)) {
-            const history = val.filter((e): e is NameEntry => Boolean(e && typeof e.name === "string" && typeof e.timestamp === "number"));
+            const history = dedupeHistory(val.filter((e): e is NameEntry => Boolean(e && typeof e.name === "string" && typeof e.timestamp === "number")));
             res[id] = {
                 lastSeen: history.at(-1)?.name,
                 history
             };
         } else if (val && typeof val === "object") {
             const obj = val as { lastSeen?: unknown; history?: unknown; };
-            const history = Array.isArray(obj.history)
+            const history = dedupeHistory(Array.isArray(obj.history)
                 ? obj.history.filter((e): e is NameEntry => Boolean(e && typeof e.name === "string" && typeof e.timestamp === "number"))
-                : [];
+                : []);
             res[id] = {
                 lastSeen: typeof obj.lastSeen === "string" ? obj.lastSeen : undefined,
                 history
@@ -108,8 +119,18 @@ export function checkUser(user?: { id?: string; username?: string; globalName?: 
     if (!user?.id || !user.username) return;
     if (settings.store.friendsOnly && !RelationshipStore.isFriend(user.id)) return;
 
-    const currentName = formatName({ username: user.username, globalName: user.globalName });
-    const record = nameHistoryData[user.id] ??= {
+    // Some events only carry a partial user, which would look like a display name change
+    // when it is really the same name seen without its global name
+    const userId = user.id;
+    const fullUser = UserStore.getUser(userId);
+    const username = fullUser?.username ?? user.username;
+    const globalName = fullUser ? (fullUser.globalName ?? null) : user.globalName;
+
+    // globalName === undefined means "not included in this payload", null means "no display name"
+    if (globalName === undefined && nameHistoryData[userId]?.lastSeen?.includes(" (@")) return;
+
+    const currentName = formatName({ username, globalName });
+    const record = nameHistoryData[userId] ??= {
         lastSeen: currentName,
         history: []
     };
@@ -123,14 +144,14 @@ export function checkUser(user?: { id?: string; username?: string; globalName?: 
     if (record.lastSeen !== currentName) {
         const oldName = record.lastSeen;
         record.lastSeen = currentName;
-        const lastEntry = record.history.at(-1);
-        if (!lastEntry || lastEntry.name !== oldName) {
+        const alreadyRecorded = record.history.some(e => e.name === oldName);
+        if (!alreadyRecorded) {
             record.history.push({ name: oldName, timestamp: Date.now() });
             if (record.history.length > 25) {
                 record.history.splice(0, record.history.length - 25);
             }
+            save();
         }
-        save();
     }
 }
 

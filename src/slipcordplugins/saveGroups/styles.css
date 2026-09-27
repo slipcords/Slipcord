@@ -1,0 +1,69 @@
+/*
+ * Nightcord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+.vc-savegroups-kicked {
+    opacity: 0.5 !important;
+    filter: grayscale(80%) !important;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.vc-savegroups-kicked:hover {
+    opacity: 0.8 !important;
+    filter: grayscale(30%) !important;
+}
+
+.vc-savegroups-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    margin: 8px 16px;
+    border-radius: 8px;
+    background: var(--background-secondary);
+    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+    box-shadow: var(--elevation-stroke, 0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.vc-savegroups-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vc-savegroups-banner-icon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.vc-savegroups-banner-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--header-primary, #ffffff);
+    line-height: 18px;
+}
+
+.vc-savegroups-banner-subtitle {
+    font-size: 12px;
+    color: var(--text-muted, #949ba4);
+    line-height: 16px;
+}
+
+.vc-savegroups-banner-btn {
+    background: transparent;
+    border: 1px solid var(--button-danger-background, #da373c);
+    color: var(--button-danger-background, #da373c);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.vc-savegroups-banner-btn:hover {
+    background: var(--button-danger-background, #da373c);
+    color: #ffffff;
+}
