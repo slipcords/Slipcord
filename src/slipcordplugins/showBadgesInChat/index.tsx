@@ -7,8 +7,8 @@
 import "./styles.css";
 
 import badges from "@plugins/_api/badges";
-import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
-import { isPluginDev,isSlipcordPluginDev } from "@utils/misc";
+import { Devs, EquicordDevs } from "@utils/constants";
+import { isPluginDev, isSlipcordPluginDev } from "@utils/misc";
 import definePlugin from "@utils/types";
 import { findComponentByCodeLazy, findCssClassesLazy } from "@webpack";
 

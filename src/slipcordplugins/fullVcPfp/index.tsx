@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import { getUserAvatarUrl } from "@utils/misc";
 import definePlugin from "@utils/types";
 import { ChannelRTCStore, ChannelStore, UserStore, VoiceStateStore } from "@webpack/common";

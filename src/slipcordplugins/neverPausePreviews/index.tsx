@@ -17,7 +17,7 @@
 */
 
 import { Notice } from "@components/Notice";
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 export default definePlugin({

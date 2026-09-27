@@ -5,7 +5,7 @@
  */
 
 import { CloudDownloadIcon } from "@components/Icons";
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import { pluralize } from "@utils/misc";
 import definePlugin from "@utils/types";

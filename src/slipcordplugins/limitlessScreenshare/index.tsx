@@ -6,7 +6,7 @@
 
 import "./style.css";
 
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin from "@utils/types";
 import { MediaEngineStore, Menu } from "@webpack/common";

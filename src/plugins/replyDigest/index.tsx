@@ -9,7 +9,7 @@ import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
-import { ChannelStore, FluxDispatcher, RelationshipStore, Toasts, UserStore, moment } from "@webpack/common";
+import { ChannelStore, FluxDispatcher, moment, Toasts, UserStore } from "@webpack/common";
 
 const logger = new Logger("ReplyDigest");
 

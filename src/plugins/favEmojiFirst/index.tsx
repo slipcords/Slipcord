@@ -13,7 +13,7 @@ import { BaseText } from "@components/BaseText";
 import { Button } from "@components/Button";
 import { PencilIcon } from "@components/Icons";
 import { Paragraph } from "@components/Paragraph";
-import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { Devs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";

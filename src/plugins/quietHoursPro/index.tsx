@@ -10,7 +10,7 @@ import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
-import { GuildStore, UserGuildSettingsStore, moment, Toasts } from "@webpack/common";
+import { GuildStore, moment, Toasts, UserGuildSettingsStore } from "@webpack/common";
 
 const logger = new Logger("QuietHoursPro");
 const updateGuildNotificationSettings = findByPropsLazy("updateGuildNotificationSettings") as (guildId: string, settings: Record<string, any>) => void;

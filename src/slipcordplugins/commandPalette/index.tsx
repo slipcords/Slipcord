@@ -6,7 +6,7 @@
 
 import "./style.css";
 
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 import { clearRegistry, getCommandById } from "./api/registry";

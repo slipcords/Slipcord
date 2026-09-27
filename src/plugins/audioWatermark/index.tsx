@@ -6,12 +6,12 @@
 
 import { DataStore } from "@api/index";
 import { definePluginSettings } from "@api/Settings";
-import { Paragraph } from "@components/Paragraph";
 import { Button } from "@components/Button";
+import { Paragraph } from "@components/Paragraph";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
-import { SelectedChannelStore, SelectedGuildStore, UserStore, VoiceStateStore, useMemo } from "@webpack/common";
+import { SelectedChannelStore, SelectedGuildStore, useMemo, UserStore, VoiceStateStore } from "@webpack/common";
 
 const logger = new Logger("AudioWatermark");
 

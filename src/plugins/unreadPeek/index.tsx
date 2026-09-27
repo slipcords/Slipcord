@@ -8,7 +8,7 @@ import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
-import { ChannelStore, Menu, MessageStore, Modal, ReadStateStore, openModal, React, Toasts, UserStore } from "@webpack/common";
+import { ChannelStore, Menu, MessageStore, Modal, openModal, React, ReadStateStore, Toasts, UserStore } from "@webpack/common";
 
 const cl = classNameFactory("vc-unreadpeek-");
 const currentUserId = () => UserStore.getCurrentUser()?.id;

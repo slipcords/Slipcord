@@ -13,7 +13,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { EyeIcon } from "@components/Icons";
 import pinDms from "@plugins/pinDms";
 import { isPinned } from "@plugins/pinDms/data";
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
 import { Channel, Message } from "@vencord/discord-types";

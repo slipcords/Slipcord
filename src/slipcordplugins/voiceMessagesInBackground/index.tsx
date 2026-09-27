@@ -8,7 +8,7 @@ import "./style.css";
 
 import { migratePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 import { handlePlaybackRateUpdate, stopPlayback, useBackgroundPlayback } from "./playback";

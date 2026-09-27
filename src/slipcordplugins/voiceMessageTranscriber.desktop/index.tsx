@@ -16,7 +16,7 @@ import { Heading } from "@components/Heading";
 import { ClockIcon, CopyIcon } from "@components/Icons";
 import { Span } from "@components/Span";
 import { copyToClipboard } from "@utils/clipboard";
-import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { Devs, EquicordDevs } from "@utils/constants";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
 import { RenderModalProps } from "@vencord/discord-types";

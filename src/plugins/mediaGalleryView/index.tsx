@@ -6,8 +6,8 @@
 
 import "./style.css";
 
-import { definePluginSettings } from "@api/Settings";
 import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
+import { definePluginSettings } from "@api/Settings";
 import { ImageIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";

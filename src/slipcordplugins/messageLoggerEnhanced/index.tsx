@@ -9,7 +9,7 @@ export const Native = getNative();
 import "./styles.css";
 
 import { LogsIcon } from "@components/Icons";
-import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { Devs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { Logger } from "@utils/Logger";
 import definePlugin from "@utils/types";

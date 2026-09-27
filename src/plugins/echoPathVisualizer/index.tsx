@@ -5,12 +5,12 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { Paragraph } from "@components/Paragraph";
 import { Button } from "@components/Button";
+import { Paragraph } from "@components/Paragraph";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
-import { ChannelStore, GuildMemberStore, Modal, SelectedGuildStore, SelectedChannelStore, Toasts, UserStore, VoiceStateStore, openModal, useState, useStateFromStores } from "@webpack/common";
+import { ChannelStore, GuildMemberStore, Modal, openModal, SelectedChannelStore, SelectedGuildStore, Toasts, UserStore, useState, useStateFromStores, VoiceStateStore } from "@webpack/common";
 
 const logger = new Logger("EchoPathVisualizer");
 
@@ -46,7 +46,7 @@ function buildRows(): Row[] | null {
     if (!guildId) return null;
     const myState = VoiceStateStore.getVoiceState(guildId, me);
     if (!myState?.channelId) return null;
-    const channelId = myState.channelId;
+    const { channelId } = myState;
     const states = VoiceStateStore.getVoiceStatesForChannel(channelId);
 
     const rows: Row[] = [];

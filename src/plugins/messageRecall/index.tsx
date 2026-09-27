@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
 import { definePluginSettings } from "@api/Settings";
+import { ClockIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
-import { IconComponent } from "@utils/types";
-import definePlugin, { OptionType } from "@utils/types";
-import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
-import { ClockIcon } from "@components/Icons";
-import { FluxDispatcher, MessageActions, UserStore } from "@webpack/common";
+import definePlugin, { IconComponent, OptionType } from "@utils/types";
+import { MessageActions, UserStore } from "@webpack/common";
 
 const logger = new Logger("MessageRecall");
 
@@ -41,7 +40,7 @@ const settings = definePluginSettings({
 });
 
 let recallNext = false;
-let pendingDeletes = new Map<string, ReturnType<typeof setTimeout>>();
+const pendingDeletes = new Map<string, ReturnType<typeof setTimeout>>();
 
 const RecallIcon: IconComponent = ({ width = 18, height = 18 }) => <ClockIcon width={width} height={height} />;
 

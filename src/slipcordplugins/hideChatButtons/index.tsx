@@ -6,7 +6,7 @@
 
 import { ChatBarButton } from "@api/ChatButtons";
 import { definePluginSettings, migratePluginSetting } from "@api/Settings";
-import {SlipcordDevs, Devs} from "@utils/constants";
+import { Devs } from "@utils/constants";
 import definePlugin, { OptionType, StartAt } from "@utils/types";
 import { useEffect, useState } from "@webpack/common";
 import type { MouseEventHandler, ReactNode } from "react";

@@ -7,7 +7,7 @@
 import "./style.css";
 
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
-import {SlipcordDevs, Devs} from "@utils/constants";
+import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { ContextMenuApi, FluxDispatcher, Menu } from "@webpack/common";
 import type { MouseEvent } from "react";

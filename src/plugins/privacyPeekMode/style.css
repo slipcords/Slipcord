@@ -7,6 +7,7 @@
 [data-tired55-peek-blur] .app-1Yzh6,
 [data-tired55-peek-blur] body > .app-1Yzh6 {
     filter: blur(var(--vc-peek-blur, 8px));
+
     --vc-peek-blur: attr(data-tired55-peek-blur px);
 }
 

@@ -11,7 +11,7 @@ import { Card } from "@components/Card";
 import { HeadingTertiary } from "@components/Heading";
 import { ErrorBoundary } from "@components/index";
 import { Margins } from "@components/margins";
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";

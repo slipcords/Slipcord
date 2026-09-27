@@ -5,9 +5,10 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { enableStyle, disableStyle } from "@api/Styles";
+import { disableStyle, enableStyle } from "@api/Styles";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+
 import pluginStyle from "./style.css?managed";
 
 const settings = definePluginSettings({
@@ -39,12 +40,6 @@ const settings = definePluginSettings({
 
 let idleTimer: ReturnType<typeof setTimeout> | null = null;
 let blurred = false;
-let bound: {
-    onFocus: () => void,
-    onBlur: () => void,
-    onMouseMove: () => void,
-    onVisibility: () => void
-};
 
 function applyBlur() {
     if (blurred) return;
@@ -72,7 +67,7 @@ function setupStyleVars() {
     } catch { }
 }
 
-bound = {
+const bound = {
     onFocus() { clearBlur(); },
     onBlur() { if (settings.store.blurOnWindowBlur) applyBlur(); else resetIdle(); },
     onMouseMove() { if (blurred) clearBlur(); else resetIdle(); },

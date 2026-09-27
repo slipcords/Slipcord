@@ -11,7 +11,7 @@ import {
     definePluginSettings,
     Settings,
 } from "@api/Settings";
-import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { Devs, EquicordDevs } from "@utils/constants";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
 
 const presendObject: MessageSendListener = (channelId, msg) => {

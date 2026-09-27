@@ -5,9 +5,9 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { enableStyle, disableStyle } from "@api/Styles";
-import { Paragraph } from "@components/Paragraph";
+import { disableStyle, enableStyle } from "@api/Styles";
 import { Button } from "@components/Button";
+import { Paragraph } from "@components/Paragraph";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";

@@ -5,7 +5,7 @@
  */
 
 import type { NavContextMenuPatchCallback } from "@api/ContextMenu";
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { RelationshipType } from "@vencord/discord-types/enums";
 import { findByPropsLazy } from "@webpack";

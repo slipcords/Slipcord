@@ -21,7 +21,7 @@ import { definePluginSettings, migratePluginToSettings, Settings } from "@api/Se
 import ErrorBoundary from "@components/ErrorBoundary";
 import showMeYourName from "@plugins/showMeYourName";
 import { getCustomColorString } from "@slipcordplugins/customUserColors";
-import { Devs, SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { Devs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { openUserProfile } from "@utils/discord";
 import { isNonNullish } from "@utils/guards";

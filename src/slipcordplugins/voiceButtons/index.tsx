@@ -5,7 +5,7 @@
  */
 
 import { Flex } from "@components/Flex";
-import { SlipcordDevs, EquicordDevs } from "@utils/constants";
+import { EquicordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { User } from "@vencord/discord-types";
 import { React } from "@webpack/common";

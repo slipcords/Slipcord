@@ -7,7 +7,7 @@
 import "./styles.css";
 
 import { TranslateIcon } from "@plugins/translate/TranslateIcon";
-import {SlipcordDevs, Devs} from "@utils/constants";
+import { Devs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin from "@utils/types";
 import { ChannelStore, FluxDispatcher, MessageStore, Parser, UserStore } from "@webpack/common";
