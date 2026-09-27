@@ -27,7 +27,7 @@ interface AutoReactEntry {
 }
 
 const STORE_KEY = "AutoReact_config";
-const autoReacts = new Map<string, AutoReactEntry>();
+const autoReacts = new Map<string, AutoReactEntry[]>();
 
 const MAX_CONSECUTIVE_FAILURES = 3;
 
@@ -38,11 +38,13 @@ async function persist() {
 }
 
 async function restore() {
-    const data = await DataStore.get<Record<string, AutoReactEntry>>(STORE_KEY);
+    const data = await DataStore.get<Record<string, AutoReactEntry | AutoReactEntry[]>>(STORE_KEY);
     if (!data) return;
     autoReacts.clear();
     for (const [id, entry] of Object.entries(data)) {
-        autoReacts.set(id, { ...entry, failures: 0 });
+        // older configs stored a single entry per user
+        const entries = Array.isArray(entry) ? entry : [entry];
+        autoReacts.set(id, entries.map(e => ({ ...e, failures: 0 })));
     }
 }
 
@@ -84,7 +86,7 @@ export default definePlugin({
     commands: [
         {
             name: "autoreact",
-            description: "Configure auto-reactions for users. No options for list current config.",
+            description: "Configure auto-reactions for users. Supports multiple emojis per user. No options to list the current config.",
             inputType: ApplicationCommandInputType.BUILT_IN,
             options: [
                 {
@@ -95,7 +97,7 @@ export default definePlugin({
                 },
                 {
                     name: "emoji",
-                    description: "Emoji to react with (unicode or custom <:name:id>)",
+                    description: "Emoji to add to the auto-reactions (unicode or custom <:name:id>). Omit to remove all auto-reactions for the user.",
                     type: ApplicationCommandOptionType.STRING,
                     required: false,
                 },
@@ -121,11 +123,13 @@ export default definePlugin({
                     }
 
                     const lines: string[] = [];
-                    for (const [userId, entry] of autoReacts) {
+                    for (const [userId, entries] of autoReacts) {
                         const user = UserStore.getUser(userId);
                         const name = user?.username ?? userId;
-                        const kind = entry.super ? " (super)" : "";
-                        lines.push(`${name} - ${entry.emoji}${kind}`);
+                        for (const entry of entries) {
+                            const kind = entry.super ? " (super)" : "";
+                            lines.push(`${name} - ${entry.emoji}${kind}`);
+                        }
                     }
 
                     sendBotMessage(ctx.channel.id, { content: lines.join("\n") + "\n" });
@@ -141,11 +145,12 @@ export default definePlugin({
                 const targetId = targetUser.id;
 
                 if (emojiArg == null) {
-                    if (autoReacts.has(targetId)) {
+                    const existing = autoReacts.get(targetId);
+                    if (existing?.length) {
                         autoReacts.delete(targetId);
                         await persist();
                         sendBotMessage(ctx.channel.id, {
-                            content: `Removed auto-reaction for **${targetUser.username}**.`,
+                            content: `Removed ${existing.length} auto-reaction${existing.length === 1 ? "" : "s"} for **${targetUser.username}**.`,
                         });
                     } else {
                         sendBotMessage(ctx.channel.id, {
@@ -162,19 +167,23 @@ export default definePlugin({
                 }
 
                 const useSuper = superArg ?? false;
+                const entries = autoReacts.get(targetId) ?? [];
+                const existingIndex = entries.findIndex(e => e.emoji === normalized.display);
 
-                autoReacts.set(targetId, {
-                    emoji: normalized.display,
-                    super: useSuper,
-                    failures: 0,
-                });
+                if (existingIndex !== -1) {
+                    entries[existingIndex] = { emoji: normalized.display, super: useSuper, failures: 0 };
+                } else {
+                    entries.push({ emoji: normalized.display, super: useSuper, failures: 0 });
+                }
+
+                autoReacts.set(targetId, entries);
                 await persist();
 
                 sendBotMessage(ctx.channel.id, {
                     content:
-                        `Auto-reacting to **${targetUser.username}** with ${normalized.display}` +
+                        `${existingIndex === -1 ? "Added" : "Updated"} auto-reaction for **${targetUser.username}** with ${normalized.display}` +
                         (useSuper ? " (super reaction)" : "") +
-                        ".",
+                        `. They now auto-react with ${entries.length} emoji${entries.length === 1 ? "" : "s"}.`,
                 });
             },
         },
@@ -190,68 +199,77 @@ export default definePlugin({
 
             if (event.optimistic) return;
 
-            const entry = autoReacts.get(message.author.id);
-            if (!entry) return;
+            const entries = autoReacts.get(message.author.id);
+            if (!entries?.length) return;
 
             if (message.type !== MessageType.DEFAULT && message.type !== MessageType.REPLY) return;
 
-            const normalized = normalizeEmoji(entry.emoji);
-            if (!normalized) return;
+            const authorName = message.author.username ?? message.author.id;
 
-            const reactionType = entry.super ? ReactionType.SUPER : ReactionType.NORMAL;
-            const { channel_id: channelId, id: messageId } = message;
+            for (let i = 0; i < entries.length; i++) {
+                const entry = entries[i];
+                if (!entry) continue;
 
-            try {
-                await RestAPI.put({
-                    url: `/channels/${channelId}/messages/${messageId}/reactions/${normalized.urlPart}/@me`,
-                    query: reactionType === ReactionType.NORMAL ? undefined : { type: reactionType },
-                });
+                const normalized = normalizeEmoji(entry.emoji);
+                if (!normalized) continue;
 
-                if (entry.failures !== 0) {
-                    entry.failures = 0;
-                    await persist();
-                }
+                const reactionType = entry.super ? ReactionType.SUPER : ReactionType.NORMAL;
+                const { channel_id: channelId, id: messageId } = message;
 
-                logger.info(
-                    `Reacted to ${message.author.username}'s message ${messageId} with ${entry.emoji}` +
-                    (entry.super ? " (Super Reaction)" : "")
-                );
-            } catch (err: any) {
-                const status = err?.status;
-                const code = err?.body?.code;
+                try {
+                    await RestAPI.put({
+                        url: `/channels/${channelId}/messages/${messageId}/reactions/${normalized.urlPart}/@me`,
+                        query: reactionType === ReactionType.NORMAL ? undefined : { type: reactionType },
+                    });
 
-                const isHardFail =
-                    status === 403 ||
-                    status === 404 ||
-                    code === 50013 ||
-                    code === 50001 ||
-                    code === 40002 ||
-                    code === 10008 ||
-                    code === 10065 ||
-                    code === 50189;
-
-                if (isHardFail) {
-                    entry.failures += 1;
-
-                    logger.warn(
-                        `AutoReact failure ${entry.failures}/${MAX_CONSECUTIVE_FAILURES} for ` +
-                        `${message.author.username} (status=${status}, code=${code}).`
-                    );
-
-                    if (entry.failures >= MAX_CONSECUTIVE_FAILURES) {
-                        autoReacts.delete(message.author.id);
-                        await persist();
-                        logger.warn(
-                            `Removed auto-reaction for ${message.author.username} after ` +
-                            `${MAX_CONSECUTIVE_FAILURES} consecutive failures.`
-                        );
-                    } else {
+                    if (entry.failures !== 0) {
+                        entry.failures = 0;
                         await persist();
                     }
-                } else if (status === 429) {
-                    logger.warn("Rate limited — reaction was not added.");
-                } else {
-                    logger.error("Failed to add reaction:", err);
+
+                    logger.info(
+                        `Reacted to ${authorName}'s message ${messageId} with ${entry.emoji}` +
+                        (entry.super ? " (Super Reaction)" : "")
+                    );
+                } catch (err: any) {
+                    const status = err?.status;
+                    const code = err?.body?.code;
+
+                    const isHardFail =
+                        status === 403 ||
+                        status === 404 ||
+                        code === 50013 ||
+                        code === 50001 ||
+                        code === 40002 ||
+                        code === 10008 ||
+                        code === 10065 ||
+                        code === 50189;
+
+                    if (isHardFail) {
+                        entry.failures += 1;
+
+                        logger.warn(
+                            `AutoReact failure ${entry.failures}/${MAX_CONSECUTIVE_FAILURES} for ` +
+                            `${authorName} with ${entry.emoji} (status=${status}, code=${code}).`
+                        );
+
+                        if (entry.failures >= MAX_CONSECUTIVE_FAILURES) {
+                            entries.splice(i, 1);
+                            i--;
+                            if (entries.length === 0) autoReacts.delete(message.author.id);
+                            await persist();
+                            logger.warn(
+                                `Removed auto-reaction ${entry.emoji} for ${authorName} after ` +
+                                `${MAX_CONSECUTIVE_FAILURES} consecutive failures.`
+                            );
+                        } else {
+                            await persist();
+                        }
+                    } else if (status === 429) {
+                        logger.warn("Rate limited — reaction was not added.");
+                    } else {
+                        logger.error("Failed to add reaction:", err);
+                    }
                 }
             }
         },
