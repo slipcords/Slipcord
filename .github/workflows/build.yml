@@ -6,12 +6,18 @@ on:
 
 env:
     FORCE_COLOR: true
-    GITHUB_TOKEN: ${{ secrets.ETOKEN }}
     REPO: slipcords/Slipping
+    SLIPPED_REPO: slipcords/Slipped
     USERNAME: GitHub-Actions
 
 permissions:
     contents: write
+
+# Serialise releases. Two overlapping runs uploading to the same rolling tag can interleave
+# and leave a mix of two builds, so never run two at once.
+concurrency:
+    group: release-${{ github.ref }}
+    cancel-in-progress: false
 
 jobs:
     Build:
@@ -31,6 +37,17 @@ jobs:
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
+
+            # The built-in token can write to this repo but not to slipcords/Slipped, which is
+            # the repo install.sh actually downloads from. Without ETOKEN the installer keeps
+            # serving a stale build, so say so loudly instead of skipping the upload quietly.
+            - name: Check cross-repo publish credentials
+              run: |
+                  if [ -z "${{ secrets.ETOKEN }}" ]; then
+                    echo "::warning::secrets.ETOKEN is not set. Artifacts cannot be published to ${{ env.SLIPPED_REPO }}, so install.sh will keep serving the previous release. Set ETOKEN to a fine-grained PAT with 'contents: write' on ${{ env.SLIPPED_REPO }}."
+                  else
+                    echo "ETOKEN present - cross-repo publish to ${{ env.SLIPPED_REPO }} is available."
+                  fi
 
             - name: Build web
               run: pnpm buildWebStandalone
@@ -63,32 +80,84 @@ jobs:
                   rm release/package.json
                   rm release/*.map
 
-            - name: Upload Slipcord Stable
-              if: ${{ vars.ACT == 'false' }}
+                  echo "Publishing $(ls release | wc -l) files:"
+                  ls -la release
+
+            # Without this, a slow run for an older commit can finish after a newer run and
+            # clobber the rolling release with a stale build.
+            - name: Refuse to publish a stale build
               run: |
-                  gh release upload latest --clobber dist/release/*
+                  git fetch --depth 1 origin main
+                  TIP=$(git rev-parse origin/main)
+                  if [ "$TIP" != "$GITHUB_SHA" ]; then
+                    echo "::notice::origin/main is $TIP but this run is $GITHUB_SHA. A newer push exists, so skipping publish rather than overwriting it with an older build."
+                    echo "SKIP_PUBLISH=1" >> "$GITHUB_ENV"
+                  else
+                    echo "Publishing $GITHUB_SHA (tip of main)."
+                  fi
 
             - name: Upload release to Slipped repo
-              if: ${{ vars.ACT == 'false' }}
+              # This is the step the installer depends on: install.sh fetches
+              # SlippedCli-* and the desktop asar from this repo's latest release.
+              if: env.SKIP_PUBLISH != '1'
               env:
                   GH_TOKEN: ${{ secrets.ETOKEN }}
               run: |
-                  SLEEPED_TAG=$(gh release view --repo slipcords/Slipped --limit 1 --json tagName -q .tagName)
-                  gh release upload "$SLEEPED_TAG" --clobber dist/release/* --repo slipcords/Slipped
+                  if [ -z "${GH_TOKEN}" ]; then
+                    echo "::error::secrets.ETOKEN is empty. Cannot publish to $SLIPPED_REPO, so install.sh will keep serving the previous release."
+                    exit 1
+                  fi
 
-            - name: Stamp release with build hash
-              if: ${{ vars.ACT == 'false' }}
+                  TAG=$(gh release list --repo "$SLIPPED_REPO" --limit 1 --json tagName -q '.[0].tagName')
+                  if [ -z "$TAG" ]; then
+                    echo "No release found in $SLIPPED_REPO - creating rolling 'latest' release."
+                    gh release create latest --repo "$SLIPPED_REPO" \
+                      --title "Slipcord (rolling)" \
+                      --notes "Rolling release consumed by install.sh" \
+                      --target main
+                    TAG=latest
+                  fi
+                  echo "Publishing to $SLIPPED_REPO release '$TAG'"
+
+                  gh release upload "$TAG" --clobber dist/release/* --repo "$SLIPPED_REPO"
+
+            - name: Upload Slipcord Stable
+              if: env.SKIP_PUBLISH != '1'
               env:
-                  GH_TOKEN: ${{ secrets.ETOKEN }}
+                  GH_TOKEN: ${{ secrets.ETOKEN || github.token }}
               run: |
-                  gh release edit latest --title "Slipcord $(jq -r .version < package.json) ${{ github.sha }}"
+                  if ! gh release view latest > /dev/null 2>&1; then
+                    echo "No 'latest' release in this repo yet - creating it."
+                    gh release create latest --title "Slipcord $(jq -r .version < package.json)" --notes "Rolling release" --target main
+                  fi
 
+                  gh release upload latest --clobber dist/release/*
+                  gh release edit latest --title "Slipcord $(jq -r .version < package.json) $GITHUB_SHA"
+
+            # Secondary fan-out; must never mask a successful primary publish.
             - name: Upload Plugin JSONs to Slipping repo
-              if: github.repository == 'Slipcord/Slipcord' && vars.ACT == 'false'
+              if: github.repository == 'slipcords/Slipcord' && env.SKIP_PUBLISH != '1'
+              continue-on-error: true
+              env:
+                  GH_TOKEN: ${{ secrets.ETOKEN || github.token }}
+                  ASKPASS_TOKEN: ${{ secrets.ETOKEN }}
               run: |
-                  git config --global user.name "GitHub-Actions"
-                  git config --global user.email actions@github.com
-                  git clone https://$USERNAME:$GITHUB_TOKEN@github.com/$REPO.git plugins
+                  # Keep the token out of argv and out of the remote config.
+                  cat > "$RUNNER_TEMP/askpass.sh" <<'EOF'
+                  #!/bin/sh
+                  case "$1" in
+                    *Username*) echo "x-access-token" ;;
+                    *Password*) echo "$ASKPASS_TOKEN" ;;
+                  esac
+                  EOF
+                  chmod +x "$RUNNER_TEMP/askpass.sh"
+                  export GIT_ASKPASS="$RUNNER_TEMP/askpass.sh" GIT_TERMINAL_PROMPT=0
+
+                  git config --global user.name "$USERNAME"
+                  git config --global user.email "actions@github.com"
+
+                  rm -rf plugins
+                  git clone "https://github.com/$REPO.git" plugins
                   cd plugins
 
                   cp ../dist/release/*plugins.json .
@@ -96,4 +165,42 @@ jobs:
                   git add -A
 
                   git commit -m "Plugins for https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
-                  git push --force https://$USERNAME:$GITHUB_TOKEN@github.com/$REPO.git
+                  git push "https://github.com/$REPO.git" HEAD:main
+
+            # Prove the installer will actually get the new build, rather than assuming it.
+            - name: Verify published assets
+              if: env.SKIP_PUBLISH != '1'
+              env:
+                  GH_TOKEN: ${{ secrets.ETOKEN }}
+              run: |
+                  if [ -z "${GH_TOKEN}" ]; then
+                    echo "::warning::ETOKEN empty - cannot verify $SLIPPED_REPO."
+                    exit 0
+                  fi
+
+                  TAG=$(gh release list --repo "$SLIPPED_REPO" --limit 1 --json tagName -q '.[0].tagName')
+                  echo "Verifying $SLIPPED_REPO release '$TAG'"
+
+                  LOCAL_ASAR=$(sha256sum dist/desktop.asar | cut -d' ' -f1)
+                  echo "local desktop.asar sha256: $LOCAL_ASAR"
+
+                  for asset in desktop.asar Slipcord.user.js; do
+                    if ! gh release view "$TAG" --repo "$SLIPPED_REPO" --json assets -q ".assets[].name" | grep -qx "$asset"; then
+                      echo "::error::asset '$asset' is missing from $SLIPPED_REPO release '$TAG' - install.sh would not get it."
+                      exit 1
+                    fi
+                    echo "ok: $asset present"
+                  done
+
+                  # The asar is what actually gets loaded, so check its bytes really changed.
+                  mkdir -p "$RUNNER_TEMP/verify"
+                  gh release download "$TAG" --repo "$SLIPPED_REPO" --pattern desktop.asar --dir "$RUNNER_TEMP/verify" --clobber
+                  REMOTE_ASAR=$(sha256sum "$RUNNER_TEMP/verify/desktop.asar" | cut -d' ' -f1)
+                  echo "published desktop.asar sha256: $REMOTE_ASAR"
+
+                  if [ "$LOCAL_ASAR" != "$REMOTE_ASAR" ]; then
+                    echo "::error::published desktop.asar does not match the build ($LOCAL_ASAR != $REMOTE_ASAR). install.sh would serve a stale or corrupt asar."
+                    exit 1
+                  fi
+
+                  echo "Published assets match this build."

@@ -22,7 +22,6 @@ on:
 
 env:
     FORCE_COLOR: true
-    GITHUB_TOKEN: ${{ secrets.ETOKEN }}
     REPO: slipcords/Slipping
     USERNAME: GitHub-Actions
 
@@ -33,7 +32,9 @@ jobs:
     Build:
         name: Build Slipcord
         runs-on: ubuntu-latest
-        if: github.repository == 'Slipcord/Slipcord'
+        # Must match the canonical owner casing. The org was renamed to lowercase
+        # `slipcords`, which made this comparison false and silently skipped the whole job.
+        if: github.repository == 'slipcords/Slipcord'
 
         steps:
             - uses: actions/checkout@v6
@@ -95,17 +96,34 @@ jobs:
                   bun run generateDevsList dist/devs.json
 
             - name: Upload to Slipping repo
-              if: ${{ vars.ACT == 'false' }}
+              env:
+                  ASKPASS_TOKEN: ${{ secrets.ETOKEN }}
               run: |
                   BRANCH="${{ github.event.inputs.branch || github.ref_name }}"
                   COMMIT_SHA=$(git rev-parse --short HEAD)
 
-                  git config --global user.name "GitHub-Actions"
-                  git config --global user.email actions@github.com
+                  if [ -z "$ASKPASS_TOKEN" ]; then
+                    echo "::warning::secrets.ETOKEN is not set - cannot push to $REPO."
+                    exit 0
+                  fi
+
+                  # Keep the token out of argv and out of the remote config.
+                  cat > "$RUNNER_TEMP/askpass.sh" <<'EOF'
+                  #!/bin/sh
+                  case "$1" in
+                    *Username*) echo "x-access-token" ;;
+                    *Password*) echo "$ASKPASS_TOKEN" ;;
+                  esac
+                  EOF
+                  chmod +x "$RUNNER_TEMP/askpass.sh"
+                  export GIT_ASKPASS="$RUNNER_TEMP/askpass.sh" GIT_TERMINAL_PROMPT=0
+
+                  git config --global user.name "$USERNAME"
+                  git config --global user.email "actions@github.com"
 
                   mkdir slipping && cd slipping
                   git init -b "$BRANCH"
-                  git remote add origin https://$USERNAME:$GITHUB_TOKEN@github.com/$REPO.git
+                  git remote add origin "https://github.com/$REPO.git"
 
                   if git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null 2>&1; then
                       git fetch --depth 1 origin "$BRANCH"
