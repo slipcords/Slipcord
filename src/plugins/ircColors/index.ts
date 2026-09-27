@@ -18,7 +18,7 @@
 
 import { definePluginSettings, Settings } from "@api/Settings";
 import { hash as h64 } from "@intrnl/xxhash64";
-import { getCustomColorString } from "@slipcordplugins/customUserColors";
+import { getCustomColorString } from "@equicordplugins/customUserColors";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { useMemo, UserStore } from "@webpack/common";

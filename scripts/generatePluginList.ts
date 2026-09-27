@@ -32,11 +32,11 @@ import { getEntryPoint, isPluginFile, parseDevs, parseEquicordDevs, parseSlipcor
     let dirs: string[];
 
     if (slipcordFlag) {
-        dirs = ["src/slipcordplugins/_core", "src/slipcordplugins"];
+        dirs = ["src/slipcordplugins"];
     } else if (vencordFlag) {
-        dirs = ["src/plugins", "src/plugins/_core"];
+        dirs = ["src/plugins", "src/plugins/_core", "src/equicordplugins/_core", "src/equicordplugins"];
     } else {
-        dirs = ["src/plugins", "src/plugins/_core", "src/slipcordplugins/_core", "src/slipcordplugins"];
+        dirs = ["src/plugins", "src/plugins/_core", "src/equicordplugins/_core", "src/equicordplugins", "src/slipcordplugins"];
     }
 
     const outputPath = args.find(a => !a.startsWith("--")) ?? null;

@@ -29,7 +29,7 @@ import { Paragraph } from "@components/Paragraph";
 import { openSettingsTabModal, UpdaterTab } from "@components/settings";
 import customIdle from "@plugins/customIdle";
 import { gitHash, gitHashShort } from "@shared/vencordUserAgent";
-import { platformName } from "@slipcordplugins/slipcordHelper/utils";
+import { platformName } from "@equicordplugins/slipcordHelper/utils";
 import { CONTRIB_ROLE_ID, Devs, DONOR_ROLE_ID, GUILD_ID, SLIPCORD_TEAM, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, VC_CONTRIB_ROLE_ID, VC_DONOR_ROLE_ID, VC_GUILD_ID, VC_REGULAR_ROLE_ID, VENCORD_CONTRIB_ROLE_ID } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
