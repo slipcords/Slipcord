@@ -96,15 +96,31 @@ jobs:
                     echo "Publishing $GITHUB_SHA (tip of main)."
                   fi
 
+            # Publish here first: the built-in token can always write to this repo, so this
+            # step must not be blocked by a missing ETOKEN.
+            - name: Upload Slipcord Stable
+              if: env.SKIP_PUBLISH != '1'
+              env:
+                  GH_TOKEN: ${{ secrets.ETOKEN || github.token }}
+              run: |
+                  if ! gh release view latest > /dev/null 2>&1; then
+                    echo "No 'latest' release in this repo yet - creating it."
+                    gh release create latest --title "Slipcord $(jq -r .version < package.json)" --notes "Rolling release" --target main
+                  fi
+
+                  gh release upload latest --clobber dist/release/*
+                  gh release edit latest --title "Slipcord $(jq -r .version < package.json) $GITHUB_SHA"
+
             - name: Upload release to Slipped repo
-              # This is the step the installer depends on: install.sh fetches
-              # SlippedCli-* and the desktop asar from this repo's latest release.
+              # The step the installer depends on: install.sh fetches SlippedCli-* and the
+              # desktop asar from the latest release of this repo, and the built-in
+              # GITHUB_TOKEN cannot write across repos, so this one genuinely needs a PAT.
               if: env.SKIP_PUBLISH != '1'
               env:
                   GH_TOKEN: ${{ secrets.ETOKEN }}
               run: |
                   if [ -z "${GH_TOKEN}" ]; then
-                    echo "::error::secrets.ETOKEN is empty. Cannot publish to $SLIPPED_REPO, so install.sh will keep serving the previous release."
+                    echo "::error::secrets.ETOKEN is empty. Cannot publish to $SLIPPED_REPO, so install.sh will keep serving the previous release. Add ETOKEN as a repository secret: a fine-grained PAT with 'Contents: read and write' on $SLIPPED_REPO only."
                     exit 1
                   fi
 
@@ -120,19 +136,6 @@ jobs:
                   echo "Publishing to $SLIPPED_REPO release '$TAG'"
 
                   gh release upload "$TAG" --clobber dist/release/* --repo "$SLIPPED_REPO"
-
-            - name: Upload Slipcord Stable
-              if: env.SKIP_PUBLISH != '1'
-              env:
-                  GH_TOKEN: ${{ secrets.ETOKEN || github.token }}
-              run: |
-                  if ! gh release view latest > /dev/null 2>&1; then
-                    echo "No 'latest' release in this repo yet - creating it."
-                    gh release create latest --title "Slipcord $(jq -r .version < package.json)" --notes "Rolling release" --target main
-                  fi
-
-                  gh release upload latest --clobber dist/release/*
-                  gh release edit latest --title "Slipcord $(jq -r .version < package.json) $GITHUB_SHA"
 
             # Secondary fan-out; must never mask a successful primary publish.
             - name: Upload Plugin JSONs to Slipping repo
