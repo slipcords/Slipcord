@@ -219,6 +219,43 @@ export const gitHashPlugin = {
 };
 
 /**
+ * Reduce a git remote to a bare `owner/repo` slug.
+ *
+ * Credentials are stripped unconditionally. `actions/checkout` configures origin as
+ * `https://x-access-token:<TOKEN>@github.com/owner/repo`, and a locally configured remote
+ * is often `https://<user>:<PAT>@github.com/owner/repo`, so anything that only special-cases
+ * the two anonymous URL forms will happily bake a live token into the bundle, which then
+ * ships in published release artifacts.
+ * @param {string} remote
+ * @returns {string} `owner/repo`, or an empty string if nothing usable was found
+ */
+export function normalizeGitRemote(remote) {
+    if (!remote) return "";
+    remote = remote.trim();
+    if (!remote) return "";
+
+    // ssh scp-like syntax, eg. git@github.com:owner/repo.git
+    const scp = /^[^/@]+@([^:/]+):(.+)$/.exec(remote);
+    const url = scp ? `https://${scp[1]}/${scp[2]}` : remote;
+
+    let pathname = remote;
+    try {
+        const parsed = new URL(url);
+        parsed.username = "";
+        parsed.password = "";
+        pathname = parsed.pathname;
+    } catch {
+        // not a URL - it's either an already-bare `owner/repo` slug or garbage
+        if (!remote.includes("://") && !remote.includes("@")) return remote;
+    }
+
+    return pathname
+        .replace(/^\/+/, "")
+        .replace(/\/+$/, "")
+        .replace(/\.git$/, "");
+}
+
+/**
  * @type {import("esbuild").Plugin}
  */
 export const gitRemotePlugin = {
@@ -231,14 +268,17 @@ export const gitRemotePlugin = {
         build.onLoad({ filter, namespace: "git-remote" }, async () => {
             let remote = process.env.SLIPCORD_REMOTE;
             if (!remote) {
-                const res = await promisify(exec)("git remote get-url origin", { encoding: "utf-8" });
-                remote = res.stdout.trim()
-                    .replace("https://github.com/", "")
-                    .replace("git@github.com:", "")
-                    .replace(/.git$/, "");
+                try {
+                    const res = await promisify(exec)("git remote get-url origin", { encoding: "utf-8" });
+                    remote = res.stdout.trim();
+                } catch {
+                    // no origin configured - not fatal, consumers handle an empty slug
+                    remote = "";
+                }
             }
 
-            return { contents: `export default "${remote}"` };
+            // JSON.stringify so a hostile or odd remote can't break out of the string literal
+            return { contents: `export default ${JSON.stringify(normalizeGitRemote(remote))}` };
         });
     }
 };
