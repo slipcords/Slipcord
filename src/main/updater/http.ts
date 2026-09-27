@@ -28,7 +28,40 @@ import gitRemote from "~git-remote";
 import { ASAR_FILE, serializeErrors } from "./common";
 
 const API_BASE = `https://api.github.com/repos/${gitRemote}`;
-let PendingUpdate: string | null = null;
+// /releases/latest/download/<asset> always resolves to the current release's asset, so it
+// stays valid when a rolling release replaces the asset we resolved earlier
+const LATEST_DOWNLOAD_BASE = `https://github.com/${gitRemote}/releases/latest/download`;
+
+const RELEASE_CACHE_TTL = 60_000;
+const DOWNLOAD_ATTEMPTS = 3;
+const RETRY_DELAY = 1200;
+const MIN_ASAR_SIZE = 1_000_000;
+
+interface ReleaseAsset {
+    id: number;
+    name: string;
+    browser_download_url: string;
+    size?: number;
+}
+
+interface ReleaseData {
+    tag_name?: string;
+    name?: string;
+    assets?: ReleaseAsset[];
+}
+
+interface PendingUpdate {
+    url: string;
+    tag: string;
+    hash: string | null;
+}
+
+let PendingUpdate: PendingUpdate | null = null;
+/** why the last check could not confirm a release, surfaced instead of a misleading message */
+let lastCheckError: string | null = null;
+let cachedRelease: { data: ReleaseData; fetchedAt: number } | null = null;
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function githubGet<T = any>(endpoint: string) {
     return fetchJson<T>(API_BASE + endpoint, {
@@ -39,6 +72,59 @@ async function githubGet<T = any>(endpoint: string) {
             "User-Agent": VENCORD_USER_AGENT
         }
     });
+}
+
+function describeApiError(err: any): string {
+    const message = String(err?.message ?? err);
+
+    if (/\b403\b/.test(message) && /rate limit/i.test(message)) {
+        return "GitHub's anonymous API rate limit is exhausted for your IP. Wait an hour, or install the update manually.";
+    }
+    if (/\b403\b/.test(message)) return "GitHub refused the API request (403). If this is a rate limit, wait an hour.";
+
+    return message.split("\n")[0];
+}
+
+/** release names look like "Slipcord 1.2.3 abc1234", so the hash is the last whitespace separated token */
+function getReleaseHash(releaseData: ReleaseData): string | null {
+    const name = typeof releaseData.name === "string" && releaseData.name.trim()
+        ? releaseData.name
+        : (releaseData.tag_name ?? "");
+    const last = name.trim().split(/\s+/).at(-1) ?? "";
+
+    return /^[\da-f]{7,40}$/i.test(last) ? last : null;
+}
+
+function findAsset(releaseData: ReleaseData): ReleaseAsset | null {
+    const assets = releaseData.assets ?? [];
+
+    // exact name first, then any real asar (skipping the .LEGAL.txt companions)
+    return assets.find(a => a?.name === ASAR_FILE)
+        ?? assets.find(a => typeof a?.name === "string" && a.name.endsWith(".asar") && !a.name.includes("LEGAL"))
+        ?? null;
+}
+
+async function getLatestRelease(force = false): Promise<ReleaseData> {
+    if (!force && cachedRelease && Date.now() - cachedRelease.fetchedAt < RELEASE_CACHE_TTL) {
+        return cachedRelease.data;
+    }
+
+    const data = await githubGet<ReleaseData>("/releases/latest");
+    cachedRelease = { data, fetchedAt: Date.now() };
+    return data;
+}
+
+function planUpdate(releaseData: ReleaseData): PendingUpdate | null {
+    const hash = getReleaseHash(releaseData);
+    if (!hash || hash === gitHash) return null;
+
+    const asset = findAsset(releaseData);
+    if (!asset) {
+        lastCheckError = `Release ${releaseData.tag_name ?? ""} does not have a ${ASAR_FILE} asset yet.`.replace(/\s+/g, " ");
+        return null;
+    }
+
+    return { url: asset.browser_download_url, tag: releaseData.tag_name ?? "", hash };
 }
 
 async function calculateGitChanges() {
@@ -55,20 +141,17 @@ async function calculateGitChanges() {
 }
 
 async function fetchUpdates() {
+    lastCheckError = null;
+
     // Check for new release
     try {
-        const releaseData = await githubGet("/releases/latest");
-
-        const hash = releaseData.name.slice(releaseData.name.lastIndexOf(" ") + 1);
-        if (hash !== gitHash) {
-            const asset = releaseData.assets.find(a => a.name === ASAR_FILE);
-            if (asset) {
-                PendingUpdate = asset.browser_download_url;
-                return true;
-            }
+        const plan = planUpdate(await getLatestRelease());
+        if (plan) {
+            PendingUpdate = plan;
+            return true;
         }
-    } catch {
-        // Release check failed, continue to commit check
+    } catch (err) {
+        lastCheckError = describeApiError(err);
     }
 
     // Fallback: check if there are commits ahead
@@ -78,19 +161,65 @@ async function fetchUpdates() {
             // Commits ahead but no release - mark as outdated but no PendingUpdate
             return true;
         }
-    } catch {
-        // Compare failed
+    } catch (err) {
+        if (!lastCheckError) lastCheckError = describeApiError(err);
     }
 
     return false;
 }
 
-async function applyUpdates() {
-    if (!PendingUpdate) {
-        throw new Error("No release available. Commits are ahead but no new release has been published yet.");
+function isAsarBuffer(data: Buffer): boolean {
+    if (data.length < MIN_ASAR_SIZE) return false;
+
+    // asar files are a 16 byte pickle header followed by a JSON file table
+    if (data.readUInt32LE(0) !== 4) return false;
+
+    return data.toString("utf8", 16, 24) === '{"files"';
+}
+
+async function downloadUpdate(initialPlan: PendingUpdate): Promise<Buffer> {
+    let plan = initialPlan;
+    let lastError: any;
+
+    for (let attempt = 1; attempt <= DOWNLOAD_ATTEMPTS; attempt++) {
+        // the asset we resolved first, then the canonical latest-download url which stays
+        // valid even after a rolling release replaces the asset object
+        for (const url of [plan.url, `${LATEST_DOWNLOAD_BASE}/${ASAR_FILE}`]) {
+            try {
+                const data = await fetchBuffer(url);
+                if (!isAsarBuffer(data)) throw new Error(`${url} did not return a valid asar archive`);
+                return data;
+            } catch (err: any) {
+                lastError = err;
+                // only 404/410 mean the asset moved; anything else will not fix itself on retry
+                if (!/\b(404|410)\b/.test(String(err?.message))) throw new Error(describeApiError(err));
+            }
+        }
+
+        if (attempt < DOWNLOAD_ATTEMPTS) {
+            // the release assets are being replaced under us, so re-read the release and wait a moment
+            await sleep(RETRY_DELAY * attempt);
+            try {
+                const fresh = planUpdate(await getLatestRelease(true));
+                if (fresh) plan = fresh;
+            } catch { /* keep the previous plan */ }
+        }
     }
 
-    const data = await fetchBuffer(PendingUpdate);
+    throw new Error(
+        `Could not download ${ASAR_FILE} after ${DOWNLOAD_ATTEMPTS} attempts: ${describeApiError(lastError)}. ` +
+        "The release is probably mid-upload, try again in a minute."
+    );
+}
+
+async function applyUpdates() {
+    if (!PendingUpdate) {
+        throw new Error(lastCheckError
+            ? `Could not check for updates: ${lastCheckError}`
+            : "No release available. Commits are ahead but no new release has been published yet.");
+    }
+
+    const data = await downloadUpdate(PendingUpdate);
     writeFileSync(__dirname, data, { flush: true });
 
     PendingUpdate = null;
