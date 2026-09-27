@@ -171,17 +171,30 @@ export default definePlugin({
                 const existingIndex = entries.findIndex(e => e.emoji === normalized.display);
 
                 if (existingIndex !== -1) {
-                    entries[existingIndex] = { emoji: normalized.display, super: useSuper, failures: 0 };
-                } else {
-                    entries.push({ emoji: normalized.display, super: useSuper, failures: 0 });
+                    entries.splice(existingIndex, 1);
+                    if (entries.length === 0) {
+                        autoReacts.delete(targetId);
+                    } else {
+                        autoReacts.set(targetId, entries);
+                    }
+                    await persist();
+
+                    sendBotMessage(ctx.channel.id, {
+                        content: `Removed auto-reaction ${normalized.display} for **${targetUser.username}**. ` +
+                            (entries.length === 0
+                                ? "They have no auto-reactions left."
+                                : `They still auto-react with ${entries.length} emoji${entries.length === 1 ? "" : "s"}.`),
+                    });
+                    return;
                 }
 
+                entries.push({ emoji: normalized.display, super: useSuper, failures: 0 });
                 autoReacts.set(targetId, entries);
                 await persist();
 
                 sendBotMessage(ctx.channel.id, {
                     content:
-                        `${existingIndex === -1 ? "Added" : "Updated"} auto-reaction for **${targetUser.username}** with ${normalized.display}` +
+                        `Added auto-reaction for **${targetUser.username}** with ${normalized.display}` +
                         (useSuper ? " (super reaction)" : "") +
                         `. They now auto-react with ${entries.length} emoji${entries.length === 1 ? "" : "s"}.`,
                 });
