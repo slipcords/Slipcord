@@ -93,7 +93,7 @@ export default settings;
 
 const BadgeSettings = () => {
     const [images, setImages] = useState([
-        { src: "https://badge.slipcord.org/donor.webp", shown: settings.store.showSlipcordDonor, title: "Slipcord donor badges", key: "SlipcordDonor", position: settings.store.SlipcordDonorPosition },
+        { src: "https://badge.equicord.org/donor.webp", shown: settings.store.showSlipcordDonor, title: "Slipcord donor badges", key: "SlipcordDonor", position: settings.store.SlipcordDonorPosition },
         { src: "https://raw.githubusercontent.com/slipcords/Slipper/main/build/icon.png", shown: settings.store.showSlipcordContributor, title: "Slipcord contributor badge", key: "SlipcordContributer", position: settings.store.SlipcordContributorPosition },
         { src: "https://cdn.discordapp.com/emojis/1026533070955872337.png", shown: settings.store.showVencordDonor, title: "Vencord donor badges", key: "VencordDonor", position: settings.store.VencordDonorPosition },
         { src: "https://cdn.discordapp.com/emojis/1092089799109775453.png", shown: settings.store.showVencordContributor, title: "Vencord contributor badge", key: "VencordContributer", position: settings.store.VencordContributorPosition },

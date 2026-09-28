@@ -43,7 +43,7 @@ function SlipcordIcon() {
 }
 
 function VencordIcon() {
-    return <img src="https://slipcord.org/assets/icons/vencord/icon-light.png" alt="Vencord" style={ICON_STYLE} />;
+    return <img src="https://equicord.org/assets/icons/vencord/icon-light.png" alt="Vencord" style={ICON_STYLE} />;
 }
 
 const RefreshIcon = findComponentByCodeLazy("M4 12a8 8 0 0 1 14.93-4H15");
@@ -59,7 +59,7 @@ function validateUrl(url: string) {
 }
 
 const cloudBackendOptions = [
-    { label: "Slipcord Cloud", value: "https://cloud.slipcord.org/" },
+    { label: "Slipcord Cloud", value: "https://cloud.equicord.org/" },
     { label: "Vencord Cloud", value: "https://api.vencord.dev/" }
 ];
 
@@ -98,7 +98,7 @@ function CloudTab() {
 
             <Notice.Info className={Margins.bottom16}>
                 We use our own <Link href="https://github.com/Slipcord/Equicloud">Equicloud backend</Link> with enhanced features.
-                View our <Link href="https://slipcord.org/cloud/policy">privacy policy</Link> to see what we store and how we use your data.
+                View our <Link href="https://equicord.org/cloud/policy">privacy policy</Link> to see what we store and how we use your data.
                 Equicloud is BSD 3.0 licensed, so you can self-host if preferred.
             </Notice.Info>
 

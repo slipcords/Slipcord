@@ -35,7 +35,7 @@ import { SlipcordDonorModal, SlipcordTranslatorModal, VencordDonorModal } from "
 
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
 const SLIPCORD_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/slipcords/Slipper/main/build/icon.png";
-const USERPLUGIN_CONTRIBUTOR_BADGE = "https://slipcord.org/assets/icons/misc/userplugin.png";
+const USERPLUGIN_CONTRIBUTOR_BADGE = "https://equicord.org/assets/icons/misc/userplugin.png";
 
 const ContributorBadge: ProfileBadge = {
     id: "vencord_contributor_badge",
@@ -85,6 +85,28 @@ const UserPluginContributorBadge: ProfileBadge = {
 
 let DonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
 let SlipcordDonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
+let CustomBadgeData: CustomBadgeFile = { badges: {}, users: {} };
+
+const CUSTOM_BADGES_URL = "https://raw.githubusercontent.com/slipcords/Slipcord/main/badges.json";
+// Custom badge `icon` paths are written relative to the repo root in badges.json
+const CUSTOM_BADGE_ICON_BASE = "https://raw.githubusercontent.com/slipcords/Slipcord/main/";
+
+interface CustomBadgeDef {
+    label: string;
+    description?: string;
+    /** Rendered as text, so a badge can be added without uploading an image */
+    emoji?: string;
+    /** Path in the repo, e.g. "badges/dev.png". Resolved against CUSTOM_BADGE_ICON_BASE */
+    icon?: string;
+    /** Opened when the badge is clicked */
+    link?: string;
+}
+
+interface CustomBadgeFile {
+    badges: Record<string, CustomBadgeDef>;
+    /** userId -> badge ids, or inline definitions for badges not in the catalog */
+    users: Record<string, Array<string | CustomBadgeDef>>;
+}
 
 async function loadBadges(url: string, noCache = false) {
     const init = {} as RequestInit;
@@ -93,12 +115,39 @@ async function loadBadges(url: string, noCache = false) {
     return await fetch(url, init).then(r => r.json());
 }
 
-async function loadAllBadges(noCache = false) {
-    const vencordBadges = await loadBadges("https://badges.vencord.dev/badges.json", noCache);
-    const slipcordBadges = await loadBadges("https://badge.slipcord.org/badges.json", noCache);
+/**
+ * Reads the custom badge file out of this repo. Badges can be plain ids
+ * (looked up in the catalog) or inline definitions, so a badge can be given
+ * to someone without adding it to the catalog first.
+ */
+function parseCustomBadgeFile(raw: unknown): CustomBadgeFile {
+    const file: CustomBadgeFile = { badges: {}, users: {} };
+    if (!raw || typeof raw !== "object") return file;
 
-    DonorBadges = vencordBadges;
-    SlipcordDonorBadges = slipcordBadges;
+    const data = raw as Partial<CustomBadgeFile>;
+    if (data.badges && typeof data.badges === "object") file.badges = data.badges;
+    if (data.users && typeof data.users === "object") file.users = data.users;
+    return file;
+}
+
+async function loadAllBadges(noCache = false) {
+    // Each source is loaded independently: one host being down should not stop
+    // the others from loading, which is what used to happen when these were
+    // awaited in sequence and a dead host rejected the whole function.
+    const [vencord, slipcord, custom] = await Promise.allSettled([
+        loadBadges("https://badges.vencord.dev/badges.json", noCache),
+        loadBadges("https://badge.equicord.org/badges.json", noCache),
+        loadBadges(CUSTOM_BADGES_URL, noCache),
+    ]);
+
+    if (vencord.status === "fulfilled") DonorBadges = vencord.value;
+    else new Logger("BadgeAPI").error("Failed to load Vencord badges", vencord.reason);
+
+    if (slipcord.status === "fulfilled") SlipcordDonorBadges = slipcord.value;
+    else new Logger("BadgeAPI").error("Failed to load Slipcord donor badges", slipcord.reason);
+
+    if (custom.status === "fulfilled") CustomBadgeData = parseCustomBadgeFile(custom.value);
+    else new Logger("BadgeAPI").error("Failed to load custom badges", custom.reason);
 }
 
 let intervalId: any;
@@ -270,5 +319,69 @@ export default definePlugin({
                 return badge.tooltip === "Slipcord Translator" ? SlipcordTranslatorModal() : SlipcordDonorModal();
             },
         } satisfies ProfileBadge));
+    },
+
+    /**
+     * Custom badges read from badges.json in this repo. To give someone a badge,
+     * add its id to their array in `users`, or pass a whole definition inline.
+     */
+    getCustomBadges(userId: string) {
+        const ids = CustomBadgeData.users[userId];
+        if (!Array.isArray(ids) || ids.length === 0) return [];
+
+        const badges: ProfileBadge[] = [];
+        for (const entry of ids) {
+            // An entry is either a catalog id, or an inline definition object
+            const def: CustomBadgeDef | undefined = typeof entry === "string"
+                ? CustomBadgeData.badges[entry]
+                : entry;
+            if (!def?.label) continue;
+
+            const onClick = def.link
+                ? () => VencordNative.native.openExternal(def.link!)
+                : undefined;
+
+            const badge: ProfileBadge = {
+                id: `slipcord_custom_badge_${def.label.toLowerCase().replace(/[^a-z0-9]+/g, "_")}`,
+                description: def.description ?? def.label,
+                position: BadgePosition.START,
+                onClick,
+                onContextMenu(event, props) {
+                    ContextMenuApi.openContextMenu(event, () => <BadgeContextMenu badge={props} />);
+                },
+            };
+
+            if (def.icon) {
+                badge.iconSrc = def.icon.startsWith("http")
+                    ? def.icon
+                    : CUSTOM_BADGE_ICON_BASE + def.icon;
+                badge.props = {
+                    style: {
+                        borderRadius: "50%",
+                        transform: "scale(0.9)"
+                    }
+                };
+            } else if (def.emoji) {
+                // No image needed, so a badge can be created with no asset upload
+                badge.component = () => (
+                    <span
+                        title={def.description ?? def.label}
+                        style={{
+                            fontSize: "1.1em",
+                            lineHeight: 1,
+                            cursor: def.link ? "pointer" : "default",
+                            filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))"
+                        }}
+                    >
+                        {def.emoji}
+                    </span>
+                );
+            } else {
+                continue;
+            }
+
+            badges.push(badge);
+        }
+        return badges;
     }
 });

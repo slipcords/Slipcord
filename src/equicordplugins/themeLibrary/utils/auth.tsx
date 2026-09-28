@@ -18,7 +18,7 @@ export async function authorizeUser(triggerModal: boolean = true) {
             {...props}
             scopes={["identify", "connections"]}
             responseType="code"
-            redirectUri="https://themes.slipcord.org/api/user/auth"
+            redirectUri="https://themes.equicord.org/api/user/auth"
             permissions={0n}
             clientId="1464006702125940736"
             cancelCompletesFlow={false}

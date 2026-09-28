@@ -114,7 +114,7 @@ export const PluginCards = ErrorBoundary.wrap(function PluginCards({ message }: 
 
     // Process embeds
     message.embeds?.forEach(embed => {
-        if (!embed.url?.startsWith("https://slipcord.org/plugins/") && !embed.url?.startsWith("https://vencord.dev/plugins/")) return;
+        if (!embed.url?.startsWith("https://equicord.org/plugins/") && !embed.url?.startsWith("https://vencord.dev/plugins/")) return;
 
         const isSlipcord = isSlipcordGuild(message.channel_id) && isSlipcordSupport(message.author.id);
         if (!isSlipcord) return;
@@ -142,7 +142,7 @@ export const PluginCards = ErrorBoundary.wrap(function PluginCards({ message }: 
     if (message.author.id === EQUIBOT_USER_ID && components?.length >= 4) {
         const description = components[1]?.content;
         const pluginUrl = components.find((c: any) => c?.components)?.components[0]?.url;
-        if (pluginUrl?.startsWith("https://slipcord.org/plugins/") || pluginUrl?.startsWith("https://vencord.dev/plugins/")) {
+        if (pluginUrl?.startsWith("https://equicord.org/plugins/") || pluginUrl?.startsWith("https://vencord.dev/plugins/")) {
             const pluginNameFromUrl = new URL(pluginUrl).pathname.split("/")[2];
             const actualPluginName = Object.keys(plugins).find(name =>
                 name.toLowerCase() === pluginNameFromUrl?.toLowerCase()

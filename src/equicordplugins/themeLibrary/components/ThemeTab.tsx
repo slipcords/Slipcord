@@ -24,7 +24,7 @@ import { ThemeCard } from "./ThemeCard";
 
 const InputStyles = findCssClassesLazy("inputWrapper", "editable", "error");
 
-export const apiUrl = "https://themes.slipcord.org/api";
+export const apiUrl = "https://themes.equicord.org/api";
 export const logger = new Logger("ThemeLibrary", "#e5c890");
 
 export async function fetchAllThemes(): Promise<Theme[]> {
