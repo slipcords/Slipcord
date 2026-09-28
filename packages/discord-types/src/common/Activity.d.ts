@@ -44,6 +44,17 @@ export interface Activity {
     buttons?: string[];
     metadata?: {
         button_urls?: Array<string>;
+        /** Set by Spotify presences to identify the track being played. */
+        context_uri?: string;
+        album_id?: string;
+        artist_ids?: Array<string>;
+        track_id?: string;
+    };
+    /** Join/spectate/match tokens, used by "Listen Along" style presences. */
+    secrets?: {
+        join?: string;
+        spectate?: string;
+        match?: string;
     };
     platform?: ActivityPlatform;
     party?: {

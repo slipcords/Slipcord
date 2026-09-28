@@ -109,6 +109,32 @@ export async function buildProfileActivity(presence: Presence, config: RpcConfig
     return prune(activity);
 }
 
+/** Mirrors the shape a real Spotify listening activity uses: listen-along flags, a sync id and secrets. */
+const SPOTIFY_SYNC_ID = "09xhawlPUifhftf8zuie7w";
+
+function buildSpotifyExtras(activity: Activity, title: string, subtitle: string) {
+    const sid = SPOTIFY_SYNC_ID;
+    const spotifyId = `spotify:${sid}`;
+
+    // PLAY | SYNC, which is what makes the "Listen Along" button appear
+    activity.flags = ActivityFlags.PLAY | ActivityFlags.SYNC;
+    activity.id = spotifyId;
+    activity.sync_id = sid;
+    activity.session_id = spotifyId;
+    activity.party = { id: spotifyId, size: [1, 1] };
+    activity.metadata = {
+        context_uri: `spotify:track:${sid}`,
+        album_id: sid,
+        artist_ids: [sid],
+        track_id: sid,
+    };
+    activity.secrets = { join: spotifyId, spectate: spotifyId, match: spotifyId };
+
+    // the title is already shown as details, so keep the hover text off it
+    if (subtitle) activity.assets = { ...activity.assets, large_text: subtitle };
+    else if (title) activity.assets = { ...activity.assets, large_text: title };
+}
+
 export async function buildOfficialAppActivity(
     presence: Presence,
     entry: OfficialAppEntry,
@@ -130,7 +156,6 @@ export async function buildOfficialAppActivity(
         details: title,
         type: app.type,
         flags: ActivityFlags.INSTANCE,
-        status_display_type: 1,
     };
 
     if (timestamps) activity.timestamps = timestamps;
@@ -142,6 +167,8 @@ export async function buildOfficialAppActivity(
         const art = await resolveArt(entry, app.applicationId, app.asset);
         if (art) activity.assets = { large_image: art, large_text: title };
     }
+
+    if (entry.app === "spotify") buildSpotifyExtras(activity, title, entry.subtitle.trim());
 
     return prune(activity);
 }
