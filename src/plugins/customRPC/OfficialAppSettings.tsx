@@ -13,7 +13,7 @@ import { addOfficialApp, getOfficialApps, newId, OFFICIAL_APP_SOCKET_PREFIX, rem
 import { getBlockedPresences, socketIdFor } from "./presence";
 import { cl } from "./shared";
 import { ACTIVITY_TYPE_LABELS } from "./types";
-import { lookupOfficialApp, OFFICIAL_APPS, OfficialAppEntry, OfficialAppId } from "./types/officialApp";
+import { hasOwnName, lookupOfficialApp, OFFICIAL_APPS, OfficialAppEntry, OfficialAppId } from "./types/officialApp";
 import { usePresencesVersion } from "./usePresences";
 
 function toDateTimeInput(ms: number) {
@@ -77,6 +77,7 @@ function TimestampField({ label, value, onChange }: {
 function OfficialAppFields({ entry }: { entry: OfficialAppEntry; }) {
     const app = lookupOfficialApp(entry.app);
     const blocked = getBlockedPresences().has(socketIdFor(OFFICIAL_APP_SOCKET_PREFIX, entry.id));
+    const ownName = hasOwnName(app, entry.name);
 
     function patch(changes: Partial<OfficialAppEntry>) {
         void updateOfficialApp(entry.id, current => ({ ...current, ...changes }));
@@ -100,6 +101,19 @@ function OfficialAppFields({ entry }: { entry: OfficialAppEntry; }) {
                     Hidden: the {app ? ACTIVITY_TYPE_LABELS[app.type] ?? "same" : "same"} slot is already used by another presence.
                 </Text>
             )}
+
+            <SettingsSection
+                id="oa-name"
+                name="Name"
+                description={`Shown instead of "${app?.label ?? entry.app}". Leave empty for that one.`}
+            >
+                <TextInput
+                    type="text"
+                    placeholder={app?.label ?? entry.app}
+                    value={entry.name ?? ""}
+                    onChange={name => patch({ name })}
+                />
+            </SettingsSection>
 
             <SettingsSection id="oa-title" name="Title" description="Title of the show or game.">
                 <TextInput
@@ -176,15 +190,17 @@ function OfficialAppFields({ entry }: { entry: OfficialAppEntry; }) {
                 </SettingsSection>
             )}
 
-            <SettingsSection tag="label" inlineSetting id="oa-show-art" name="Show App Art" description="Show the app art next to the title.">
-                <Switch checked={entry.showArt ?? app?.defaultArt ?? true} onChange={showArt => patch({ showArt })} />
-            </SettingsSection>
+            {!ownName && (
+                <SettingsSection tag="label" inlineSetting id="oa-show-art" name="Show App Art" description="Show the app art next to the title.">
+                    <Switch checked={entry.showArt ?? app?.defaultArt ?? true} onChange={showArt => patch({ showArt })} />
+                </SettingsSection>
+            )}
 
             <SettingsSection
                 id="oa-image"
                 name="Custom Image"
-                description={app?.selfbotStyle
-                    ? "A cdn.discordapp.com or mp: link. This app is sent without an application id, so its registered art is not available."
+                description={ownName
+                    ? "A cdn.discordapp.com or mp: link, shown next to the title."
                     : "Your own image, as a direct link. Overrides the app art."
                 }
             >

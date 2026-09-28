@@ -85,6 +85,7 @@ function normalizeOfficialApp(entry: Partial<OfficialAppEntry> & { id: string })
         id: entry.id,
         enabled: entry.enabled !== false,
         app,
+        name: typeof entry.name === "string" && entry.name.trim() ? entry.name.trim() : undefined,
         title: typeof entry.title === "string" ? entry.title : "",
         subtitle: typeof entry.subtitle === "string" ? entry.subtitle : "",
         duration: typeof entry.duration === "string" ? entry.duration : "24",

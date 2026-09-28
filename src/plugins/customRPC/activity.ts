@@ -12,7 +12,7 @@ import { ApplicationAssetUtils } from "@webpack/common";
 import { resolveImage } from "./assets";
 import { anchorFor, Presence } from "./presence";
 import { RpcConfig, TimestampMode } from "./types";
-import { lookupOfficialApp, OfficialApp, OfficialAppEntry } from "./types/officialApp";
+import { hasOwnName, lookupOfficialApp, OfficialApp, OfficialAppEntry } from "./types/officialApp";
 
 /** Drops empty values Discord would reject, without touching nested objects. */
 function prune(activity: Activity): Activity {
@@ -150,33 +150,25 @@ export async function buildOfficialAppActivity(
     // "No timer" means no timestamps, not no presence
     const timestamps = buildOfficialAppTimestamps(presence, entry, duration);
 
-    // A selfbot sends the presence as-is, with no application id and no platform, and
-    // Discord renders the name from the payload instead of the registered app name
-    const activity: Activity = app.selfbotStyle
-        ? {
-            name: app.label,
-            details: title,
-            type: app.type,
-            flags: ActivityFlags.INSTANCE,
-        }
-        : {
-            application_id: app.applicationId,
-            name: app.label,
-            details: title,
-            type: app.type,
-            flags: ActivityFlags.INSTANCE,
-        };
+    const ownName = hasOwnName(app, entry.name);
+
+    const activity: Activity = {
+        name: entry.name?.trim() || app.label,
+        details: title,
+        type: app.type,
+        flags: ActivityFlags.INSTANCE,
+    };
+
+    // everything the app owns is only ours to send while we are its registered id
+    if (!ownName) activity.application_id = app.applicationId;
+    if (!ownName && app.platform) activity.platform = app.platform;
 
     if (timestamps) activity.timestamps = timestamps;
 
     if (entry.subtitle.trim()) activity.state = entry.subtitle.trim();
-    if (app.platform && !app.selfbotStyle) activity.platform = app.platform;
 
-    if (entry.showArt) {
-        // an idless presence has no assets of its own, so only a link we can resolve works
-        const art = app.selfbotStyle
-            ? await resolveArt(entry, undefined, undefined)
-            : await resolveArt(entry, app.applicationId, app.asset);
+    if (entry.showArt || (ownName && entry.imageUrl.trim())) {
+        const art = await resolveArt(entry, ownName ? undefined : app.applicationId, ownName ? undefined : app.asset);
         if (art) activity.assets = { large_image: art, large_text: title };
     }
 

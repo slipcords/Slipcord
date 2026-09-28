@@ -19,13 +19,10 @@ export interface OfficialApp {
      */
     defaultArt?: boolean;
     /**
-     * Sent the way a selfbot sends it: no registered application id, no platform, just
-     * the fields we set. Discord names an activity after the id it is registered under
-     * and ignores the payload name, so this is the only way our own label is what shows.
-     * The tradeoff is that an idless presence owns no assets, so app art is unavailable
-     * and only image links we resolve ourselves are accepted.
+     * The app is registered under a name that is not the one shown here, so the presence
+     * is always sent without an application id.
      */
-    selfbotStyle?: boolean;
+    ownName?: boolean;
 }
 
 export const OFFICIAL_APPS = {
@@ -56,7 +53,7 @@ export const OFFICIAL_APPS = {
         type: ActivityType.PLAYING,
         platform: "android",
         defaultArt: false,
-        selfbotStyle: true,
+        ownName: true,
     },
     roblox: {
         label: "Roblox",
@@ -95,6 +92,15 @@ export function lookupOfficialApp(id: string): OfficialApp | undefined {
     return (OFFICIAL_APPS as Record<string, OfficialApp | undefined>)[id];
 }
 
+/**
+ * Discord names an activity after the application id it is registered under and ignores
+ * the name in the payload, so a presence that has a name of its own is sent without an
+ * id, and with it comes no app art, no platform and no registered assets.
+ */
+export function hasOwnName(app: OfficialApp | undefined, customName?: string): boolean {
+    return !!app?.ownName || !!customName?.trim();
+}
+
 export type OfficialAppId = keyof typeof OFFICIAL_APPS;
 
 export type OfficialAppTimestampMode = "now" | "custom" | "none";
@@ -104,6 +110,8 @@ export interface OfficialAppEntry {
     id: string;
     enabled: boolean;
     app: OfficialAppId;
+    /** Replaces the app's own name, which Discord otherwise takes from its registry. */
+    name?: string;
     title: string;
     subtitle: string;
     /** Episode or session length in minutes. 0 leaves the presence without an end. */
