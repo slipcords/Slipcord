@@ -13,6 +13,11 @@ export interface OfficialApp {
     asset: string;
     type: ActivityType;
     platform?: ActivityPlatform;
+    /**
+     * Whether the app's own artwork should be shown by default. Meta's asset is
+     * branded "Meta Horizon", so it is off unless the user asks for it.
+     */
+    defaultArt?: boolean;
 }
 
 export const OFFICIAL_APPS = {
@@ -42,6 +47,7 @@ export const OFFICIAL_APPS = {
         asset: "meta",
         type: ActivityType.PLAYING,
         platform: "android",
+        defaultArt: false,
     },
     roblox: {
         label: "Roblox",
@@ -93,7 +99,8 @@ export interface OfficialAppEntry {
     subtitle: string;
     /** Episode or session length in minutes. 0 leaves the presence without an end. */
     duration: string;
-    showArt: boolean;
+    /** Unset means "use the app's own default", which is off for Meta Quest. */
+    showArt?: boolean;
     imageUrl: string;
     timestampMode: OfficialAppTimestampMode;
     startTime: number;

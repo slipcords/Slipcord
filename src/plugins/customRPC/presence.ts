@@ -11,13 +11,14 @@ import { ActivityType } from "@vencord/discord-types/enums";
 import { FluxDispatcher } from "@webpack/common";
 
 import { CLAIMABLE_TYPES, RpcProfile, TimestampMode } from "./types";
-import { lookupOfficialApp, OFFICIAL_APPS, OfficialAppEntry, OfficialAppId } from "./types/officialApp";
+import { lookupOfficialApp, OFFICIAL_APPS, OfficialApp, OfficialAppEntry, OfficialAppId } from "./types/officialApp";
 
 const logger = new Logger("CustomRPC:Presence");
 
 const PROFILES_KEY = "CustomRPC_profiles";
 const OFFICIAL_APPS_KEY = "CustomRPC_officialApps";
 const MIGRATED_KEY = "CustomRPC_profilesMigrated";
+const ART_DEFAULT_KEY = "CustomRPC_officialAppArtDefaults";
 
 export const PROFILE_SOCKET_PREFIX = "CustomRPC_";
 export const OFFICIAL_APP_SOCKET_PREFIX = "RichPresence_OfficialApp_";
@@ -87,7 +88,8 @@ function normalizeOfficialApp(entry: Partial<OfficialAppEntry> & { id: string })
         title: typeof entry.title === "string" ? entry.title : "",
         subtitle: typeof entry.subtitle === "string" ? entry.subtitle : "",
         duration: typeof entry.duration === "string" ? entry.duration : "24",
-        showArt: entry.showArt !== false,
+        // unset falls back to the app's own default
+        showArt: entry.showArt ?? (OFFICIAL_APPS[app] as OfficialApp | undefined)?.defaultArt ?? true,
         imageUrl: typeof entry.imageUrl === "string" ? entry.imageUrl : "",
         timestampMode: entry.timestampMode ?? "now",
         startTime: typeof entry.startTime === "number" ? entry.startTime : 0,
@@ -166,6 +168,21 @@ export async function loadPresences() {
     } else {
         profiles = (storedProfiles ?? []).map(normalizeProfile);
         officialApps = (storedApps ?? []).map(normalizeOfficialApp);
+    }
+
+    // One-time: entries saved before the Meta Quest art default existed carry an explicit
+    // showArt: true, so clear it and let the app default (off for Quest) apply.
+    if (!await DataStore.get<boolean>(ART_DEFAULT_KEY)) {
+        await DataStore.set(ART_DEFAULT_KEY, true);
+
+        const patched = officialApps.map(entry =>
+            entry.app === "quest" && entry.showArt ? { ...entry, showArt: undefined } : entry
+        );
+        if (patched.some((entry, i) => entry !== officialApps[i])) {
+            officialApps = patched;
+            await DataStore.set(OFFICIAL_APPS_KEY, officialApps);
+            logger.info("Cleared the Meta Horizon artwork from Meta Quest presences");
+        }
     }
 
     loaded = true;

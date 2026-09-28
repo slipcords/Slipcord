@@ -13,7 +13,7 @@ import { addOfficialApp, getOfficialApps, newId, OFFICIAL_APP_SOCKET_PREFIX, rem
 import { getBlockedPresences, socketIdFor } from "./presence";
 import { cl } from "./shared";
 import { ACTIVITY_TYPE_LABELS } from "./types";
-import { OFFICIAL_APPS, OfficialAppEntry, OfficialAppId } from "./types/officialApp";
+import { lookupOfficialApp, OFFICIAL_APPS, OfficialAppEntry, OfficialAppId } from "./types/officialApp";
 import { usePresencesVersion } from "./usePresences";
 
 function toDateTimeInput(ms: number) {
@@ -75,7 +75,7 @@ function TimestampField({ label, value, onChange }: {
 }
 
 function OfficialAppFields({ entry }: { entry: OfficialAppEntry; }) {
-    const app = OFFICIAL_APPS[entry.app];
+    const app = lookupOfficialApp(entry.app);
     const blocked = getBlockedPresences().has(socketIdFor(OFFICIAL_APP_SOCKET_PREFIX, entry.id));
 
     function patch(changes: Partial<OfficialAppEntry>) {
@@ -97,7 +97,7 @@ function OfficialAppFields({ entry }: { entry: OfficialAppEntry; }) {
 
             {blocked && (
                 <Text className={cl("error")} variant="text-sm/normal">
-                    Hidden: the {ACTIVITY_TYPE_LABELS[app?.type] ?? "same"} slot is already used by another presence.
+                    Hidden: the {app ? ACTIVITY_TYPE_LABELS[app.type] ?? "same" : "same"} slot is already used by another presence.
                 </Text>
             )}
 
@@ -177,7 +177,7 @@ function OfficialAppFields({ entry }: { entry: OfficialAppEntry; }) {
             )}
 
             <SettingsSection tag="label" inlineSetting id="oa-show-art" name="Show App Art" description="Show the app art next to the title.">
-                <Switch checked={entry.showArt} onChange={showArt => patch({ showArt })} />
+                <Switch checked={entry.showArt ?? app?.defaultArt ?? true} onChange={showArt => patch({ showArt })} />
             </SettingsSection>
 
             <SettingsSection
