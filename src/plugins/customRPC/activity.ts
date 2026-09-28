@@ -147,28 +147,36 @@ export async function buildOfficialAppActivity(
 
     const duration = Number(entry.duration) * 60_000;
 
-    // Discord names the activity after the application id, not after our payload, so an
-    // app whose registry name is not ours has to be sent under an id Discord does not know
-    const applicationId = app.unregisteredId ? "0" : app.applicationId;
-
     // "No timer" means no timestamps, not no presence
     const timestamps = buildOfficialAppTimestamps(presence, entry, duration);
 
-    const activity: Activity = {
-        application_id: applicationId,
-        name: app.label,
-        details: title,
-        type: app.type,
-        flags: ActivityFlags.INSTANCE,
-    };
+    // A selfbot sends the presence as-is, with no application id and no platform, and
+    // Discord renders the name from the payload instead of the registered app name
+    const activity: Activity = app.selfbotStyle
+        ? {
+            name: app.label,
+            details: title,
+            type: app.type,
+            flags: ActivityFlags.INSTANCE,
+        }
+        : {
+            application_id: app.applicationId,
+            name: app.label,
+            details: title,
+            type: app.type,
+            flags: ActivityFlags.INSTANCE,
+        };
 
     if (timestamps) activity.timestamps = timestamps;
 
     if (entry.subtitle.trim()) activity.state = entry.subtitle.trim();
-    if (app.platform) activity.platform = app.platform;
+    if (app.platform && !app.selfbotStyle) activity.platform = app.platform;
 
     if (entry.showArt) {
-        const art = await resolveArt(entry, applicationId, app.unregisteredId ? undefined : app.asset);
+        // an idless presence has no assets of its own, so only a link we can resolve works
+        const art = app.selfbotStyle
+            ? await resolveArt(entry, undefined, undefined)
+            : await resolveArt(entry, app.applicationId, app.asset);
         if (art) activity.assets = { large_image: art, large_text: title };
     }
 
@@ -203,7 +211,7 @@ function buildOfficialAppTimestamps(
     return duration > 0 ? { start, end: start + duration } : { start };
 }
 
-async function resolveArt(entry: OfficialAppEntry, applicationId: string, asset: string | undefined) {
+async function resolveArt(entry: OfficialAppEntry, applicationId: string | undefined, asset: string | undefined) {
     const custom = entry.imageUrl.trim();
     if (custom) return resolveImage(applicationId, custom);
     if (!asset) return undefined;

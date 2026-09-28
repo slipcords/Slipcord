@@ -19,13 +19,13 @@ export interface OfficialApp {
      */
     defaultArt?: boolean;
     /**
-     * Discord labels an activity with the name registered for its application id, so
-     * the payload name is ignored while the id is one of theirs. Meta registers theirs
-     * as "Meta Horizon", so this presence is sent under an unregistered id instead and
-     * Discord falls back to our own label. The tradeoff is that an unregistered id owns
-     * no assets, so only our own image links resolve for it.
+     * Sent the way a selfbot sends it: no registered application id, no platform, just
+     * the fields we set. Discord names an activity after the id it is registered under
+     * and ignores the payload name, so this is the only way our own label is what shows.
+     * The tradeoff is that an idless presence owns no assets, so app art is unavailable
+     * and only image links we resolve ourselves are accepted.
      */
-    unregisteredId?: boolean;
+    selfbotStyle?: boolean;
 }
 
 export const OFFICIAL_APPS = {
@@ -56,7 +56,7 @@ export const OFFICIAL_APPS = {
         type: ActivityType.PLAYING,
         platform: "android",
         defaultArt: false,
-        unregisteredId: true,
+        selfbotStyle: true,
     },
     roblox: {
         label: "Roblox",
