@@ -183,7 +183,10 @@ function OfficialAppFields({ entry }: { entry: OfficialAppEntry; }) {
             <SettingsSection
                 id="oa-image"
                 name="Custom Image"
-                description="Your own image, as a direct link. Overrides the app art."
+                description={app?.unregisteredId
+                    ? "A cdn.discordapp.com or mp: link. This app is sent under an id of our own, so its registered art is not available."
+                    : "Your own image, as a direct link. Overrides the app art."
+                }
             >
                 <TextInput
                     type="text"

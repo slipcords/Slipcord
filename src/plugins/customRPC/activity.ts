@@ -147,11 +147,15 @@ export async function buildOfficialAppActivity(
 
     const duration = Number(entry.duration) * 60_000;
 
+    // Discord names the activity after the application id, not after our payload, so an
+    // app whose registry name is not ours has to be sent under an id Discord does not know
+    const applicationId = app.unregisteredId ? "0" : app.applicationId;
+
     // "No timer" means no timestamps, not no presence
     const timestamps = buildOfficialAppTimestamps(presence, entry, duration);
 
     const activity: Activity = {
-        application_id: app.applicationId,
+        application_id: applicationId,
         name: app.label,
         details: title,
         type: app.type,
@@ -164,7 +168,7 @@ export async function buildOfficialAppActivity(
     if (app.platform) activity.platform = app.platform;
 
     if (entry.showArt) {
-        const art = await resolveArt(entry, app.applicationId, app.asset);
+        const art = await resolveArt(entry, applicationId, app.unregisteredId ? undefined : app.asset);
         if (art) activity.assets = { large_image: art, large_text: title };
     }
 
@@ -199,9 +203,10 @@ function buildOfficialAppTimestamps(
     return duration > 0 ? { start, end: start + duration } : { start };
 }
 
-async function resolveArt(entry: OfficialAppEntry, applicationId: string, asset: string) {
+async function resolveArt(entry: OfficialAppEntry, applicationId: string, asset: string | undefined) {
     const custom = entry.imageUrl.trim();
     if (custom) return resolveImage(applicationId, custom);
+    if (!asset) return undefined;
     if (asset.startsWith("mp:")) return asset;
 
     try {

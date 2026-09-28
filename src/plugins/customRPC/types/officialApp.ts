@@ -18,6 +18,14 @@ export interface OfficialApp {
      * branded "Meta Horizon", so it is off unless the user asks for it.
      */
     defaultArt?: boolean;
+    /**
+     * Discord labels an activity with the name registered for its application id, so
+     * the payload name is ignored while the id is one of theirs. Meta registers theirs
+     * as "Meta Horizon", so this presence is sent under an unregistered id instead and
+     * Discord falls back to our own label. The tradeoff is that an unregistered id owns
+     * no assets, so only our own image links resolve for it.
+     */
+    unregisteredId?: boolean;
 }
 
 export const OFFICIAL_APPS = {
@@ -48,6 +56,7 @@ export const OFFICIAL_APPS = {
         type: ActivityType.PLAYING,
         platform: "android",
         defaultArt: false,
+        unregisteredId: true,
     },
     roblox: {
         label: "Roblox",
