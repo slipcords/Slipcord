@@ -7,8 +7,9 @@
 import { classNameFactory } from "@utils/css";
 import { React } from "@webpack/common";
 
+import { OfficialAppSettings } from "./OfficialAppSettings";
 import { RPCSettings } from "./RpcSettings";
-import { AudioBookShelfSettings, GensokyoRadioSettings, JellyfinSettings, NavidromeSettings, OfficialAppSettings, StatsFmSettings, SwitchSetting,TosuSettings } from "./serviceTabs";
+import { AudioBookShelfSettings, GensokyoRadioSettings, JellyfinSettings, NavidromeSettings, StatsFmSettings, SwitchSetting, TosuSettings } from "./serviceTabs";
 import { ServiceTab } from "./types";
 
 const cl = classNameFactory("vc-customRPC-settings-");
@@ -61,7 +62,6 @@ const ENABLE_KEYS: Record<string, string> = {
     [ServiceTab.Jellyfin]: "jf_enabled",
     [ServiceTab.GensokyoRadio]: "gr_enabled",
     [ServiceTab.Navidrome]: "nd_enabled",
-    [ServiceTab.OfficialApp]: "oa_enabled",
 };
 
 const ENABLE_DESCRIPTIONS: Record<string, string> = {
@@ -71,7 +71,6 @@ const ENABLE_DESCRIPTIONS: Record<string, string> = {
     [ServiceTab.Jellyfin]: "Show what Jellyfin is playing.",
     [ServiceTab.GensokyoRadio]: "Show the Gensokyo Radio track.",
     [ServiceTab.Navidrome]: "Show what Navidrome is playing.",
-    [ServiceTab.OfficialApp]: "Show this plugin's presence as an official app.",
 };
 
 const TABS = ["custom", ...Object.values(ServiceTab)];

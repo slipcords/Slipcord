@@ -1,20 +1,8 @@
 /*
- * Vencord, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 import { definePluginSettings } from "@api/Settings";
 import { getUserSettingLazy } from "@api/UserSettings";
@@ -25,70 +13,50 @@ import { Heading } from "@components/Heading";
 import { Link } from "@components/Link";
 import { Paragraph } from "@components/Paragraph";
 import { Devs } from "@utils/constants";
-import { isTruthy } from "@utils/guards";
 import { Margins } from "@utils/margins";
 import { classes } from "@utils/misc";
 import { useAwaiter } from "@utils/react";
 import definePlugin, { OptionType } from "@utils/types";
 import { Activity } from "@vencord/discord-types";
-import { ActivityType } from "@vencord/discord-types/enums";
 import { findByCodeLazy, findComponentByCodeLazy } from "@webpack";
 import { Button, FluxDispatcher, React, UserStore } from "@webpack/common";
 
-import { resolveImage } from "./assets";
+import { buildOfficialAppActivity, buildProfileActivity } from "./activity";
+import {
+    anchorFor,
+    clearAllDispatched,
+    clearInactive,
+    getOfficialApp,
+    getOfficialApps,
+    getProfile,
+    getProfiles,
+    loadPresences,
+    markDispatched,
+    Presence,
+    presenceLogger,
+    provideLegacySettings,
+    registerLoop,
+    resetAnchor,
+    resolveClaims,
+    setOfficialApps,
+    setProfiles,
+    stopLoops,
+} from "./presence";
 import * as abs from "./services/audiobookshelf";
 import * as gensokyoRadio from "./services/gensokyoRadio";
 import * as jellyfin from "./services/jellyfin";
 import * as navidrome from "./services/navidrome";
-import * as officialApp from "./services/officialApp";
 import { serviceSettings, setOnServiceChange } from "./services/settings";
 import * as statsfm from "./services/statsfm";
 import * as tosu from "./services/tosu";
 import { ServiceSettings } from "./ServiceSettings";
-import { ServiceTab } from "./types";
+import { ACTIVITY_TYPE_LABELS, RpcProfile, ServiceTab, TimestampMode } from "./types";
+import { OfficialAppEntry } from "./types/officialApp";
 
 const useProfileThemeStyle = findByCodeLazy("profileThemeStyle:", "--profile-gradient-primary-color");
 const ActivityView = findComponentByCodeLazy(".party?(0", "USER_PROFILE_ACTIVITY");
 
 const ShowCurrentGame = getUserSettingLazy<boolean>("status", "showCurrentGame")!;
-
-async function getApplicationAsset(key: string): Promise<string | undefined> {
-    return resolveImage(settings.store.appID, key);
-}
-
-export const enum TimestampMode {
-    NONE,
-    NOW,
-    TIME,
-    CUSTOM,
-}
-
-export interface RpcConfig {
-    appID?: string;
-    appName?: string;
-    details?: string;
-    detailsURL?: string;
-    state?: string;
-    stateURL?: string;
-    type?: ActivityType;
-    streamLink?: string;
-    timestampMode?: TimestampMode;
-    startTime?: number;
-    endTime?: number;
-    timestampLoop?: boolean;
-    imageBig?: string;
-    imageBigURL?: string;
-    imageBigTooltip?: string;
-    imageSmall?: string;
-    imageSmallURL?: string;
-    imageSmallTooltip?: string;
-    buttonOneText?: string;
-    buttonOneURL?: string;
-    buttonTwoText?: string;
-    buttonTwoURL?: string;
-    partySize?: number;
-    partyMaxSize?: number;
-}
 
 export const settings = definePluginSettings({
     config: {
@@ -96,7 +64,9 @@ export const settings = definePluginSettings({
         component: ServiceSettings
     },
     ...serviceSettings,
-}).withPrivateSettings<RpcConfig>();
+}).withPrivateSettings<Record<string, any>>();
+
+export type SettingsStore = typeof settings["store"];
 
 const services: Record<string, { start(): void; stop(): void; forceUpdate?(): void; }> = {
     [ServiceTab.AudioBookShelf]: abs,
@@ -105,7 +75,6 @@ const services: Record<string, { start(): void; stop(): void; forceUpdate?(): vo
     [ServiceTab.Jellyfin]: jellyfin,
     [ServiceTab.GensokyoRadio]: gensokyoRadio,
     [ServiceTab.Navidrome]: navidrome,
-    [ServiceTab.OfficialApp]: officialApp,
 };
 
 const enableKeys: Record<string, keyof SettingsStore> = {
@@ -115,7 +84,6 @@ const enableKeys: Record<string, keyof SettingsStore> = {
     [ServiceTab.Jellyfin]: "jf_enabled",
     [ServiceTab.GensokyoRadio]: "gr_enabled",
     [ServiceTab.Navidrome]: "nd_enabled",
-    [ServiceTab.OfficialApp]: "oa_enabled",
 };
 
 const activeServices = new Set<string>();
@@ -144,196 +112,140 @@ function stopAllServices() {
     activeServices.clear();
 }
 
-export type SettingsStore = typeof settings["store"];
-
-async function createActivity(): Promise<Activity | undefined> {
-    const {
-        appID,
-        appName,
-        details,
-        detailsURL,
-        state,
-        stateURL,
-        type,
-        streamLink,
-        startTime,
-        endTime,
-        imageBig,
-        imageBigURL,
-        imageBigTooltip,
-        imageSmall,
-        imageSmallURL,
-        imageSmallTooltip,
-        buttonOneText,
-        buttonOneURL,
-        buttonTwoText,
-        buttonTwoURL,
-        partyMaxSize,
-        partySize,
-        timestampMode,
-        timestampLoop
-    } = settings.store;
-
-    if (!appName) return;
-
-    const activity: Activity = {
-        application_id: appID || "0",
-        name: appName,
-        state,
-        details,
-        type: type ?? ActivityType.PLAYING,
-        flags: 1 << 0,
-    };
-
-    if (type === ActivityType.STREAMING) activity.url = streamLink;
-
-    switch (timestampMode) {
-        case TimestampMode.NOW:
-            activity.timestamps = {
-                start: getOpenedAt()
-            };
-            break;
-        case TimestampMode.TIME:
-            activity.timestamps = {
-                start: Date.now() - (new Date().getHours() * 3600 + new Date().getMinutes() * 60 + new Date().getSeconds()) * 1000
-            };
-            break;
-        case TimestampMode.CUSTOM:
-            if (startTime || endTime) {
-                activity.timestamps = {};
-                if (startTime && endTime && endTime > startTime && timestampLoop) {
-                    const anchor = getLoopAnchor();
-                    activity.timestamps.start = anchor;
-                    activity.timestamps.end = anchor + (endTime - startTime);
-                } else {
-                    if (startTime) activity.timestamps.start = startTime;
-                    if (endTime) activity.timestamps.end = endTime;
-                }
-            }
-            break;
-        case TimestampMode.NONE:
-        default:
-            break;
-    }
-
-    if (detailsURL) {
-        activity.details_url = detailsURL;
-    }
-
-    if (stateURL) {
-        activity.state_url = stateURL;
-    }
-
-    if (buttonOneText) {
-        activity.buttons = [
-            buttonOneText,
-            buttonTwoText
-        ].filter(isTruthy);
-
-        activity.metadata = {
-            button_urls: [
-                buttonOneURL,
-                buttonTwoURL
-            ].filter(isTruthy)
-        };
-    }
-
-    if (imageBig) {
-        activity.assets = {
-            large_image: await getApplicationAsset(imageBig),
-            large_text: imageBigTooltip || undefined,
-            large_url: imageBigURL || undefined
-        };
-    }
-
-    if (imageSmall) {
-        activity.assets = {
-            ...activity.assets,
-            small_image: await getApplicationAsset(imageSmall),
-            small_text: imageSmallTooltip || undefined,
-            small_url: imageSmallURL || undefined
-        };
-    }
-
-    if (partyMaxSize && partySize) {
-        activity.party = {
-            size: [partySize, partyMaxSize]
-        };
-    }
-
-    for (const k in activity) {
-        if (k === "type") continue;
-        const v = activity[k];
-        if (!v || v.length === 0)
-            delete activity[k];
-    }
-
-    return activity;
+function dispatch(socketId: string, activity: Activity | null) {
+    FluxDispatcher.dispatch({ type: "LOCAL_ACTIVITY_UPDATE", activity, socketId });
 }
 
+/**
+ * Rebuilds and dispatches every active presence. Each one owns its own socketId, so
+ * several can be registered at the same time, and anything no longer active gets
+ * cleared so a deleted presence doesn't linger.
+ */
 export async function setRpc(disable?: boolean) {
-    const activity: Activity | undefined = await createActivity();
+    const { active, blocked } = resolveClaims();
 
-    FluxDispatcher.dispatch({
-        type: "LOCAL_ACTIVITY_UPDATE",
-        activity: !disable ? activity : null,
-        socketId: "CustomRPC",
-    });
-}
-
-let loopInterval: ReturnType<typeof setInterval> | undefined;
-let loopAnchor = 0;
-
-/** "Since Discord open" has to stay put, so the anchor is captured once instead of on every rebuild. */
-let openedAt = Date.now();
-let lastTimestampMode: TimestampMode | undefined;
-
-function getLoopAnchor() {
-    return loopAnchor;
-}
-
-function getOpenedAt() {
-    return openedAt;
-}
-
-/** Re-anchors whenever the mode changes, so switching to "Since Discord open" means since you switched. */
-export function syncTimestampAnchor() {
-    const mode = settings.store.timestampMode;
-    if (mode === lastTimestampMode) return;
-
-    lastTimestampMode = mode;
-    openedAt = Date.now();
-}
-
-export function startTimestampLoop() {
-    const { timestampMode, timestampLoop, startTime, endTime } = settings.store;
-    if (timestampMode !== TimestampMode.CUSTOM || !timestampLoop || !startTime || !endTime) return;
-    const duration = endTime - startTime;
-    if (duration <= 0) return;
-
-    stopTimestampLoop();
-    loopAnchor = Date.now();
-
-    loopInterval = setInterval(() => {
-
-        if (Date.now() >= loopAnchor + duration) {
-            loopAnchor = Date.now();
-            setRpc();
-        }
-    }, 1000);
-}
-
-function stopTimestampLoop() {
-    if (loopInterval !== undefined) {
-        clearInterval(loopInterval);
-        loopInterval = undefined;
+    if (disable) {
+        for (const presence of active) dispatch(presence.socketId, null);
+        clearAllDispatched();
+        return;
     }
-    loopAnchor = 0;
+
+    await Promise.all(active.map(async presence => {
+        if (presence.kind === "profile") {
+            const profile = getProfile(presence.id);
+            if (!profile) return;
+
+            const activity = await buildProfileActivity(presence, profile.config) ?? null;
+            dispatch(presence.socketId, activity);
+            markDispatched(presence.socketId);
+            return;
+        }
+
+        const entry = getOfficialApp(presence.id);
+        if (!entry) return;
+
+        const activity = await buildOfficialAppActivity(presence, entry);
+        dispatch(presence.socketId, activity);
+        markDispatched(presence.socketId);
+    }));
+
+    for (const presence of blocked.values()) {
+        // Discord only renders one activity per type, so this one would never be seen.
+        // Clear it so a presence that used to be shown disappears when it gets blocked.
+        dispatch(presence.socketId, null);
+        presenceLogger.warn(`${presence.name} is hidden: another presence already uses the ${ACTIVITY_TYPE_LABELS[presence.type]} slot`);
+    }
+
+    clearInactive(new Set(active.map(presence => presence.socketId)));
 }
+
+/**
+ * Keeps looping timestamps moving. Each looping presence gets its own interval, so
+ * one presence finishing its loop doesn't disturb the others.
+ */
+function startLoops() {
+    stopLoops();
+
+    for (const presence of resolveClaims().active) {
+        if (presence.kind !== "profile") continue;
+
+        const profile = getProfile(presence.id);
+        if (!profile) continue;
+
+        const { timestampMode, timestampLoop, startTime, endTime } = profile.config;
+        if (timestampMode !== TimestampMode.CUSTOM || !timestampLoop || !startTime || !endTime) continue;
+
+        const duration = endTime - startTime;
+        if (duration <= 0) continue;
+
+        // anchor before the first rebuild so the progress bar starts where we expect
+        anchorFor(presence, TimestampMode.CUSTOM);
+        registerLoop(presence, TimestampMode.CUSTOM, duration, () => setRpc());
+    }
+}
+
+/** Applies an edit to one presence and pushes it out, restarting loops if needed. */
+export async function updateProfile(id: string, mutate: (profile: RpcProfile) => RpcProfile) {
+    const profiles = getProfiles();
+    const index = profiles.findIndex(profile => profile.id === id);
+    if (index === -1) return;
+
+    const updated = [...profiles];
+    updated[index] = mutate(profiles[index]);
+    await setProfiles(updated);
+
+    startLoops();
+    await setRpc();
+}
+
+export async function updateOfficialApp(id: string, mutate: (entry: OfficialAppEntry) => OfficialAppEntry) {
+    const entries = getOfficialApps();
+    const index = entries.findIndex(entry => entry.id === id);
+    if (index === -1) return;
+
+    const updated = [...entries];
+    updated[index] = mutate(entries[index]);
+    await setOfficialApps(updated);
+
+    await setRpc();
+}
+
+export async function addProfile(profile: RpcProfile) {
+    await setProfiles([...getProfiles(), profile]);
+    startLoops();
+    await setRpc();
+}
+
+export async function removeProfile(id: string) {
+    await setProfiles(getProfiles().filter(profile => profile.id !== id));
+    startLoops();
+    await setRpc();
+}
+
+export async function addOfficialApp(entry: OfficialAppEntry) {
+    await setOfficialApps([...getOfficialApps(), entry]);
+    await setRpc();
+}
+
+export async function removeOfficialApp(id: string) {
+    await setOfficialApps(getOfficialApps().filter(entry => entry.id !== id));
+    await setRpc();
+}
+
+/** Re-anchors a presence, so "Since Discord open" counts from this moment. */
+export function restartTimer(presence: Presence) {
+    const profile = getProfile(presence.id);
+    resetAnchor(presence, profile?.config.timestampMode ?? TimestampMode.NOW);
+    setRpc();
+}
+
+export { getBlockedPresences, getOfficialApps, getProfiles, newId, OFFICIAL_APP_SOCKET_PREFIX, PROFILE_SOCKET_PREFIX, setOfficialApps, setProfiles } from "./presence";
+export type { RpcConfig, RpcProfile } from "./types";
+export { TimestampMode } from "./types";
 
 export default definePlugin({
     name: "CustomRPC",
-    description: "Add a fully customisable Rich Presence (Game status) to your Discord profile, or let a service like AudioBookShelf, osu!, stats.fm, Jellyfin, Navidrome, Gensokyo Radio or an official app drive it for you",
+    description: "Add fully customisable Rich Presences (Game statuses) to your Discord profile. Run as many as you like at once, as long as each one uses a different activity type, or let a service like AudioBookShelf, osu!, stats.fm, Jellyfin, Navidrome or Gensokyo Radio drive one for you",
     tags: ["Activity", "Customisation"],
     authors: [Devs.captain, Devs.AutumnVN, Devs.nin0dev],
     dependencies: ["UserSettingsAPI"],
@@ -341,16 +253,18 @@ export default definePlugin({
     requiresRestart: false,
     settings,
 
-    start() {
-        syncTimestampAnchor();
-        startTimestampLoop();
-        setRpc();
+    async start() {
+        provideLegacySettings(settings);
+        await loadPresences();
+
+        startLoops();
+        await setRpc();
         syncServices();
         setOnServiceChange(syncServices);
     },
     stop() {
-        setRpc(true);
-        stopTimestampLoop();
+        clearAllDispatched();
+        stopLoops();
         stopAllServices();
         setOnServiceChange(null);
     },
@@ -367,7 +281,16 @@ export default definePlugin({
     ],
 
     settingsAboutComponent: () => {
-        const [activity] = useAwaiter(createActivity, { fallbackValue: undefined, deps: Object.values(settings.store) });
+        const [activity] = useAwaiter(async () => {
+            for (const presence of resolveClaims().active) {
+                if (presence.kind !== "profile") continue;
+                const profile = getProfile(presence.id);
+                if (!profile) continue;
+                const built = await buildProfileActivity(presence, profile.config);
+                if (built) return built;
+            }
+            return undefined;
+        }, { fallbackValue: undefined, deps: [JSON.stringify(getProfiles())] });
         const gameActivityEnabled = ShowCurrentGame.useSetting();
         const { profileThemeStyle } = useProfileThemeStyle({});
 
@@ -401,7 +324,12 @@ export default definePlugin({
                         image link instead - a Discord attachment link, Imgur or Tenor all work.
                     </Paragraph>
                     <Paragraph>
-                        Prefer the service tabs for things you actually play on: AudioBookShelf, osu!, stats.fm, Jellyfin, Navidrome, Gensokyo Radio and official apps all drive this same presence.
+                        Add as many presences as you want and run them all at the same time. Discord
+                        only shows one of each activity type, so two presences set to Playing would
+                        fight over the same slot and the second one stays hidden.
+                    </Paragraph>
+                    <Paragraph>
+                        Prefer the service tabs for things you actually play on: AudioBookShelf, osu!, stats.fm, Jellyfin, Navidrome and Gensokyo Radio all drive this same presence.
                     </Paragraph>
                     <Paragraph>
                         You can't see your own buttons on your profile, but everyone else can see it fine.

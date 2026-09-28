@@ -6,44 +6,32 @@
 
 import "./settings.css";
 
-import { DataStore } from "@api/index";
 import { isPluginEnabled } from "@api/PluginManager";
 import { Divider } from "@components/Divider";
 import { Heading } from "@components/Heading";
 import { resolveError } from "@components/settings/tabs/plugins/components/Common";
 import { Switch } from "@components/Switch";
-import { debounce } from "@shared/debounce";
 import { classNameFactory } from "@utils/css";
-import { useAwaiter } from "@utils/react";
 import { ActivityType } from "@vencord/discord-types/enums";
 import { Button, Select, showToast, Text, TextInput, Toasts, useState } from "@webpack/common";
 
-import CustomRPCPlugin, { RpcConfig, setRpc, settings, startTimestampLoop, syncTimestampAnchor, TimestampMode } from ".";
+import {
+    addProfile,
+    getBlockedPresences,
+    getProfiles,
+    newId,
+    removeProfile,
+    restartTimer,
+    setRpc,
+    updateProfile,
+} from ".";
+import { PROFILE_SOCKET_PREFIX, socketIdFor } from "./presence";
+import { ACTIVITY_TYPE_LABELS, CLAIMABLE_TYPES, RpcConfig, RpcProfile, TIMESTAMP_MODE_OPTIONS, TimestampMode } from "./types";
+import { usePresencesVersion } from "./usePresences";
 
 const cl = classNameFactory("vc-customRPC-settings-");
-const PRESETS_KEY = "CustomRPC_presets";
 
-type SettingsKey = keyof typeof settings.store;
-
-interface RpcPreset {
-    name: string;
-    config: RpcConfig;
-}
-
-interface TextOption<T> {
-    settingsKey: SettingsKey;
-    label: string;
-    disabled?: boolean;
-    transform?: (value: string) => T;
-    isValid?: (value: T) => true | string;
-}
-
-interface SelectOption<T> {
-    settingsKey: SettingsKey;
-    label: string;
-    disabled?: boolean;
-    options: { label: string; value: T; default?: boolean; }[];
-}
+type ConfigKey = keyof RpcConfig;
 
 const makeValidator = (maxLength: number, isRequired = false) => (value: string) => {
     if (isRequired && !value) return "This field is required.";
@@ -58,30 +46,9 @@ function isAppIdValid(value: string) {
     return true;
 }
 
-const updateRPC = debounce(() => {
-    setRpc(true);
-    syncTimestampAnchor();
-    startTimestampLoop();
-    if (isPluginEnabled(CustomRPCPlugin.name)) setRpc();
-});
-
-function isStreamLinkDisabled() {
-    return settings.store.type !== ActivityType.STREAMING;
-}
-
 function isStreamLinkValid(value: string) {
-    if (!isStreamLinkDisabled() && !/https?:\/\/(www\.)?(twitch\.tv|youtube\.com)\/\w+/.test(value)) return "Streaming link must be a valid URL.";
-    if (value && value.length > 512) return "Streaming link must be not longer than 512 characters.";
-    return true;
-}
-
-function parseNumber(value: string) {
-    return value ? parseInt(value, 10) : 0;
-}
-
-function isNumberValid(value: number) {
-    if (isNaN(value)) return "Must be a number.";
-    if (value < 0) return "Must be a positive number.";
+    if (value && !/^https?:\/\//.test(value)) return "Streaming link must be a valid URL.";
+    if (value.length > 512) return "Streaming link must be not longer than 512 characters.";
     return true;
 }
 
@@ -93,6 +60,16 @@ function isUrlValid(value: string) {
 function isImageKeyValid(value: string) {
     if (/https?:\/\/(?!i\.)?imgur\.com\//.test(value)) return "Imgur link must be a direct link to the image (e.g. https://i.imgur.com/...). Right click the image and click 'Copy image address'";
     if (/https?:\/\/(?!media\.)?tenor\.com\//.test(value)) return "Tenor link must be a direct link to the image (e.g. https://media.tenor.com/...). Right click the GIF and click 'Copy image address'";
+    return true;
+}
+
+function parseNumber(value: string) {
+    return value ? parseInt(value, 10) : 0;
+}
+
+function isNumberValid(value: number) {
+    if (isNaN(value)) return "Must be a number.";
+    if (value < 0) return "Must be a positive number.";
     return true;
 }
 
@@ -110,15 +87,118 @@ function fromDateTimeInput(value: string) {
     return new Date(value).getTime();
 }
 
-function TimestampSetting({ settingsKey, label, disabled }: { settingsKey: SettingsKey; label: string; disabled?: boolean; }) {
-    const [state, setState] = useState(() => toDateTimeInput(Number(settings.store[settingsKey] ?? 0)));
+interface EditContext {
+    profile: RpcProfile;
+    set(patch: Partial<RpcConfig>): Promise<void>;
+    restart(): void;
+}
+
+function TextField({ label, configKey, context, isValid, transform, disabled, placeholder }: {
+    label: string;
+    configKey: ConfigKey;
+    context: EditContext;
+    isValid?(value: string): true | string;
+    transform?(value: string): unknown;
+    disabled?: boolean;
+    placeholder?: string;
+}) {
+    const [state, setState] = useState(() => (context.profile.config[configKey] as string) ?? "");
+    const [error, setError] = useState<string | null>(null);
+
+    function handleChange(newValue: string) {
+        if (transform) newValue = transform(newValue) as string;
+
+        const valid = isValid?.(newValue) ?? true;
+        setState(newValue);
+        setError(resolveError(valid));
+
+        if (valid === true) void context.set({ [configKey]: newValue } as Partial<RpcConfig>);
+    }
+
+    return (
+        <div className={cl("single", { disabled })}>
+            <Heading tag="h5">{label}</Heading>
+            <TextInput
+                type="text"
+                placeholder={placeholder ?? "Enter a value"}
+                value={state}
+                onChange={handleChange}
+                disabled={disabled}
+            />
+            {error && <Text className={cl("error")} variant="text-sm/normal">{error}</Text>}
+        </div>
+    );
+}
+
+function SelectField({ label, configKey, context, options, disabled }: {
+    label: string;
+    configKey: ConfigKey;
+    context: EditContext;
+    options: { label: string; value: unknown; }[];
+    disabled?: boolean;
+}) {
+    return (
+        <div className={cl("single", { disabled })}>
+            <Heading tag="h5">{label}</Heading>
+            <Select
+                placeholder={"Select an option"}
+                options={options}
+                maxVisibleItems={5}
+                closeOnSelect={true}
+                select={v => void context.set({ [configKey]: v } as Partial<RpcConfig>)}
+                isSelected={v => v === context.profile.config[configKey]}
+                serialize={v => String(v)}
+                isDisabled={disabled}
+            />
+        </div>
+    );
+}
+
+function ToggleField({ label, configKey, context, disabled }: {
+    label: string;
+    configKey: ConfigKey;
+    context: EditContext;
+    disabled?: boolean;
+}) {
+    const [value, setValue] = useState(() => Boolean(context.profile.config[configKey]));
+
+    return (
+        <div className={cl("single", { disabled })}>
+            <Heading tag="h5">{label}</Heading>
+            <Switch
+                checked={value}
+                disabled={disabled}
+                onChange={v => {
+                    setValue(v);
+                    void context.set({ [configKey]: v } as Partial<RpcConfig>);
+                }}
+            />
+        </div>
+    );
+}
+
+function PairField({ data }: { data: [React.ReactElement, React.ReactElement]; }) {
+    return (
+        <div className={cl("pair")}>
+            {data[0]}
+            {data[1]}
+        </div>
+    );
+}
+
+function TimestampField({ label, configKey, context, disabled }: {
+    label: string;
+    configKey: ConfigKey;
+    context: EditContext;
+    disabled?: boolean;
+}) {
+    const [state, setState] = useState(() => toDateTimeInput(Number(context.profile.config[configKey] ?? 0)));
     const [error, setError] = useState<string | null>(null);
 
     function commit(ms: number) {
         setState(toDateTimeInput(ms));
         setError(null);
-        (settings.store as unknown as Record<string, number>)[settingsKey] = ms;
-        updateRPC();
+        void context.set({ [configKey]: ms } as Partial<RpcConfig>);
     }
 
     function handleChange(value: string) {
@@ -135,8 +215,7 @@ function TimestampSetting({ settingsKey, label, disabled }: { settingsKey: Setti
 
         setState(value);
         setError(null);
-        (settings.store as unknown as Record<string, number>)[settingsKey] = ms;
-        updateRPC();
+        void context.set({ [configKey]: ms } as Partial<RpcConfig>);
     }
 
     return (
@@ -150,325 +229,243 @@ function TimestampSetting({ settingsKey, label, disabled }: { settingsKey: Setti
                     onChange={e => handleChange(e.target.value)}
                 />
                 <Button disabled={disabled} onClick={() => commit(Date.now())}>Now</Button>
-                <Button disabled={disabled || !Number(settings.store[settingsKey] ?? 0)} onClick={() => commit(0)}>Clear</Button>
+                <Button disabled={disabled || !Number(context.profile.config[configKey] ?? 0)} onClick={() => commit(0)}>Clear</Button>
             </div>
             {error && <Text className={cl("error")} variant="text-sm/normal">{error}</Text>}
         </div>
     );
 }
 
-function ToggleSetting({ settingsKey, label, disabled }: { settingsKey: SettingsKey; label: string; disabled?: boolean; }) {
-    const [value, setValue] = useState(Boolean(settings.store[settingsKey]));
+function ProfileFields({ profile }: { profile: RpcProfile; }) {
+    const { config } = profile;
+    const type = config.type ?? ActivityType.PLAYING;
+    const timestampMode = config.timestampMode ?? TimestampMode.NONE;
+
+    const context: EditContext = {
+        profile,
+        set: patch => updateProfile(profile.id, current => ({
+            ...current,
+            config: { ...current.config, ...patch },
+        })),
+        restart: () => restartTimer({
+            kind: "profile",
+            id: profile.id,
+            name: profile.name,
+            enabled: profile.enabled,
+            type: type as ActivityType,
+            socketId: socketIdFor(PROFILE_SOCKET_PREFIX, profile.id),
+        }),
+    };
 
     return (
-        <div className={cl("single", { disabled })}>
-            <Heading tag="h5">{label}</Heading>
-            <Switch
-                checked={value}
-                disabled={disabled}
-                onChange={v => {
-                    setValue(v);
-                    (settings.store as unknown as Record<string, boolean>)[settingsKey] = v;
-                    updateRPC();
-                }}
+        <>
+            <SelectField
+                label="Activity Type"
+                configKey="type"
+                context={context}
+                options={CLAIMABLE_TYPES.map(value => ({
+                    label: ACTIVITY_TYPE_LABELS[value],
+                    value,
+                }))}
             />
-        </div>
-    );
-}
 
-function PairSetting<T>(props: { data: [TextOption<T>, TextOption<T>]; }) {
-    const [left, right] = props.data;
+            <PairField data={[
+                <TextField key="appID" label="Application ID" configKey="appID" context={context} isValid={isAppIdValid} />,
+                <TextField key="appName" label="Application Name" configKey="appName" context={context} isValid={makeValidator(128, true)} />,
+            ]} />
 
-    return (
-        <div className={cl("pair")}>
-            <SingleSetting {...left} />
-            <SingleSetting {...right} />
-        </div>
-    );
-}
+            <PairField data={[
+                <TextField key="details" label="Detail (line 1)" configKey="details" context={context} isValid={maxLength128} />,
+                <TextField key="detailsURL" label="Detail URL" configKey="detailsURL" context={context} isValid={isUrlValid} />,
+            ]} />
 
-function SingleSetting<T>({ settingsKey, label, disabled, isValid, transform }: TextOption<T>) {
-    const [state, setState] = useState(settings.store[settingsKey] ?? "");
-    const [error, setError] = useState<string | null>(null);
+            <PairField data={[
+                <TextField key="state" label="State (line 2)" configKey="state" context={context} isValid={maxLength128} />,
+                <TextField key="stateURL" label="State URL" configKey="stateURL" context={context} isValid={isUrlValid} />,
+            ]} />
 
-    function handleChange(newValue: any) {
-        if (transform) newValue = transform(newValue);
-
-        const valid = isValid?.(newValue) ?? true;
-
-        setState(newValue);
-        setError(resolveError(valid));
-
-        if (valid === true) {
-            (settings.store as unknown as Record<string, unknown>)[settingsKey] = newValue;
-            updateRPC();
-        }
-    }
-
-    return (
-        <div className={cl("single", { disabled })}>
-            <Heading tag="h5">{label}</Heading>
-            <TextInput
-                type="text"
-                placeholder={"Enter a value"}
-                value={state}
-                onChange={handleChange}
-                disabled={disabled}
+            <TextField
+                label="Stream Link (only if activity type is Streaming)"
+                configKey="streamLink"
+                context={context}
+                isValid={isStreamLinkValid}
+                disabled={type !== ActivityType.STREAMING}
             />
-            {error && <Text className={cl("error")} variant="text-sm/normal">{error}</Text>}
-        </div>
-    );
-}
 
-function SelectSetting<T>({ settingsKey, label, options, disabled }: SelectOption<T>) {
-    return (
-        <div className={cl("single", { disabled })}>
-            <Heading tag="h5">{label}</Heading>
-            <Select
-                placeholder={"Select an option"}
-                options={options}
-                maxVisibleItems={5}
-                closeOnSelect={true}
-                select={v => {
-                    (settings.store as unknown as Record<string, unknown>)[settingsKey] = v;
-                    updateRPC();
-                }}
-                isSelected={v => v === settings.store[settingsKey]}
-                serialize={v => String(v)}
-                isDisabled={disabled}
+            <PairField data={[
+                <TextField
+                    key="partySize"
+                    label="Party Size"
+                    configKey="partySize"
+                    context={context}
+                    transform={v => String(parseNumber(v))}
+                    isValid={v => isNumberValid(parseNumber(v))}
+                    disabled={type !== ActivityType.PLAYING}
+                />,
+                <TextField
+                    key="partyMaxSize"
+                    label="Maximum Party Size"
+                    configKey="partyMaxSize"
+                    context={context}
+                    transform={v => String(parseNumber(v))}
+                    isValid={v => isNumberValid(parseNumber(v))}
+                    disabled={type !== ActivityType.PLAYING}
+                />,
+            ]} />
+
+            <Divider />
+
+            <PairField data={[
+                <TextField key="imageBig" label="Large Image URL/Key" configKey="imageBig" context={context} isValid={isImageKeyValid} />,
+                <TextField key="imageBigTooltip" label="Large Image Text" configKey="imageBigTooltip" context={context} isValid={maxLength128} />,
+            ]} />
+            <TextField label="Large Image clickable URL" configKey="imageBigURL" context={context} isValid={isUrlValid} />
+
+            <PairField data={[
+                <TextField key="imageSmall" label="Small Image URL/Key" configKey="imageSmall" context={context} isValid={isImageKeyValid} />,
+                <TextField key="imageSmallTooltip" label="Small Image Text" configKey="imageSmallTooltip" context={context} isValid={maxLength128} />,
+            ]} />
+            <TextField label="Small Image clickable URL" configKey="imageSmallURL" context={context} isValid={isUrlValid} />
+
+            <Divider />
+
+            <PairField data={[
+                <TextField key="buttonOneText" label="Button1 Text" configKey="buttonOneText" context={context} isValid={makeValidator(31)} />,
+                <TextField key="buttonOneURL" label="Button1 URL" configKey="buttonOneURL" context={context} isValid={isUrlValid} />,
+            ]} />
+            <PairField data={[
+                <TextField key="buttonTwoText" label="Button2 Text" configKey="buttonTwoText" context={context} isValid={makeValidator(31)} />,
+                <TextField key="buttonTwoURL" label="Button2 URL" configKey="buttonTwoURL" context={context} isValid={isUrlValid} />,
+            ]} />
+
+            <Divider />
+
+            <SelectField
+                label="Timestamp Mode"
+                configKey="timestampMode"
+                context={context}
+                options={TIMESTAMP_MODE_OPTIONS.map(o => ({ label: o.label, value: o.value }))}
             />
-        </div>
-    );
-}
 
-function getCurrentConfig(): RpcConfig {
-    const { config, ...rpcConfig } = settings.store;
-    return rpcConfig;
-}
-
-function PresetSettings({ onLoad }: { onLoad(): void; }) {
-    const [storedPresets] = useAwaiter(async () => await DataStore.get<RpcPreset[]>(PRESETS_KEY) ?? [], { fallbackValue: [] });
-    const [changedPresets, setChangedPresets] = useState<RpcPreset[] | null>(null);
-    const [presetName, setPresetName] = useState("");
-    const [selectedPreset, setSelectedPreset] = useState("");
-    const presets = changedPresets ?? storedPresets;
-
-    async function savePreset() {
-        const name = presetName.trim();
-        if (!name) return;
-
-        const nextPresets = [
-            ...presets.filter(preset => preset.name !== name),
-            { name, config: getCurrentConfig() }
-        ].sort((a, b) => a.name.localeCompare(b.name));
-
-        await DataStore.set(PRESETS_KEY, nextPresets);
-        setChangedPresets(nextPresets);
-        setSelectedPreset(name);
-        showToast(`Saved preset ${name}.`, Toasts.Type.SUCCESS);
-    }
-
-    function loadPreset() {
-        const preset = presets.find(preset => preset.name === selectedPreset);
-        if (!preset) return;
-
-        Object.assign(settings.store, preset.config);
-        onLoad();
-        updateRPC();
-        showToast(`Loaded preset ${preset.name}.`, Toasts.Type.SUCCESS);
-    }
-
-    async function deletePreset() {
-        const nextPresets = presets.filter(preset => preset.name !== selectedPreset);
-        if (nextPresets.length === presets.length) return;
-
-        await DataStore.set(PRESETS_KEY, nextPresets);
-        setChangedPresets(nextPresets);
-        setSelectedPreset("");
-        showToast(`Deleted preset ${selectedPreset}.`, Toasts.Type.SUCCESS);
-    }
-
-    return (
-        <div className={cl("presets")}>
-            <Heading tag="h5">Presets</Heading>
-            <div className={cl("preset-create")}>
-                <TextInput
-                    type="text"
-                    placeholder="Preset name"
-                    value={presetName}
-                    onChange={setPresetName}
-                />
-                <Button disabled={!presetName.trim()} onClick={savePreset}>Save</Button>
-            </div>
-            {presets.length ? (
-                <div className={cl("preset-actions")}>
-                    <Select
-                        placeholder="Select a preset"
-                        options={presets.map(preset => ({ label: preset.name, value: preset.name }))}
-                        closeOnSelect={true}
-                        select={setSelectedPreset}
-                        isSelected={value => value === selectedPreset}
-                        serialize={String}
-                    />
-                    <Button disabled={!selectedPreset} onClick={loadPreset}>Load</Button>
-                    <Button color={Button.Colors.RED} disabled={!selectedPreset} onClick={deletePreset}>Delete</Button>
+            {timestampMode === TimestampMode.NOW && (
+                <div className={cl("single")}>
+                    <Text variant="text-sm/normal">Counting from when you switched to this mode.</Text>
+                    <Button onClick={context.restart}>Restart Timer</Button>
                 </div>
-            ) : (
-                <Text variant="text-sm/normal">No saved presets yet.</Text>
+            )}
+
+            {timestampMode === TimestampMode.CUSTOM && (
+                <>
+                    <TimestampField label="Start" configKey="startTime" context={context} />
+                    <TimestampField label="End" configKey="endTime" context={context} />
+                    <ToggleField
+                        label="Repeat the start and end times over and over"
+                        configKey="timestampLoop"
+                        context={context}
+                        disabled={!config.startTime || !config.endTime}
+                    />
+                </>
+            )}
+
+            {timestampMode === TimestampMode.TIME && (
+                <Text variant="text-sm/normal">Counts from the start of today, so it does not reset at midnight.</Text>
+            )}
+        </>
+    );
+}
+
+function ProfileRow({ profile, selected, onSelect }: { profile: RpcProfile; selected: boolean; onSelect(): void; }) {
+    const blocked = getBlockedPresences().has(socketIdFor(PROFILE_SOCKET_PREFIX, profile.id));
+    const [enabled, setEnabled] = useState(profile.enabled);
+
+    const type = (profile.config.type ?? ActivityType.PLAYING) as ActivityType;
+    const typeLabel = ACTIVITY_TYPE_LABELS[type] ?? String(type);
+
+    return (
+        <div className={cl("profileRow", { selected })}>
+            <Switch
+                checked={enabled}
+                onChange={v => {
+                    setEnabled(v);
+                    void updateProfile(profile.id, current => ({ ...current, enabled: v }));
+                }}
+            />
+            <button type="button" className={cl("profileSelect")} onClick={onSelect}>
+                <span className={cl("profileName")}>{profile.name}</span>
+                <span className={cl("profileType")}>{typeLabel}</span>
+            </button>
+            {blocked && <Text className={cl("error")} variant="text-sm/normal">Hidden: {typeLabel} already in use</Text>}
+            <Button
+                color={Button.Colors.RED}
+                onClick={() => {
+                    void removeProfile(profile.id);
+                    showToast(`Deleted ${profile.name}.`, Toasts.Type.SUCCESS);
+                }}
+            >
+                Delete
+            </Button>
+        </div>
+    );
+}
+
+export function RPCSettings() {
+    usePresencesVersion();
+
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const profiles = getProfiles();
+
+    const selected = profiles.find(profile => profile.id === selectedId) ?? profiles[0];
+
+    return (
+        <div className={cl("root")}>
+            <Heading tag="h5">Presences</Heading>
+            <Text variant="text-sm/normal">
+                Each presence is shown on its own socket, so you can run several at once.
+                Discord only renders one activity of each type, so two presences with the
+                same activity type can't both be visible.
+            </Text>
+
+            {profiles.map(profile => (
+                <ProfileRow
+                    key={profile.id}
+                    profile={profile}
+                    selected={profile.id === selected?.id}
+                    onSelect={() => setSelectedId(profile.id)}
+                />
+            ))}
+
+            <Button
+                onClick={() => {
+                    void addProfile({ id: newId(), name: `Custom ${profiles.length + 1}`, enabled: true, config: { type: ActivityType.PLAYING } });
+                }}
+            >
+                Add Presence
+            </Button>
+
+            {selected && (
+                <>
+                    <Divider />
+                    <TextInput
+                        type="text"
+                        label="Name"
+                        placeholder="Presence name"
+                        value={selected.name}
+                        onChange={name => void updateProfile(selected.id, current => ({
+                            ...current,
+                            name: name || "Custom",
+                        }))}
+                    />
+                    <ProfileFields key={selected.id} profile={selected} />
+                </>
+            )}
+
+            {!isPluginEnabled("CustomRPC") && (
+                <Text className={cl("error")} variant="text-sm/normal">
+                    CustomRPC is disabled, so nothing will be shown until you enable the plugin.
+                </Text>
             )}
         </div>
     );
 }
 
-function RPCFields() {
-    const { type, timestampMode } = settings.use(["type", "timestampMode"]);
-
-    return (
-        <>
-            <SelectSetting
-                settingsKey="type"
-                label="Activity Type"
-                options={[
-                    {
-                        label: "Playing",
-                        value: ActivityType.PLAYING,
-                        default: true
-                    },
-                    {
-                        label: "Streaming",
-                        value: ActivityType.STREAMING
-                    },
-                    {
-                        label: "Listening",
-                        value: ActivityType.LISTENING
-                    },
-                    {
-                        label: "Watching",
-                        value: ActivityType.WATCHING
-                    },
-                    {
-                        label: "Competing",
-                        value: ActivityType.COMPETING
-                    }
-                ]}
-            />
-
-            <PairSetting data={[
-                { settingsKey: "appID", label: "Application ID", isValid: isAppIdValid },
-                { settingsKey: "appName", label: "Application Name", isValid: makeValidator(128, true) },
-            ]} />
-
-            <PairSetting data={[
-                { settingsKey: "details", label: "Detail (line 1)", isValid: maxLength128 },
-                { settingsKey: "detailsURL", label: "Detail URL", isValid: isUrlValid },
-            ]} />
-
-            <PairSetting data={[
-                { settingsKey: "state", label: "State (line 2)", isValid: maxLength128 },
-                { settingsKey: "stateURL", label: "State URL", isValid: isUrlValid },
-            ]} />
-
-            <SingleSetting
-                settingsKey="streamLink"
-                label="Stream Link (Twitch or YouTube, only if activity type is Streaming)"
-                disabled={type !== ActivityType.STREAMING}
-                isValid={isStreamLinkValid}
-            />
-
-            <PairSetting data={[
-                {
-                    settingsKey: "partySize",
-                    label: "Party Size",
-                    transform: parseNumber,
-                    isValid: isNumberValid,
-                    disabled: type !== ActivityType.PLAYING,
-                },
-                {
-                    settingsKey: "partyMaxSize",
-                    label: "Maximum Party Size",
-                    transform: parseNumber,
-                    isValid: isNumberValid,
-                    disabled: type !== ActivityType.PLAYING,
-                },
-            ]} />
-
-            <Divider />
-
-            <PairSetting data={[
-                { settingsKey: "imageBig", label: "Large Image URL/Key", isValid: isImageKeyValid },
-                { settingsKey: "imageBigTooltip", label: "Large Image Text", isValid: maxLength128 },
-            ]} />
-            <SingleSetting settingsKey="imageBigURL" label="Large Image clickable URL" isValid={isUrlValid} />
-
-            <PairSetting data={[
-                { settingsKey: "imageSmall", label: "Small Image URL/Key", isValid: isImageKeyValid },
-                { settingsKey: "imageSmallTooltip", label: "Small Image Text", isValid: maxLength128 },
-            ]} />
-            <SingleSetting settingsKey="imageSmallURL" label="Small Image clickable URL" isValid={isUrlValid} />
-
-            <Divider />
-
-            <PairSetting data={[
-                { settingsKey: "buttonOneText", label: "Button1 Text", isValid: makeValidator(31) },
-                { settingsKey: "buttonOneURL", label: "Button1 URL", isValid: isUrlValid },
-            ]} />
-            <PairSetting data={[
-                { settingsKey: "buttonTwoText", label: "Button2 Text", isValid: makeValidator(31) },
-                { settingsKey: "buttonTwoURL", label: "Button2 URL", isValid: isUrlValid },
-            ]} />
-
-            <Divider />
-
-            <SelectSetting
-                settingsKey="timestampMode"
-                label="Timestamp Mode"
-                options={[
-                    {
-                        label: "None",
-                        value: TimestampMode.NONE,
-                        default: true
-                    },
-                    {
-                        label: "Since discord open",
-                        value: TimestampMode.NOW
-                    },
-                    {
-                        label: "Same as your current time (not reset after 24h)",
-                        value: TimestampMode.TIME
-                    },
-                    {
-                        label: "Custom",
-                        value: TimestampMode.CUSTOM
-                    }
-                ]}
-            />
-
-            <TimestampSetting
-                settingsKey="startTime"
-                label="Start (used when Timestamp Mode is Custom)"
-            />
-
-            <TimestampSetting
-                settingsKey="endTime"
-                label="End (used when Timestamp Mode is Custom)"
-            />
-
-            <ToggleSetting
-                settingsKey="timestampLoop"
-                label="Repeat the start and end times over and over"
-                disabled={timestampMode !== TimestampMode.CUSTOM || !settings.store.startTime || !settings.store.endTime}
-            />
-        </>
-    );
-}
-export function RPCSettings() {
-    const [formVersion, setFormVersion] = useState(0);
-
-    return (
-        <div className={cl("root")}>
-            <PresetSettings onLoad={() => setFormVersion(version => version + 1)} />
-            <Divider />
-            <RPCFields key={formVersion} />
-        </div>
-    );
-}
+export { setRpc };

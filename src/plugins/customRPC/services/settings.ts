@@ -7,7 +7,6 @@
 import { OptionType } from "@utils/types";
 
 import { NameFormat } from "../types";
-import { OFFICIAL_APPS } from "../types/officialApp";
 
 export let onServiceChange: (() => void) | null = null;
 export function setOnServiceChange(fn: (() => void) | null) { onServiceChange = fn; }
@@ -52,13 +51,6 @@ export const serviceSettings = {
     },
     nd_enabled: {
         description: "Enable Navidrome presence.",
-        type: OptionType.BOOLEAN as const,
-        default: false,
-        hidden: true,
-        onChange: () => onServiceChange?.(),
-    },
-    oa_enabled: {
-        description: "Enable official app presence.",
         type: OptionType.BOOLEAN as const,
         default: false,
         hidden: true,
@@ -378,46 +370,4 @@ export const serviceSettings = {
         hidden: true,
     },
 
-    // Official app
-    oa_app: {
-        description: "Which app to show the presence as.",
-        type: OptionType.SELECT as const,
-        options: Object.entries(OFFICIAL_APPS).map(([value, app]) => ({
-            label: app.label,
-            value,
-            default: value === "crunchyroll",
-        })),
-        default: "crunchyroll",
-        hidden: true,
-    },
-    oa_title: {
-        description: "Title of the show or game.",
-        type: OptionType.STRING as const,
-        default: "",
-        hidden: true,
-    },
-    oa_subtitle: {
-        description: "Episode or activity name.",
-        type: OptionType.STRING as const,
-        default: "",
-        hidden: true,
-    },
-    oa_duration: {
-        description: "Episode or session length in minutes.",
-        type: OptionType.STRING as const,
-        default: "24",
-        hidden: true,
-    },
-    oa_showArt: {
-        description: "Show the app art next to the title.",
-        type: OptionType.BOOLEAN as const,
-        default: true,
-        hidden: true,
-    },
-    oa_imageUrl: {
-        description: "Your own image, as a direct link. Overrides the app art.",
-        type: OptionType.STRING as const,
-        default: "",
-        hidden: true,
-    },
 };

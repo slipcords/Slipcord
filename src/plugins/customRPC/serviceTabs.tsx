@@ -10,7 +10,6 @@ import { Select, Slider, TextInput, useState } from "@webpack/common";
 
 import { settings, SettingsStore } from ".";
 import { NameFormat } from "./types";
-import { OFFICIAL_APPS } from "./types/officialApp";
 
 type SettingsKey = keyof SettingsStore;
 
@@ -206,20 +205,6 @@ export function NavidromeSettings() {
                     stickToMarkers
                 />
             </SettingsSection>
-        </>
-    );
-}
-
-export function OfficialAppSettings() {
-    return (
-        <>
-            <SettingsSection id="officialapp-settings" name="" description="Show what you are watching, playing or listening to as an official app, with a live progress bar. Fill in the title below, then enable it." />
-            <SelectSetting name="App" description="Which app to show the presence as." settingsKey="oa_app" options={Object.entries(OFFICIAL_APPS).map(([value, app]) => ({ label: app.label, value }))} />
-            <TextSetting name="Title" description="Title of the show or game." settingsKey="oa_title" placeholder="Frieren: Beyond Journey's End" />
-            <TextSetting name="Subtitle" description="Episode or activity name." settingsKey="oa_subtitle" placeholder="Episode 12" />
-            <TextSetting name="Length In Minutes" description="Episode or session length in minutes. Leave empty for a stopwatch." settingsKey="oa_duration" placeholder="24" />
-            <SwitchSetting name="Show App Art" description="Show the app art next to the title." settingsKey="oa_showArt" />
-            <TextSetting name="Custom Image" description="Your own image, as a direct link. Overrides the app art." settingsKey="oa_imageUrl" placeholder="https://i.imgur.com/yourart.png" />
         </>
     );
 }

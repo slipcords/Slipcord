@@ -73,4 +73,29 @@ export const OFFICIAL_APPS = {
     },
 } satisfies Record<string, OfficialApp>;
 
+/** Widened lookup, so a value read off an unvalidated id still has the optional fields. */
+export const OFFICIAL_APP_LIST: readonly OfficialApp[] = Object.values(OFFICIAL_APPS);
+
+export function lookupOfficialApp(id: string): OfficialApp | undefined {
+    return (OFFICIAL_APPS as Record<string, OfficialApp | undefined>)[id];
+}
+
 export type OfficialAppId = keyof typeof OFFICIAL_APPS;
+
+export type OfficialAppTimestampMode = "now" | "custom" | "none";
+
+/** One official app presence. Several can be active at once, as long as their activity types differ. */
+export interface OfficialAppEntry {
+    id: string;
+    enabled: boolean;
+    app: OfficialAppId;
+    title: string;
+    subtitle: string;
+    /** Episode or session length in minutes. 0 leaves the presence without an end. */
+    duration: string;
+    showArt: boolean;
+    imageUrl: string;
+    timestampMode: OfficialAppTimestampMode;
+    startTime: number;
+    endTime: number;
+}

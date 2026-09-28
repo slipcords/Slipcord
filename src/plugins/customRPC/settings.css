@@ -75,6 +75,51 @@
     width: 100%;
 }
 
+.vc-customRPC-settings-profileRow {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.5em;
+    padding: 6px 8px;
+    border: 1px solid var(--background-tertiary);
+    border-radius: 4px;
+
+    &.vc-customRPC-settings-selected {
+        border-color: var(--brand-experiment);
+    }
+}
+
+
+.vc-customRPC-settings-profileSelect {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    background: none;
+    border: none;
+    color: var(--text-normal);
+    cursor: pointer;
+    font: inherit;
+    padding: 2px 0;
+    text-align: left;
+}
+
+.vc-customRPC-settings-profileType {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.vc-customRPC-settings-label {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.vc-customRPC-settings-divider {
+    background: var(--background-tertiary);
+    height: 1px;
+    margin: 0.5em 0;
+}
+
 .vc-customRPC-settings-presets {
     display: grid;
     gap: 0.5em;
@@ -104,4 +149,8 @@
 
 .vc-customRPC-settings-error {
     color: var(--text-feedback-critical);
+}
+
+.vc-customRPC-settings-profileRow .vc-customRPC-settings-error {
+    grid-column: 2 / -1;
 }
