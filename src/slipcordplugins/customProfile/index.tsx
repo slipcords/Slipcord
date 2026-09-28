@@ -1398,14 +1398,14 @@ function Toggle({ label, checked, onChange, sublabel }: { label: string; checked
                 <span className="cp-toggle-label">{label}</span>
                 {sublabel && <span className="cp-toggle-sub">{sublabel}</span>}
             </div>
-            <div className={`cp-toggle ${checked ? "cp-toggle--on" : ""}`}><div className="cp-toggle-thumb" /></div>
+            <div className={`cp-toggle ${checked ? "cp-toggle-on" : ""}`}><div className="cp-toggle-thumb" /></div>
         </div>
     );
 }
 
 function BadgeBtn({ label, icon, active, onClick }: { label: string; icon?: string; active: boolean; onClick: () => void; }) {
     return (
-        <button onClick={onClick} className={`cp-badge ${active ? "cp-badge--on" : ""}`}
+        <button onClick={onClick} className={`cp-badge ${active ? "cp-badge-on" : ""}`}
             style={{ display: "flex", alignItems: "center", gap: 5 }}>
             {icon && <img src={icon} alt="" style={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />}
             <span>{label}</span>
@@ -2075,10 +2075,10 @@ function CustomProfileModal({ rootProps }: { rootProps: any; }) {
                     />
 
                     <div className="cp-tabs">
-                        <div className={`cp-tab ${activeTab === "general" ? "cp-tab--active" : ""}`} onClick={() => setActiveTab("general")}>{t("General")}</div>
-                        <div className={`cp-tab ${activeTab === "aesthetics" ? "cp-tab--active" : ""}`} onClick={() => setActiveTab("aesthetics")}>{t("Aesthetics")}</div>
-                        <div className={`cp-tab ${activeTab === "badges" ? "cp-tab--active" : ""}`} onClick={() => setActiveTab("badges")}>{t("Badges & Effects")}</div>
-                        <div className={`cp-tab ${activeTab === "connections" ? "cp-tab--active" : ""}`} onClick={() => setActiveTab("connections")}>{t("Connections")}</div>
+                        <div className={`cp-tab ${activeTab === "general" ? "cp-tab-active" : ""}`} onClick={() => setActiveTab("general")}>{t("General")}</div>
+                        <div className={`cp-tab ${activeTab === "aesthetics" ? "cp-tab-active" : ""}`} onClick={() => setActiveTab("aesthetics")}>{t("Aesthetics")}</div>
+                        <div className={`cp-tab ${activeTab === "badges" ? "cp-tab-active" : ""}`} onClick={() => setActiveTab("badges")}>{t("Badges & Effects")}</div>
+                        <div className={`cp-tab ${activeTab === "connections" ? "cp-tab-active" : ""}`} onClick={() => setActiveTab("connections")}>{t("Connections")}</div>
                     </div>
                     <div className="cp-settings-content">
                         {activeTab === "general" && (
@@ -2143,7 +2143,7 @@ function CustomProfileModal({ rootProps }: { rootProps: any; }) {
                                     <div className="cp-effect-grid">
                                         <button
                                             onClick={() => set("decorationAsset", undefined)}
-                                            className={`cp-effect-chip ${!data.decorationAsset ? "cp-effect-chip--on" : ""}`}
+                                            className={`cp-effect-chip ${!data.decorationAsset ? "cp-effect-chip-on" : ""}`}
                                         >
                                             <span className="cp-effect-none-icon">✕</span>
                                             {t("None")}
@@ -2151,7 +2151,7 @@ function CustomProfileModal({ rootProps }: { rootProps: any; }) {
                                         {AVATAR_DECORATIONS.map(dec => (
                                             <button key={dec.id}
                                                 onClick={() => set("decorationAsset", data.decorationAsset === dec.id ? undefined : dec.id)}
-                                                className={`cp-effect-chip ${data.decorationAsset === dec.id ? "cp-effect-chip--on" : ""}`}
+                                                className={`cp-effect-chip ${data.decorationAsset === dec.id ? "cp-effect-chip-on" : ""}`}
                                                 title={dec.label}
                                             >
                                                 <img
@@ -2171,7 +2171,7 @@ function CustomProfileModal({ rootProps }: { rootProps: any; }) {
                                     <div className="cp-effect-grid">
                                         <button
                                             onClick={() => set("profileEffectId", undefined)}
-                                            className={`cp-effect-chip ${!data.profileEffectId ? "cp-effect-chip--on" : ""}`}
+                                            className={`cp-effect-chip ${!data.profileEffectId ? "cp-effect-chip-on" : ""}`}
                                         >
                                             <span className="cp-effect-none-icon">✕</span>
                                             {t("None")}
@@ -2179,7 +2179,7 @@ function CustomProfileModal({ rootProps }: { rootProps: any; }) {
                                         {PROFILE_EFFECTS.map(eff => (
                                             <button key={eff.id}
                                                 onClick={() => set("profileEffectId", data.profileEffectId === eff.id ? undefined : eff.id)}
-                                                className={`cp-effect-chip ${data.profileEffectId === eff.id ? "cp-effect-chip--on" : ""}`}
+                                                className={`cp-effect-chip ${data.profileEffectId === eff.id ? "cp-effect-chip-on" : ""}`}
                                                 title={eff.label}
                                             >
                                                 {eff.label}

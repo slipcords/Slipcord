@@ -7,7 +7,7 @@
     overflow: hidden;
     border-radius: 16px;
     background-color: #1e1f22 !important;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 40%);
     font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: #dbdee1;
 }
@@ -18,7 +18,7 @@
     align-items: center;
     gap: 12px;
     color: #fff;
-    padding: 24px 24px 16px 24px;
+    padding: 24px 24px 16px;
     background: transparent;
 }
 
@@ -40,7 +40,7 @@
 /* ── Tabs (Segmented Control) ── */
 .cp-tabs {
     display: flex;
-    margin: 0 24px 16px 24px;
+    margin: 0 24px 16px;
     padding: 4px;
     background: #2b2d31;
     border-radius: 14px;
@@ -61,18 +61,18 @@
 
 .cp-tab:hover {
     color: #dbdee1;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgb(255 255 255 / 3%);
 }
 
-.cp-tab.cp-tab--active {
+.cp-tab.cp-tab-active {
     color: #fff;
     background: #383a40;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
 }
 
 /* ── Form Content ── */
 .cp-settings-content {
-    padding: 0 24px 24px 24px;
+    padding: 0 24px 24px;
     overflow-y: auto;
     flex: 1;
     display: flex;
@@ -83,6 +83,7 @@
 .cp-settings-content::-webkit-scrollbar {
     width: 6px;
 }
+
 .cp-settings-content::-webkit-scrollbar-thumb {
     background: #383a40;
     border-radius: 10px;
@@ -92,14 +93,17 @@
 .cp-custom-scroll::-webkit-scrollbar {
     width: 6px;
 }
+
 .cp-custom-scroll::-webkit-scrollbar-track {
     background: #1e1f22;
     border-radius: 8px;
 }
+
 .cp-custom-scroll::-webkit-scrollbar-thumb {
     background: #383a40;
     border-radius: 8px;
 }
+
 .cp-custom-scroll::-webkit-scrollbar-thumb:hover {
     background: #4e5058;
 }
@@ -149,7 +153,7 @@
 .cp-input:focus {
     background: #1e1f22;
     border-color: #5865f2;
-    box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.15);
+    box-shadow: 0 0 0 3px rgb(88 101 242 / 15%);
 }
 
 .cp-input::placeholder {
@@ -168,6 +172,7 @@
 }
 
 /* ── Image Uploads ── */
+
 /* ── Image Upload Card ── */
 .cp-image-card {
     display: flex;
@@ -189,7 +194,7 @@
     border-radius: 10px;
     object-fit: cover;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 40%);
 }
 
 .cp-image-inputs {
@@ -248,7 +253,7 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: rgba(237, 66, 69, 0.08);
+    background: rgb(237 66 69 / 8%);
     color: #80848e;
     border-radius: 8px;
     cursor: pointer;
@@ -258,7 +263,7 @@
 }
 
 .cp-image-clear-btn:hover {
-    background: rgba(237, 66, 69, 0.18);
+    background: rgb(237 66 69 / 18%);
     color: #ed4245;
 }
 
@@ -325,7 +330,7 @@
     transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.cp-toggle--on {
+.cp-toggle-on {
     background: #23a559;
 }
 
@@ -338,10 +343,10 @@
     border-radius: 50%;
     background: #fff;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
 
-.cp-toggle--on .cp-toggle-thumb {
+.cp-toggle-on .cp-toggle-thumb {
     transform: translateX(20px);
 }
 
@@ -371,6 +376,7 @@
 .cp-color-swatch::-webkit-color-swatch-wrapper {
     padding: 0;
 }
+
 .cp-color-swatch::-webkit-color-swatch {
     border: none;
     border-radius: 50%;
@@ -421,13 +427,14 @@
     transform: translateY(-2px);
 }
 
-.cp-badge--on {
-    background: rgba(88, 101, 242, 0.15) !important;
+.cp-badge-on {
+    background: rgb(88 101 242 / 15%) !important;
     border-color: #5865f2 !important;
     color: #fff !important;
 }
 
 /* Decorations / Effects */
+
 /* ── Effect / Decoration Chip Grid ── */
 .cp-effect-grid {
     display: flex;
@@ -459,11 +466,11 @@
     transform: translateY(-1px);
 }
 
-.cp-effect-chip--on {
-    background: rgba(88, 101, 242, 0.12) !important;
+.cp-effect-chip-on {
+    background: rgb(88 101 242 / 12%) !important;
     border-color: #5865f2 !important;
     color: #fff !important;
-    box-shadow: 0 0 12px rgba(88, 101, 242, 0.15);
+    box-shadow: 0 0 12px rgb(88 101 242 / 15%);
 }
 
 .cp-effect-none-icon {
@@ -493,6 +500,7 @@
     color: #fff !important;
     font-weight: 600 !important;
 }
+
 .cp-switch-card div[class*="note"] {
     color: #949ba4 !important;
 }
@@ -526,32 +534,36 @@
     background: transparent;
     color: #b5bac1 !important;
 }
+
 .cp-btn-ghost:hover:not(:disabled) {
     color: #fff !important;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgb(255 255 255 / 5%);
 }
 
 .cp-btn-danger {
     background: transparent;
     color: #ed4245 !important;
 }
+
 .cp-btn-danger:hover:not(:disabled) {
-    background: rgba(237, 66, 69, 0.1);
+    background: rgb(237 66 69 / 10%);
 }
 
 .cp-btn-primary {
     background: #5865f2;
     color: #fff;
-    box-shadow: 0 4px 12px rgba(88, 101, 242, 0.25);
+    box-shadow: 0 4px 12px rgb(88 101 242 / 25%);
 }
+
 .cp-btn-primary:hover:not(:disabled) {
     background: #4752c4;
-    box-shadow: 0 6px 16px rgba(88, 101, 242, 0.35);
+    box-shadow: 0 6px 16px rgb(88 101 242 / 35%);
     transform: translateY(-1px);
 }
+
 .cp-btn-primary:active:not(:disabled) {
     transform: translateY(1px);
-    box-shadow: 0 2px 8px rgba(88, 101, 242, 0.25);
+    box-shadow: 0 2px 8px rgb(88 101 242 / 25%);
 }
 
 /* ── Live Profile Preview Header Card ── */
@@ -560,11 +572,11 @@
     align-items: center;
     gap: 16px;
     padding: 12px 18px;
-    margin: 0 24px 14px 24px;
+    margin: 0 24px 14px;
     background: #1e1f22;
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgb(255 255 255 / 5%);
+    box-shadow: 0 4px 14px rgb(0 0 0 / 20%);
 }
 
 .cp-live-preview-avatar-wrapper {
@@ -651,7 +663,7 @@
     background: #2b2d31;
     border-radius: 12px;
     margin-bottom: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgb(255 255 255 / 6%);
 }
 
 .cp-equipped-thumb {
@@ -705,5 +717,5 @@
 
 .cp-equipped-clear:hover {
     color: #ed4245;
-    background: rgba(237, 66, 69, 0.1);
+    background: rgb(237 66 69 / 10%);
 }

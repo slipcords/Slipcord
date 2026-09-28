@@ -763,7 +763,7 @@ function ContextMenuPortal(props: CtxMenuProps) {
 
             {isOpen && <>
                 <div className="mi-ctx-separator" />
-                <div className="mi-ctx-item mi-ctx-item--danger" onClick={async () => {
+                <div className="mi-ctx-item mi-ctx-item-danger" onClick={async () => {
                     await Native.closeInstance(acc.id).catch(() => { });
                     onClose();
                 }}>
@@ -982,7 +982,7 @@ function MultiInstanceModal({ rootProps }: { rootProps: any; }) {
                         return (
                             <div
                                 key={acc.id}
-                                className={`mi-account-row${isCurrent ? " mi-account-row--current" : ""}${isOpen ? " mi-account-row--active" : ""}${!acc.hasToken && !isCurrent ? " mi-account-row--no-token" : ""}`}
+                                className={`mi-account-row${isCurrent ? " mi-account-row-current" : ""}${isOpen ? " mi-account-row-active" : ""}${!acc.hasToken && !isCurrent ? " mi-account-row-no-token" : ""}`}
                                 onClick={e => openCtx(e, acc)}
                                 onContextMenu={e => openCtx(e, acc)}
                             >
@@ -1042,7 +1042,7 @@ function MultiInstanceModal({ rootProps }: { rootProps: any; }) {
 
 function AccountAvatar({ url, name }: { url: string; name: string; }) {
     const [err, setErr] = React.useState(false);
-    if (err || !url) return <div className="mi-avatar mi-avatar--ph">{name?.[0]?.toUpperCase() ?? "?"}</div>;
+    if (err || !url) return <div className="mi-avatar mi-avatar-ph">{name?.[0]?.toUpperCase() ?? "?"}</div>;
     return <img src={url} className="mi-avatar" alt="" onError={() => setErr(true)} />;
 }
 

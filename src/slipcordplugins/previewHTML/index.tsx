@@ -259,7 +259,7 @@ function HtmlCard({ item }: { item: HtmlItem; }) {
 
     return (
         <div
-            className={`phtml-card ${isExpanded ? "phtml-card--expanded" : "phtml-card--collapsed"}`}
+            className={`phtml-card ${isExpanded ? "phtml-card-expanded" : "phtml-card-collapsed"}`}
             onClick={e => e.stopPropagation()}
             onMouseDown={e => e.stopPropagation()}
         >
@@ -299,7 +299,7 @@ function HtmlCard({ item }: { item: HtmlItem; }) {
                     {/* Expand/Shrink Height */}
                     {isExpanded && (
                         <button
-                            className={`phtml-btn ${heightMode === "tall" ? "phtml-btn--active" : ""}`}
+                            className={`phtml-btn ${heightMode === "tall" ? "phtml-btn-active" : ""}`}
                             onClick={e => {
                                 e.stopPropagation();
                                 setHeightMode(heightMode === "normal" ? "tall" : "normal");

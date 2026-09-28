@@ -520,7 +520,7 @@ function ExportDMModal({ rootProps }: { rootProps: any; }) {
                         const isSel = selected.has(c.id);
                         return (
                             <div key={c.id}
-                                className={`edm-channel-row ${isSel ? "edm-channel-row--selected" : ""}`}
+                                className={`edm-channel-row ${isSel ? "edm-channel-row-selected" : ""}`}
                                 onClick={() => toggleSelected(c.id)}>
                                 {av
                                     ? <img src={av} className="edm-avatar" alt="" />
@@ -561,7 +561,7 @@ function ExportDMModal({ rootProps }: { rootProps: any; }) {
                 <div className="edm-format-row">
                     {FORMATS.map(f => (
                         <button key={f.key}
-                            className={`edm-format-btn ${format === f.key ? "edm-format-btn--active" : ""}`}
+                            className={`edm-format-btn ${format === f.key ? "edm-format-btn-active" : ""}`}
                             onClick={() => setFormat(f.key)}
                             title={f.desc}>
                             <span className="edm-fmt-key">{f.label}</span>
