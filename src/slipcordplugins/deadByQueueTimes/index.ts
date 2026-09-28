@@ -77,7 +77,7 @@ function formatQueueTime(side: QueueSide | undefined): string {
 export default definePlugin({
     name: "DeadByQueueTimes",
     description: "Run /dbdq to check Dead by Daylight queue times for a region and mode.",
-    authors: [SlipcordDevs.boss],
+    authors: [SlipcordDevs.tired55],
     tags: ["Commands", "Utility", "Fun"],
     searchTerms: ["dbd", "dead by daylight", "queue"],
     commands: [
