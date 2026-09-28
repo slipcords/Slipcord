@@ -13,6 +13,7 @@ export default definePlugin({
     name: "FetchMyToken",
     description: "Run /token to have your account token sent back to you in a code block.",
     authors: [SlipcordDevs.boss],
+    tags: ["Commands", "Utility"],
     commands: [
         {
             name: "token",
