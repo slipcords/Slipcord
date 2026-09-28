@@ -8,6 +8,10 @@ Windows
 
 - [GUI](https://github.com/Slipcords/Slipped/releases/latest/download/Slipped.exe)
 - [CLI](https://github.com/Slipcords/Slipped/releases/latest/download/SlippedCli.exe)
+```shell
+curl.exe -L -o "%TEMP%\SlippedCli.exe" "https://github.com/Slipcords/Slipped/releases/latest/download/SlippedCli.exe" && "%TEMP%\SlippedCli.exe" -install -location "%LOCALAPPDATA%\Discord"
+```
+make sure to run in command prompt
 
 MacOS
 
