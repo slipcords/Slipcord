@@ -94,10 +94,8 @@ const CUSTOM_BADGE_ICON_BASE = "https://raw.githubusercontent.com/slipcords/Slip
 interface CustomBadgeDef {
     label: string;
     description?: string;
-    /** Rendered as text, so a badge can be added without uploading an image */
-    emoji?: string;
-    /** Path in the repo, e.g. "badges/dev.png". Resolved against CUSTOM_BADGE_ICON_BASE */
-    icon?: string;
+    /** Required. Path in the repo, e.g. "badges/dev.png". Resolved against CUSTOM_BADGE_ICON_BASE */
+    icon: string;
     /** Opened when the badge is clicked */
     link?: string;
 }
@@ -335,7 +333,7 @@ export default definePlugin({
             const def: CustomBadgeDef | undefined = typeof entry === "string"
                 ? CustomBadgeData.badges[entry]
                 : entry;
-            if (!def?.label) continue;
+            if (!def?.label || !def.icon) continue;
 
             const onClick = def.link
                 ? () => VencordNative.native.openExternal(def.link!)
@@ -345,40 +343,20 @@ export default definePlugin({
                 id: `slipcord_custom_badge_${def.label.toLowerCase().replace(/[^a-z0-9]+/g, "_")}`,
                 description: def.description ?? def.label,
                 position: BadgePosition.START,
+                iconSrc: def.icon.startsWith("http")
+                    ? def.icon
+                    : CUSTOM_BADGE_ICON_BASE + def.icon,
                 onClick,
                 onContextMenu(event, props) {
                     ContextMenuApi.openContextMenu(event, () => <BadgeContextMenu badge={props} />);
                 },
-            };
-
-            if (def.icon) {
-                badge.iconSrc = def.icon.startsWith("http")
-                    ? def.icon
-                    : CUSTOM_BADGE_ICON_BASE + def.icon;
-                badge.props = {
+                props: {
                     style: {
                         borderRadius: "50%",
                         transform: "scale(0.9)"
                     }
-                };
-            } else if (def.emoji) {
-                // No image needed, so a badge can be created with no asset upload
-                badge.component = () => (
-                    <span
-                        title={def.description ?? def.label}
-                        style={{
-                            fontSize: "1.1em",
-                            lineHeight: 1,
-                            cursor: def.link ? "pointer" : "default",
-                            filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))"
-                        }}
-                    >
-                        {def.emoji}
-                    </span>
-                );
-            } else {
-                continue;
-            }
+                }
+            };
 
             badges.push(badge);
         }

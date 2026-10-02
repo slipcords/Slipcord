@@ -3,46 +3,13 @@
         "Custom badge data for the BadgeAPI plugin, served straight from this repo.",
         "To add a badge to someone, append its id to their array in `users` below.",
         "To create a new kind of badge, add an entry to `badges` below.",
-        "Each badge needs a `label`. It can also have one of:",
-        "  `emoji`  - rendered as text, so you never need to upload an image",
-        "  `icon`   - a path in this repo, e.g. \"badges/dev.png\" (resolved against the repo)",
+        "Each badge needs a `label` and an `icon`, which is a path in this repo,",
+        "e.g. \"badges/dev.png\" (resolved against the repo). It can also have:",
         "  `description` - tooltip shown on hover",
         "  `link`   - opened when the badge is clicked",
         "Clients re-read this file every 30 minutes, or immediately via",
         "Settings -> BadgeAPI -> 'Refetch Badges'."
     ],
-    "badges": {
-        "contributor": {
-            "label": "Contributor",
-            "description": "Contributed code to the project",
-            "emoji": "⭐"
-        },
-        "maintainer": {
-            "label": "Maintainer",
-            "description": "Helps maintain the project",
-            "emoji": "🛠️"
-        },
-        "translator": {
-            "label": "Translator",
-            "description": "Helps translate the project",
-            "emoji": "🌐"
-        },
-        "helper": {
-            "label": "Helper",
-            "description": "Helped out around the community",
-            "emoji": "💜"
-        }
-    },
-    "users": {
-        "368517278209409045": ["maintainer"],
-        "1518777215716950261": ["contributor"],
-        "1525164351038947351": ["contributor"],
-        "1003477997728313405": ["contributor"],
-        "1327483363518582784": ["contributor"],
-        "1361345963175968779": ["contributor"],
-        "353229259482857475": ["contributor"],
-        "913205935319691335": ["contributor"],
-        "929208515883569182": ["contributor"],
-        "1120045713867423835": ["contributor"]
-    }
+    "badges": {},
+    "users": {}
 }
