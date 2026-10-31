@@ -694,6 +694,22 @@ export const Devs = /* #__PURE__*/ Object.freeze({
         name: "tired55",
         id: 1518777215716950261n
     },
+    scattagain: {
+        name: "Amelia",
+        id: 1098234477626544180n
+    },
+    Kaerion: {
+        name: "Kaerion",
+        id: 1409130527973441658n
+    },
+    imnotplayinginreallife: {
+        name: "I'm not playing in real life",
+        id: 841939724306087986n
+    },
+    NiNoX: {
+        name: "NiNoX",
+        id: 123435354958200833n
+    },
 } satisfies Record<string, Dev>);
 
 export const SlipcordDevs = Object.freeze({
@@ -1331,6 +1347,34 @@ export const EquicordDevs = Object.freeze({
     snea1337: {
         name: "Snea",
         id: 1175136653661179978n
+    },
+    nyx: {
+        name: "verticalsync.",
+        id: 1280505961546649633n
+    },
+    SerStars: {
+        name: "SerStars",
+        id: 861631850681729045n
+    },
+    creations: {
+        name: "creations",
+        id: 209830981060788225n
+    },
+    luqenov: {
+        name: "luqenov",
+        id: 279448683672502274n
+    },
+    tie: {
+        name: "tie",
+        id: 783087994419675201n
+    },
+    itzmeshadow999: {
+        name: "ItzMeShadow999",
+        id: 1065604516399026176n
+    },
+    rot: {
+        name: "rot",
+        id: 1021210809164111932n
     },
 } satisfies Record<string, Dev>);
 

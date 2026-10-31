@@ -1,6 +1,7 @@
 import { CommandOption } from './Commands';
 import { User, UserJSON } from '../User';
 import { Embed, EmbedJSON } from './Embed';
+import { StickerItem } from './Sticker';
 import { DiscordRecord } from "../Record";
 import { ApplicationCommandOptionType, ApplicationCommandType, ApplicationIntegrationType, ButtonStyle, ComponentType, InteractionType, MessageActivityType, MessageFlags, MessageReferenceType, MessageType, PollLayoutType, StickerFormatType } from "../../../enums";
 
@@ -72,10 +73,28 @@ export interface MessageComponent {
     components?: MessageComponent[];
 }
 
+/* The most basic message structure. Does not necessarily have an ID, e.g. in case of forwarded messages */
+export class BasicMessage extends DiscordRecord {
+    constructor(message: object);
+    type: MessageType;
+    content: string;
+    timestamp: Date;
+    editedTimestamp: Date | null;
+    flags: MessageFlags;
+    attachments: MessageAttachment[];
+    components: MessageComponent[];
+    embeds: Embed[];
+    stickerItems: StickerItem[];
+    mentions?: string[];
+    mentionRoles?: string[];
+
+    hasFlag(flag: MessageFlags): boolean;
+}
+
 /*
  * TODO: looks like discord has moved over to Date instead of Moment;
  */
-export class Message extends DiscordRecord {
+export class Message extends BasicMessage {
     constructor(message: object);
     activity: MessageActivity | null;
     activityInstance: { applicationId: string; instanceId: string; } | null;
@@ -192,11 +211,7 @@ export class Message extends DiscordRecord {
     sharedClientTheme: { primary_color: number; secondary_color: number; } | null;
     soundboardSounds: { sound_id: string; volume: number; emoji_id?: string; emoji_name?: string; }[];
     state: MessageState;
-    stickerItems: {
-        format_type: StickerFormatType;
-        id: string;
-        name: string;
-    }[];
+    stickerItems: StickerItem[];
     stickers: { id: string; name: string; format_type: StickerFormatType; }[];
     timestamp: Date;
     tts: boolean;
