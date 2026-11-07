@@ -73,7 +73,7 @@ async function fetchCategories() {
                 trendingGIFPreview: res.body.gifs[0]
             };
         } else {
-            cachedCategories = await providers[settings.store.provider!].getCategories();
+            cachedCategories = await (providers[settings.store.provider!] ?? providers.tenor).getCategories();
 
             if (!cachedCategories) return;
         }
@@ -151,6 +151,8 @@ export default definePlugin({
     ],
 
     async start() {
+        if (!this.shouldReplace) return;
+
         cachedCategories = await this.provider.getCategories() ?? cachedCategories;
     },
 
@@ -162,7 +164,8 @@ export default definePlugin({
         if (settings.store.provider === "klipy")
             throw new Error("Provider should never be klipy here");
 
-        return providers[settings.store.provider!];
+        // Fall back to Tenor if the stored provider is missing (eg after a settings migration)
+        return providers[settings.store.provider!] ?? providers.tenor;
     },
 
     SearchWrapper: ErrorBoundary.wrap(({ Component, placeholder, "aria-label": ariaLabel, ref, ...restProps }) => {

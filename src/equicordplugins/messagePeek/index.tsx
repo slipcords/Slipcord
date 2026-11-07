@@ -14,6 +14,7 @@ import betterActivities from "@equicordplugins/betterActivities";
 import showMeYourName from "@plugins/showMeYourName";
 import { Devs, EquicordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
+import { Logger } from "@utils/Logger";
 import { classes, pluralize } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
 import { Activity, ApplicationStream, Channel, Message, OnlineStatus, User } from "@vencord/discord-types";
@@ -282,6 +283,16 @@ export default definePlugin({
     },
 
     getSubText(props: PrivateChannelProps) {
+        // This runs while Discord renders the DM list, so never let a failed module lookup or API change take the list down
+        try {
+            return this.buildSubText(props);
+        } catch (e) {
+            new Logger("MessagePeek").error("Failed to render DM preview", e);
+            return null;
+        }
+    },
+
+    buildSubText(props: PrivateChannelProps) {
         const { channel, user, activities, status, applicationStream, voiceChannel } = props;
 
         if (settings.store.hideMuted && UserGuildSettingsStore.isChannelMuted(null!, channel.id)) {

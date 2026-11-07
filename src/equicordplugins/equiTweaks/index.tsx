@@ -393,7 +393,7 @@ export default definePlugin({
             find: "getSlateEditor:()=>",
             replacement: {
                 match: /spellCheck:\i(?=,autoFocus:)/,
-                replace: "$&,autoCorrect:$self.useAutoCorrect()"
+                replace: "$&,autoCorrect:$self.getAutoCorrect()"
             },
             predicate: () => settings.store.enableAutoCorrect
         },
@@ -456,9 +456,9 @@ export default definePlugin({
             !UserGuildSettingsStore.isChannelMuted(guildId, voiceState?.channelId!)
         );
     },
-    useAutoCorrect() {
-        const { autoCorrect } = settings.use(["autoCorrect"]);
-        return autoCorrect ? "on" : "off";
+    // Not a hook: this is called from getSlateEditor, which is not a component
+    getAutoCorrect() {
+        return settings.store.autoCorrect ? "on" : "off";
     },
     useGifPickerTyping() {
         const channelId = ExpressionPickerStore.useExpressionPickerStore(state => state.activeChannelId);
