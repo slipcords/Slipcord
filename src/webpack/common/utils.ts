@@ -142,7 +142,17 @@ export const Toasts = {
 /**
  * Show a simple toast. If you need more options, use Toasts.show manually
  */
-export function showToast(message: string, type = ToastType.MESSAGE, options?: ToastOptions) {
+export function showToast(
+    message: string | { text: string; variant?: string; duration?: number; },
+    type = ToastType.MESSAGE,
+    options?: ToastOptions
+) {
+    // newer Equicord/Vencord plugins call this with an options object
+    if (typeof message !== "string") {
+        type = (message.variant as typeof type | undefined) ?? type;
+        message = message.text;
+    }
+
     Toasts.show(Toasts.create(message, type, options));
 }
 

@@ -710,6 +710,42 @@ export const Devs = /* #__PURE__*/ Object.freeze({
         name: "NiNoX",
         id: 123435354958200833n
     },
+    theo: {
+        name: "theo",
+        id: 1081551899397992509n
+    },
+    Leko: {
+        name: "Leko",
+        id: 108153734541942784n
+    },
+    Z1xus: {
+        name: "Z1xus",
+        id: 377450600797044746n
+    },
+    qouesm: {
+        name: "qouesm",
+        id: 130388483494641664n
+    },
+    ZcraftElite: {
+        name: "ZcraftElite",
+        id: 926788037785047050n
+    },
+    Star123451: {
+        name: "Star123451",
+        id: 1037526188039618560n
+    },
+    Prince527: {
+        name: "Prince527",
+        id: 364105797162237952n
+    },
+    Crxa: {
+        name: "Crxa",
+        id: 711604934201704469n
+    },
+    vmohammad: {
+        name: "vMohammad",
+        id: 840854894881538079n
+    },
 } satisfies Record<string, Dev>);
 
 export const SlipcordDevs = Object.freeze({
