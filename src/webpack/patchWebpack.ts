@@ -423,12 +423,13 @@ function runFactoryWithWrap(patchedFactory: PatchedModuleFactory, thisArg: unkno
     try {
         factoryReturn = patchedFactory.apply(thisArg, argArray);
     } catch (err) {
-        // Just re-throw Discord errors
+        // Just re-throw Discord errors, but name the module so a client that hangs on boot is diagnosable
         if (patchedFactory === originalFactory) {
+            logger.error(`Module ${String(module.id)} threw while initializing`);
             throw err;
         }
 
-        logger.error("Error in patched module factory:\n", err);
+        logger.error(`Error in module factory (Module ${String(module.id)}):\n`, err);
         return originalFactory.apply(thisArg, argArray);
     }
 
