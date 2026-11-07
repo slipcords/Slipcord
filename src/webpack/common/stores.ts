@@ -19,9 +19,10 @@
 import { ConstEnumToRuntimeEnum } from "@utils/types";
 import * as t from "@vencord/discord-types";
 import * as enums from "@vencord/discord-types/enums";
-import { findByCodeLazy, findByPropsLazy } from "@webpack";
+import { findByPropsLazy } from "@webpack";
 
 import { waitForStore } from "./internal";
+import { useEffect, useRef, useState } from "./react";
 
 export const Flux: t.Flux = findByPropsLazy("connectStores");
 
@@ -111,8 +112,34 @@ export let BasicGuildStore: t.BasicGuildStore;
 
 /**
  * @see jsdoc of {@link t.useStateFromStores}
+ *
+ * Discord's own hook is looked up by code, but some Discord builds no longer ship a module containing
+ * "useStateFromStores". That lazy lookup then resolved to null, and every caller died with
+ * "Function.prototype.apply was called on null", so subscribe to the stores ourselves instead.
  */
-export const useStateFromStores: t.useStateFromStores = findByCodeLazy("useStateFromStores");
+export const useStateFromStores: t.useStateFromStores = <T>(stores: any[], mapper: () => T): T => {
+    const mapperRef = useRef(mapper);
+    mapperRef.current = mapper;
+
+    const storesRef = useRef(stores);
+    storesRef.current = stores;
+
+    const [value, setValue] = useState<T>(mapper);
+
+    useEffect(() => {
+        const update = () => setValue(() => mapperRef.current());
+        update();
+
+        const unsubscribers = (storesRef.current ?? [])
+            .filter(store => typeof store?.addChangeListener === "function")
+            .map(store => store.addChangeListener(update))
+            .filter(unsubscribe => typeof unsubscribe === "function");
+
+        return () => unsubscribers.forEach(unsubscribe => unsubscribe());
+    }, []);
+
+    return value;
+};
 
 waitForStore("AccessibilityStore", s => AccessibilityStore = s);
 waitForStore("ApplicationStore", s => ApplicationStore = s);
